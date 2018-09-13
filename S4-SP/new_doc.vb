@@ -1,6 +1,7 @@
 ﻿Imports System.Threading
 Public Class new_doc
-    Public Arch_ID As Integer
+    Public Arch_ID As Integer = get_reesrt_value("Arch_ID", "7")
+    Public ExcelFullFileName As String
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         InitializeOpenFileDialog()
     End Sub
@@ -20,6 +21,7 @@ Public Class new_doc
             fileformat = file.Substring(file.LastIndexOf(".") + 1)
             If UCase(fileformat) = UCase("xlsx") Or UCase(fileformat) = UCase("xls") Then
                 TextBox1.Text = file
+                file = ExcelFullFileName
             Else
                 MsgBox("Таблица должна быть в формате .xlsx или .xls")
             End If
@@ -52,6 +54,9 @@ Public Class new_doc
     End Sub
 
     Private Sub new_doc_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Arch_ID = Options.Arch_ID
+        TextBox1.Text = ExcelFullFileName
+        TextBox3.Text = Form1.query_s4("ARCHIVES", "ARCHIVE_ID", "DESCRIPTIO", Arch_ID)
         Button4.Enabled = False
         TextBox2.Text = Form1.Default_work_path
         combobox_add(ComboBox1)
@@ -64,7 +69,7 @@ Public Class new_doc
         Next
     End Sub
     Public Sub butt_enable()
-        If TextBox1.Text Is Nothing Then
+        If TextBox1.Text Is Nothing Or TextBox1.Text = "" Then
             Button4.Enabled = False
         Else
             If RadioButton1.Checked Then
@@ -108,9 +113,14 @@ Public Class new_doc
         Form1.SB_doc_types_file_Format = Form1.query_s4("doctypes", "DOC_NAME", "DOC_EXT", ComboBox2.Text) ' ComboBox2.Text
 
         Form1.only_Articles = RadioButton2.Checked
+        'If RadioButton2.Checked Then
+        '    select_archiv()
+        'End If
         Form1.Arch_ID = Arch_ID
         Me.Close()
-        'искусственная задержка на 1 секунду, чтобы успела закрыться окно new_doc НЕ ПОМОГЛО
+        Timer1.Interval = 3000
+        Application.DoEvents()
+        'искусственная задержка на 1 секунду, чтобы успела закрыться окно new_doc НЕ ПОМОГЛО select * from doctypes where doc_ext = 'pdf' And dt_name = 'сборочный чертеж'
         'Thread.Sleep(3000)
         Form1.start_create_BOM()
     End Sub
@@ -149,5 +159,27 @@ Public Class new_doc
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip1.Opening
         If TextBox1.Text = "" Then ОткрытьФайлToolStripMenuItem.Enabled = False Else ОткрытьФайлToolStripMenuItem.Enabled = True
+    End Sub
+
+    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+
+    End Sub
+
+    Private Sub new_doc_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            Me.KeyPreview = False
+            Me.Close()
+        End If
+        Me.KeyPreview = True
+    End Sub
+
+    Private Sub ToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ToolStripMenuItem1.Click
+        With Form1.ITS4App
+            .OpenArchive(Arch_ID)
+        End With
+    End Sub
+
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Process.Start("http://www.evernote.com/l/AjIzpLy6QAZG35YaM6BgM91l9kUGDbsu-Ak/")
     End Sub
 End Class

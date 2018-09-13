@@ -51,9 +51,9 @@ Partial Class App_info
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(12, 9)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(198, 13)
+        Me.Label1.Size = New System.Drawing.Size(203, 13)
         Me.Label1.TabIndex = 3
-        Me.Label1.Text = "Разрабочик: Айдарханов Насипберли"
+        Me.Label1.Text = "Разработчик: Айдарханов Насипберли"
         '
         'Label4
         '

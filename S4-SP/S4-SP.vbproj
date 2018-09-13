@@ -11,8 +11,25 @@
     <AssemblyName>S4-SP</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\aidarhanov.n.VEZA-SPB\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,12 +64,28 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>207-Chart_file_tree_flow_chart_organize_structure_tree_view_-512.ico</ApplicationIcon>
+    <ApplicationIcon>3.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>8A31B943D67C68DA8C669066946F1720BD08F4D2</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>S4-SP_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -84,7 +117,39 @@
     <Compile Include="App_info.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Art_property.Designer.vb">
+      <DependentUpon>Art_property.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Art_property.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Checking_SOSTAV_Form.Designer.vb">
+      <DependentUpon>Checking_SOSTAV_Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Checking_SOSTAV_Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Compare_BOM.Designer.vb">
+      <DependentUpon>Compare_BOM.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Compare_BOM.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drag_Drop_Form.Designer.vb">
+      <DependentUpon>Drag_Drop_Form.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Drag_Drop_Form.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditParam.Designer.vb">
+      <DependentUpon>EditParam.vb</DependentUpon>
+    </Compile>
+    <Compile Include="EditParam.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Excel_Report.vb" />
     <Compile Include="Exc_mod.vb" />
+    <Compile Include="FileAndFolderDialogMod.vb" />
     <Compile Include="new_doc.Designer.vb">
       <DependentUpon>new_doc.vb</DependentUpon>
     </Compile>
@@ -95,6 +160,12 @@
       <DependentUpon>Options.vb</DependentUpon>
     </Compile>
     <Compile Include="Options.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OTDEditor.Designer.vb">
+      <DependentUpon>OTDEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="OTDEditor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Reester_edit_mod.vb" />
@@ -121,16 +192,41 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="search_API.vb" />
+    <Compile Include="TxtReadAndWriteMod.vb" />
+    <Compile Include="VSNRM2.Designer.vb">
+      <DependentUpon>VSNRM2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="VSNRM2.vb">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App_info.resx">
       <DependentUpon>App_info.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Art_property.resx">
+      <DependentUpon>Art_property.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Checking_SOSTAV_Form.resx">
+      <DependentUpon>Checking_SOSTAV_Form.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Compare_BOM.resx">
+      <DependentUpon>Compare_BOM.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drag_Drop_Form.resx">
+      <DependentUpon>Drag_Drop_Form.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditParam.resx">
+      <DependentUpon>EditParam.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="new_doc.resx">
       <DependentUpon>new_doc.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Options.resx">
       <DependentUpon>Options.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="OTDEditor.resx">
+      <DependentUpon>OTDEditor.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="S4-SP.resx">
       <DependentUpon>S4-SP.vb</DependentUpon>
@@ -141,8 +237,12 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="VSNRM2.resx">
+      <DependentUpon>VSNRM2.vb</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="My Project\app.manifest" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -153,8 +253,18 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
+    <None Include="S4-SP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <COMReference Include="ImBase">
+      <Guid>{559880E0-2233-11D2-89AB-00605204E498}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -182,6 +292,15 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+    <COMReference Include="TPServer">
+      <Guid>{B06D708E-C9F8-4AEE-8916-008761DC032E}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="VBIDE">
       <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>5</VersionMajor>
@@ -194,7 +313,56 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="207-Chart_file_tree_flow_chart_organize_structure_tree_view_-512.ico" />
-    <Content Include="tree.ico" />
+    <None Include="Resources\wrench-512.png" />
+    <None Include="Resources\evernote.png" />
+    <None Include="Resources\Рисунок1.ico" />
+    <None Include="Resources\ручная связь.png" />
+    <None Include="Resources\DOCUMENT.ICO" />
+    <None Include="Resources\excel-png-office-xlsx-icon-3.png" />
+    <None Include="Resources\cabinet1.ico" />
+    <None Include="Resources\EXCELL.ICO" />
+    <None Include="Resources\ASSEMBLY1.ICO" />
+    <None Include="Resources\excel_icon.png" />
+    <None Include="Resources\FOLDER.ICO" />
+    <None Include="Resources\FLDOPEN.ICO" />
+    <None Include="Resources\Order.ico" />
+    <None Include="Resources\cabinet.ico" />
+    <None Include="Resources\OTD.ico" />
+    <None Include="Resources\download.png" />
+    <None Include="Resources\Открыть_древов_ВСНРМ.png" />
+    <None Include="Resources\Открыть_древов_ВСНРМ2.png" />
+    <None Include="Resources\Открыть_древов_ВСНРМ3.png" />
+    <None Include="Resources\options.png" />
+    <None Include="Resources\About.png" />
+    <None Include="Resources\Help.png" />
+    <None Include="Resources\Help1.png" />
+    <None Include="Resources\About1.png" />
+    <None Include="Resources\options-icon-30.png" />
+    <None Include="Resources\clear-icon-9193.png" />
+    <None Include="Resources\DATABASE.png" />
+    <Content Include="3.ico" />
+    <None Include="Resources\SP.ICO" />
+    <None Include="Resources\ASSEMBLY.ICO" />
+    <None Include="Resources\Album.ico" />
+    <None Include="Resources\S4.ico" />
+    <None Include="Resources\newKTD.ico" />
+    <None Include="Resources\newZak.ico" />
+    <None Include="Resources\DWG.ICO" />
+    <None Include="Resources\9.ico" />
+    <None Include="Resources\excel.png" />
+    <None Include="Resources\IMBASE1.ICO" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 и x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

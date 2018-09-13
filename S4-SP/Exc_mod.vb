@@ -40,6 +40,9 @@ Module Exc_mod
         WB2 = xlApp2.Workbooks.Open(excel_file_path)
         WS2 = WB2.Sheets.Item(1)
     End Sub
+    Sub exc_WB1_save()
+        WB.Save()
+    End Sub
     Public Sub exc_close()
         Try
             xlApp.Quit()
@@ -103,15 +106,190 @@ Module Exc_mod
         End With
         Return LastRow
     End Function
-    Public Function Get_Last_Column(SheetName As String) As Long
+    Public Function Get_Last_Column(SheetName As String, row_index As Integer) As Long
         'возвращает последнюю использованную строку в столбце: требуется задать имя листа(SheetName) и имя столбца(Column_Name)
         Dim LastColumn As Long
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         With ActiveSheet
-            LastColumn = .Cells(1, .Columns.Count).End(Excel.XlDirection.xlToLeft).Column
+            LastColumn = .Cells(row_index, .Columns.Count).End(Excel.XlDirection.xlToLeft).Column
         End With
         Return LastColumn
     End Function
+    Public Sub Set_RowHeigt(SheetName As String, row_index As Integer, RowHeigt As Integer)
+        'изменяет высоту строки на параметр RowHeigt 
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        With ActiveSheet
+            .Rows(row_index).RowHeight = RowHeigt
+        End With
+    End Sub
+    Public Sub Set_RowTextHorisontAllign(SheetName As String, row_index As Integer, XlHorisAlign As XlHAlign)
+        'изменяет горизонтальное ровнение текста в выбранной строке строки  
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        With ActiveSheet
+            .Rows(row_index).Style.HorizontalAlignment = XlHorisAlign
+        End With
+    End Sub
+    Public Sub Set_RowVerticalAllign(SheetName As String, row_index As Integer, XlVerticalAlign As Microsoft.Office.Interop.Excel.XlVAlign)
+        'изменяет вертикальное ровнение текста в выбранной строке строки  
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        With ActiveSheet
+            .Rows(row_index).Style.VerticalAlignment = XlVerticalAlign
+        End With
+    End Sub
+    Public Sub Set_ColumnWidth(SheetName As String, Col_index As Integer, ColumnWidth As Integer)
+        'изменяет высоту столбца на параметр ColumnWidth 
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        With ActiveSheet
+            .Columns(Col_index).ColumnWidth = ColumnWidth
+        End With
+    End Sub
+    Public Sub SetOneCellTextHorisAligment(SheetName As String, columnIndex As Integer, row_index As Integer, XlHorisAlign As XlHAlign)
+        'Выравнивает текст в ячейках по горизонтали
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells(row_index, columnIndex).Style.HorizontalAlignment = XlHorisAlign
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetAutoFIT(SheetName As String)
+        'Выравнивает текст в ячейках по горизонтали
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.EntireColumn.AutoFit()
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub CellsMerge(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer)
+        'Процедура объединяет ячейки
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Merge()
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub CellsTextBold(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer)
+        'Процедура в выделенныех ячейках меняет отображение текста (жирный, курсив, обычный)
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Font.Bold = True
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub CellsTextHorisAligment(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, XlHorisAlign As Microsoft.Office.Interop.Excel.XlHAlign)
+        'Процедура в выделенныех ячейках меняет выравнивание текста
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Style.HorizontalAlignment = XlHorisAlign
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub CellsTextVerticalAligment(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, XlVerticalAlign As Microsoft.Office.Interop.Excel.XlVAlign)
+        'Процедура в выделенныех ячейках меняет выравнивание текста по горизонтали
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Style.VerticalAlignment = XlVerticalAlign
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetOneCellTextVertialAligment(SheetName As String, columnIndex As Integer, row_index As Integer, XlVerticalAlign As XlHAlign)
+        'Процедура в выделенныех ячейках меняет выравнивание текста по вертикали
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells(row_index, columnIndex).Style.VerticalAlignment = XlVerticalAlign
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetCellsColor(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, color As Color)
+        'Процедура в выделенныех ячейках меняет COLOR
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Interior.Color = color
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetCellsTextSize(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, TextSize As Integer)
+        'Процедура в выделенныех ячейках меняет COLOR
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Font.Size = TextSize
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetCellsBorderLineStyle(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer)
+        'Процедура в выделенныех ячейках создает рамки в ячейках
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Borders.LineStyle = True
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetCellsBorderLineStyle2(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, LineStyle As Microsoft.Office.Interop.Excel.XlLineStyle)
+        'Процедура в выделенныех ячейках создает рамки в ячейках. Также можно выбирать рамки
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Borders.LineStyle = True
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Borders.Weight = LineStyle
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+    Public Sub SetCellsCdbl(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer)
+        'Процедура в выделенныех ячейках преобразует содержимое в число
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).NumberFormat = "General"
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub SetTitleFixirovano(SheetName As String, columnIndex As Integer, row_index As Integer, control As Boolean)
+        'Процедура в выделенныех ячейках создает рамки в ячейках. Также можно выбирать рамки
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With WB.Windows.Item(1)
+                .SplitColumn = columnIndex
+                .SplitRow = row_index
+                .FreezePanes = control
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Public Function get_Value_From_Cell(SheetName As String, columnIndex As Integer, row_index As Integer)
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         Dim cell_value As String
