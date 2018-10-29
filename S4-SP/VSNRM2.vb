@@ -751,12 +751,14 @@ ifpozRAVNOTempPoz:
     Public CN_Raszehovka As Integer = 20
     Public CN_MatZagotovki As Integer = 21
     Public CN_MatZagotovki_IBKey As Integer = 22
-    Public CN_NormaRashoda As Integer = 23
-    Public CN_RazmerZag As Integer = 24
+    Public CN_RazmerZag As Integer = 23
+    Public CN_ZagCount As Integer = 24
+    Public CN_ZagSumCount As Integer = 25
+    Public CN_NormaRashoda As Integer = 26
+    Public CN_NormaRashoda_Sum As Integer = 27
+    Public CN_NormaRashoda_MU As Integer = 28
     'Public CN_KIM As Integer = 25
-    Public CN_ZagCount As Integer = 25
-    Public CN_ZagSumCount As Integer = 26
-    Public CN_VspomMat As Integer = 27
+    Public CN_VspomMat As Integer = 28
     Public CN_VspomMat_IBKey As Integer = 8
     Sub WriteEXCellTitle()
         Application.DoEvents()
@@ -804,7 +806,9 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_MatZagotovki_IBKey, RowN_First - 1, "Ключ IMBase" & vbNewLine & "для заготовки")
         set_Value_From_Cell(Sheetname, CN_RazmerZag, RowN_First - 1, "Размер заготовки")
         'set_Value_From_Cell(Sheetname, CN_KIM, RowN_First - 1, "КИМ")
-        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода")
+        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода" & vbCr & "на ед.")
+        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода" & vbCr & "общ.")
+        set_Value_From_Cell(Sheetname, CN_NormaRashoda_MU, RowN_First - 1, "ед.изм")
         set_Value_From_Cell(Sheetname, CN_ZagCount, RowN_First - 1, "Кол-во деталей" & vbNewLine & "из заготовки")
         set_Value_From_Cell(Sheetname, CN_ZagSumCount, RowN_First - 1, "Кол-во необх." & vbNewLine & "заготовки")
         'set_Value_From_Cell(Sheetname, CN_VspomMat, RowN_First - 1, "Вспомогательный материал" & vbNewLine & "^&Ключ IMBase")
@@ -941,7 +945,7 @@ ifpozRAVNOTempPoz:
                     set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
                     set_Value_From_Cell(Sheetname, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
                 End Try
-                get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
+                'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
             Case 5, 6, 7 'станд изделия
                 Try
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(3))
@@ -1006,6 +1010,11 @@ ifpozRAVNOTempPoz:
             set_Value_From_Cell(Sheetname, CN_ZagCount, lastRowNum, TP_Array(6))
             set_Value_From_Cell(Sheetname, CN_RazmerZag, lastRowNum, TP_Array(7))
             If TP_Array(2) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_NormaRashoda, lastRowNum, (TP_Array(2).ToString.Replace(",", ".")))
+            Try
+                set_Value_From_Cell(Sheetname, CN_NormaRashoda_MU, lastRowNum, TP_Array(10))
+            Catch ex As Exception
+
+            End Try
             'If TP_Array(1) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_KIM, lastRowNum, TP_Array(1).ToString.Replace(",", "."))
             Try
                 If CDbl(TP_Array(6)) <> 0 Then
@@ -1080,9 +1089,9 @@ ifpozRAVNOTempPoz:
     End Function
     Function Get_TP_ParmArray(Art_ID As Integer) As Array
         Application.DoEvents()
-        Dim array(9) As String
+        Dim array(10) As String
         Try
-            Dim rascexovka, KIM, Norma, Sortament, SortamentIMKey, ZagCount, Zag_key, RazmZag, MatVspom As String
+            Dim rascexovka, KIM, Norma, Sortament, SortamentIMKey, ZagCount, Zag_key, RazmZag, MatVspom, Norma_MU As String
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
 
             Dim TRout As TPServer.TRoute = TArt.Route
@@ -1104,6 +1113,7 @@ ifpozRAVNOTempPoz:
                     With Zag
                         KIM = .Value("КИМ")
                         Norma = .Value("НР")
+                        Norma_MU = .Value("едНР")
                         Sortament = .Value("SORT")
                         SortamentIMKey = .Value("%ZAG")
                         ZagCount = .Value("КЗаг")
@@ -1143,6 +1153,7 @@ ifpozRAVNOTempPoz:
             array(7) = RazmZag
             array(8) = zagsCount
             array(9) = MatVspom
+            array(10) = Norma_MU
             Return array
         Catch ex As Exception
             Return array
@@ -1237,7 +1248,7 @@ ifpozRAVNOTempPoz:
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
         Application.DoEvents()
-        Dim array(11) As String
+        Dim array(12) As String
         Try
             With s4
                 .OpenArticle(Art_ID)
@@ -1255,7 +1266,7 @@ ifpozRAVNOTempPoz:
                 End If
                 materialIMKey = .GetFieldImbaseKey_Articles("Материал")
                 ArtKindName = .GetArtKindName
-                ArtKind = .GetArtKind
+                ArtKind = .GetArticleKind
                 Try
                     Dim docID As Integer = .GetArticleDocID
                     If docID > 0 Then
