@@ -274,6 +274,7 @@ Partial Class OTDEditor
         '
         'ToolStripButton1
         '
+        Me.ToolStripButton1.Enabled = False
         Me.ToolStripButton1.Image = CType(resources.GetObject("ToolStripButton1.Image"), System.Drawing.Image)
         Me.ToolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripButton1.Name = "ToolStripButton1"

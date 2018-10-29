@@ -75,10 +75,12 @@ Partial Class Options
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.Button9 = New System.Windows.Forms.Button()
         Me.CheckBox7 = New System.Windows.Forms.CheckBox()
+        Me.CheckBox6 = New System.Windows.Forms.CheckBox()
         Me.TabControl1 = New System.Windows.Forms.TabControl()
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.TabPage3 = New System.Windows.Forms.TabPage()
         Me.TabPage4 = New System.Windows.Forms.TabPage()
+        Me.GroupBox8 = New System.Windows.Forms.GroupBox()
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
         Me.ContextMenuStrip1.SuspendLayout()
@@ -95,6 +97,7 @@ Partial Class Options
         Me.TabPage1.SuspendLayout()
         Me.TabPage3.SuspendLayout()
         Me.TabPage4.SuspendLayout()
+        Me.GroupBox8.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
         Me.TabPage5.SuspendLayout()
         Me.SuspendLayout()
@@ -555,6 +558,7 @@ Partial Class Options
         'Button7
         '
         Me.Button7.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.Button7.Enabled = False
         Me.Button7.Location = New System.Drawing.Point(3, 323)
         Me.Button7.Name = "Button7"
         Me.Button7.Size = New System.Drawing.Size(75, 23)
@@ -632,6 +636,17 @@ Partial Class Options
         Me.ToolTip1.SetToolTip(Me.CheckBox7, resources.GetString("CheckBox7.ToolTip"))
         Me.CheckBox7.UseVisualStyleBackColor = True
         '
+        'CheckBox6
+        '
+        Me.CheckBox6.AutoSize = True
+        Me.CheckBox6.Location = New System.Drawing.Point(9, 13)
+        Me.CheckBox6.Name = "CheckBox6"
+        Me.CheckBox6.Size = New System.Drawing.Size(207, 17)
+        Me.CheckBox6.TabIndex = 12
+        Me.CheckBox6.Text = "Проверять существующие подузлы"
+        Me.ToolTip1.SetToolTip(Me.CheckBox6, resources.GetString("CheckBox6.ToolTip"))
+        Me.CheckBox6.UseVisualStyleBackColor = True
+        '
         'TabControl1
         '
         Me.TabControl1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -672,6 +687,7 @@ Partial Class Options
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.GroupBox8)
         Me.TabPage4.Controls.Add(Me.GroupBox7)
         Me.TabPage4.Controls.Add(Me.GroupBox6)
         Me.TabPage4.Location = New System.Drawing.Point(4, 22)
@@ -681,6 +697,15 @@ Partial Class Options
         Me.TabPage4.TabIndex = 3
         Me.TabPage4.Text = "Покупные изделия"
         Me.TabPage4.UseVisualStyleBackColor = True
+        '
+        'GroupBox8
+        '
+        Me.GroupBox8.Controls.Add(Me.CheckBox6)
+        Me.GroupBox8.Location = New System.Drawing.Point(4, 119)
+        Me.GroupBox8.Name = "GroupBox8"
+        Me.GroupBox8.Size = New System.Drawing.Size(426, 37)
+        Me.GroupBox8.TabIndex = 22
+        Me.GroupBox8.TabStop = False
         '
         'GroupBox7
         '
@@ -740,6 +765,8 @@ Partial Class Options
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage3.ResumeLayout(False)
         Me.TabPage4.ResumeLayout(False)
+        Me.GroupBox8.ResumeLayout(False)
+        Me.GroupBox8.PerformLayout()
         Me.GroupBox7.ResumeLayout(False)
         Me.GroupBox7.PerformLayout()
         Me.TabPage5.ResumeLayout(False)
@@ -803,4 +830,6 @@ Partial Class Options
     Friend WithEvents Button10 As Button
     Friend WithEvents ContextMenuStrip3 As ContextMenuStrip
     Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
+    Friend WithEvents GroupBox8 As GroupBox
+    Friend WithEvents CheckBox6 As CheckBox
 End Class

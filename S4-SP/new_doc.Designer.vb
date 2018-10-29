@@ -28,9 +28,11 @@ Partial Class new_doc
         Me.Button3 = New System.Windows.Forms.Button()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ОткрытьФайлToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.TextBox2 = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip2 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ОткрытьПапкуToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -47,11 +49,9 @@ Partial Class new_doc
         Me.Label6 = New System.Windows.Forms.Label()
         Me.TextBox3 = New System.Windows.Forms.TextBox()
         Me.ContextMenuStrip3 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ОткрытьПапкуToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ОткрытьФайлToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.Button6 = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.ContextMenuStrip2.SuspendLayout()
@@ -95,6 +95,13 @@ Partial Class new_doc
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
         Me.ContextMenuStrip1.Size = New System.Drawing.Size(154, 26)
         '
+        'ОткрытьФайлToolStripMenuItem
+        '
+        Me.ОткрытьФайлToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.excel_icon
+        Me.ОткрытьФайлToolStripMenuItem.Name = "ОткрытьФайлToolStripMenuItem"
+        Me.ОткрытьФайлToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
+        Me.ОткрытьФайлToolStripMenuItem.Text = "Открыть файл"
+        '
         'Button1
         '
         Me.Button1.Location = New System.Drawing.Point(6, 35)
@@ -120,6 +127,13 @@ Partial Class new_doc
         Me.ContextMenuStrip2.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ОткрытьПапкуToolStripMenuItem})
         Me.ContextMenuStrip2.Name = "ContextMenuStrip2"
         Me.ContextMenuStrip2.Size = New System.Drawing.Size(157, 26)
+        '
+        'ОткрытьПапкуToolStripMenuItem
+        '
+        Me.ОткрытьПапкуToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.FOLDER
+        Me.ОткрытьПапкуToolStripMenuItem.Name = "ОткрытьПапкуToolStripMenuItem"
+        Me.ОткрытьПапкуToolStripMenuItem.Size = New System.Drawing.Size(156, 22)
+        Me.ОткрытьПапкуToolStripMenuItem.Text = "Открыть папку"
         '
         'Label2
         '
@@ -284,10 +298,6 @@ Partial Class new_doc
         Me.ContextMenuStrip3.Name = "ContextMenuStrip2"
         Me.ContextMenuStrip3.Size = New System.Drawing.Size(158, 26)
         '
-        'OpenFileDialog1
-        '
-        Me.OpenFileDialog1.FileName = "OpenFileDialog1"
-        '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Image = Global.S4_SP.My.Resources.Resources.cabinet
@@ -295,23 +305,14 @@ Partial Class new_doc
         Me.ToolStripMenuItem1.Size = New System.Drawing.Size(157, 22)
         Me.ToolStripMenuItem1.Text = "Открыть Архив"
         '
-        'ОткрытьПапкуToolStripMenuItem
+        'OpenFileDialog1
         '
-        Me.ОткрытьПапкуToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.FOLDER
-        Me.ОткрытьПапкуToolStripMenuItem.Name = "ОткрытьПапкуToolStripMenuItem"
-        Me.ОткрытьПапкуToolStripMenuItem.Size = New System.Drawing.Size(156, 22)
-        Me.ОткрытьПапкуToolStripMenuItem.Text = "Открыть папку"
-        '
-        'ОткрытьФайлToolStripMenuItem
-        '
-        Me.ОткрытьФайлToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.excel_icon
-        Me.ОткрытьФайлToolStripMenuItem.Name = "ОткрытьФайлToolStripMenuItem"
-        Me.ОткрытьФайлToolStripMenuItem.Size = New System.Drawing.Size(153, 22)
-        Me.ОткрытьФайлToolStripMenuItem.Text = "Открыть файл"
+        Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
         'Button6
         '
         Me.Button6.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Button6.Enabled = False
         Me.Button6.Location = New System.Drawing.Point(17, 366)
         Me.Button6.Name = "Button6"
         Me.Button6.Size = New System.Drawing.Size(63, 26)

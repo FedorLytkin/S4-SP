@@ -158,10 +158,11 @@ Partial Class Checking_SOSTAV_Form
         '
         'СправкаToolStripMenuItem
         '
+        Me.СправкаToolStripMenuItem.Enabled = False
         Me.СправкаToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.Help1
         Me.СправкаToolStripMenuItem.Name = "СправкаToolStripMenuItem"
         Me.СправкаToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1
-        Me.СправкаToolStripMenuItem.Size = New System.Drawing.Size(139, 22)
+        Me.СправкаToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.СправкаToolStripMenuItem.Text = "Справка"
         Me.СправкаToolStripMenuItem.ToolTipText = "Для вызова справки нажмите F1"
         '

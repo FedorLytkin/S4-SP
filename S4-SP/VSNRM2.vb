@@ -1,13 +1,24 @@
 ﻿Public Class VSNRM2
     Public s4 As S4.TS4App = Form1.ITS4App
     Public tp As TPServer.ITApplication
-    Public ib As ImBase.IImbaseApplication
+    'Public ib As ImBase.IImbaseApplication
     Public artID_Main, artId_Sub As Integer
     Public Spletter As String = "%"
     'параметр не выводящий типы объектов и компоненты с ручной связью
     Public NO_Art_Documentacia As Boolean = 0
     Public NO_Ru4na9_Sv9z As Boolean = 0
-
+    'параметр заменяющий "~" на " "
+    Public ReplaceTildaOnSpace As Boolean = 1
+    'параметр модульный
+    Dim Verartfiltr_str As String = "Verartfiltr" 'parameter name
+    Dim Verartfiltr As Boolean = 0
+    Dim TPsfilter_str As String = "TPsfilter"
+    Dim TPsfilter As Boolean = 0
+    Dim CT_ID_in_Query As String
+    'параметр экспортирующий данные о применяемости деталей
+    Public NO_Parts As Boolean = 1
+    'параметр экспортирующий данные о материалах и покупных
+    Public NO_Purchated As Boolean = 1
 
     Public myImageList As New ImageList()
     'Public NO_TSE As Boolean = 0
@@ -28,10 +39,10 @@
         TreeView1.Nodes.Add(root)
 
         With s4
-            .OpenQuery("select * from PC where proj_aid = " & artID_Main)
+            .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query)
             Dim max_poz_mun As String = GetMaxPositionInBOM(artID_Main)
 
-            .OpenQuery("select * from PC where proj_aid = " & artID_Main)
+            .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query)
             For i As Integer = 1 To CInt(max_poz_mun)
                 .QueryGoFirst()
                 For j As Integer = 1 To .QueryRecordCount
@@ -53,7 +64,7 @@
                         If RAZDEL = 3 Then
                             NextLevelInTreeView(subNode, Part_AID, TempPos)
                             'встать на тоже самое место
-                            .OpenQuery("select * from PC where proj_aid = " & artID_Main)
+                            .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query)
                             '.QueryGoFirst()
                             'For z As Integer = 0 To .QueryRecordCount
                             '    Dim pos As String = .QueryFieldByName("positio")
@@ -78,10 +89,10 @@ ifpozRAVNOTempPoz:
         Max_Positio = 0
         Try
             With s4
-                .OpenQuery("select MAX(positio) as positio FROM PC WHERE proj_aid = '" & artID & "'")
+                .OpenQuery("select MAX(positio) as positio FROM PC WHERE proj_aid = '" & artID & "'" & CT_ID_in_Query)
                 GetMaxPositionInBOM = .QueryFieldByName("positio")
                 .CloseQuery()
-                .OpenQuery("select * FROM PC WHERE proj_aid = '" & artID & "'")
+                .OpenQuery("select * FROM PC WHERE proj_aid = '" & artID & "'" & CT_ID_in_Query)
                 .QueryGoFirst()
                 While .QueryEOF = 0
                     temp_Positio = .QueryFieldByName("positio")
@@ -101,7 +112,7 @@ ifpozRAVNOTempPoz:
     Private Function checkChaildNode(ArtID As Integer) As Boolean
         Try
             With s4
-                .OpenQuery("select * from PC where proj_aid = " & ArtID)
+                .OpenQuery("select * from PC where proj_aid = " & ArtID & CT_ID_in_Query)
                 If .QueryRecordCount > 0 Then
                     checkChaildNode = True
                     .CloseQuery()
@@ -116,10 +127,10 @@ ifpozRAVNOTempPoz:
     End Function
     Sub NextLevelInTreeView(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
         With s4
-            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid)
+            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid & CT_ID_in_Query)
             Dim max_poz_mun As String = GetMaxPositionInBOM(Proj_Aid)
 
-            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid)
+            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid & CT_ID_in_Query)
 
             For i As Integer = 1 To CInt(max_poz_mun)
                 .QueryGoFirst()
@@ -144,7 +155,7 @@ ifpozRAVNOTempPoz:
                         If RAZDEL = 3 Then
                             NextLevelInTreeView(subNode, Part_AID, Temp_SubPositio)
                             'встать на тоже самое место
-                            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid)
+                            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid & CT_ID_in_Query)
                             '.QueryGoFirst()
                             'For z As Integer = 0 To .QueryRecordCount
                             '    Dim pos As String = .QueryFieldByName("positio")
@@ -291,6 +302,8 @@ ifpozRAVNOTempPoz:
     End Sub
     Sub TPServerInitializ()
         Try
+            'If TPsfilter = 0 Then Exit Sub
+
             If tp Is Nothing Then
                 tp = CreateObject("TPServer.TApplication")
                 Dim status As Integer = tp.Ready
@@ -325,51 +338,51 @@ ifpozRAVNOTempPoz:
     End Sub
 
     Private Sub ToolStripButton4_Click(sender As Object, e As EventArgs)
-        ib = CreateObject("imbase.ImbaseApplication")
-        Dim IBKey As ImBase.ImbaseKey = ib.Utilites.ExploreKey("i6000001087D7D00000A")
-        Dim TableRecStr As String = IBKey.TableRecStr
-        Dim TableRecStrArray As Array = TableRecStr.Split(vbCrLf)
-        Dim PolnOboz, PolnObozStr As String
-        PolnObozStr = "Полное обозначение"
-        For Each str As String In TableRecStrArray
-            str = str.Trim(vbCrLf)
-            If str.IndexOf("Полное обозначение") > 0 Then
-                PolnOboz = str.Replace(PolnObozStr & "=", "")
-                PolnOboz = PolnOboz.Trim(vbLf)
-            End If
-        Next
-        'Dim IBKey As ImBase.IImbaseKey = i
-        'Dim cat As ImBase.IImbaseCatalogs = ib.Catalogs()
-        'Dim VR As ImBase.IImbaseCatalog = cat.Item(13933)
-        'For i As Integer = 0 To VR.Folders.Count  'cat.Count - 1
-        '    Dim fName As String = VR.Folders.Item(i).Name
+        'ib = CreateObject("imbase.ImbaseApplication")
+        'Dim IBKey As ImBase.ImbaseKey = ib.Utilites.ExploreKey("i6000001087D7D00000A")
+        'Dim TableRecStr As String = IBKey.TableRecStr
+        'Dim TableRecStrArray As Array = TableRecStr.Split(vbCrLf)
+        'Dim PolnOboz, PolnObozStr As String
+        'PolnObozStr = "Полное обозначение"
+        'For Each str As String In TableRecStrArray
+        '    str = str.Trim(vbCrLf)
+        '    If str.IndexOf("Полное обозначение") > 0 Then
+        '        PolnOboz = str.Replace(PolnObozStr & "=", "")
+        '        PolnOboz = PolnOboz.Trim(vbLf)
+        '    End If
         'Next
+        ''Dim IBKey As ImBase.IImbaseKey = i
+        ''Dim cat As ImBase.IImbaseCatalogs = ib.Catalogs()
+        ''Dim VR As ImBase.IImbaseCatalog = cat.Item(13933)
+        ''For i As Integer = 0 To VR.Folders.Count  'cat.Count - 1
+        ''    Dim fName As String = VR.Folders.Item(i).Name
+        ''Next
     End Sub
-    Function Cet_PolObozByIMBkey(IMBkey As String) As String
-        Try
-            Dim IBKey As ImBase.ImbaseKey = ib.Utilites.ExploreKey(IMBkey)
-            Dim TableRecStr As String = IBKey.TableRecStr
-            Dim TableRecStrArray As Array = TableRecStr.Split(vbCrLf)
-            Dim PolnOboz, PolnObozStr As String
-            PolnObozStr = "Полное обозначение"
-            For Each str As String In TableRecStrArray
-                str = str.Trim(vbCrLf)
-                If str.IndexOf("Полное обозначение") > 0 Then
-                    PolnOboz = str.Replace(PolnObozStr & "=", "")
-                    PolnOboz = PolnOboz.Trim(vbLf)
-                End If
-            Next
-            If PolnOboz Is Nothing Then
-                MsgBox("Ошибка!" &
-                       vbNewLine & "В таблице " & IBKey.TableName & " расположенной по адресу " & IBKey.Path _
-                       & vbNewLine & "Не могу найти поле 'ПОЛНОЕ ОБОЗНАЧЕНИЕ'")
-            Else
-                Return PolnOboz
-            End If
-        Catch ex As Exception
-            MsgBox("Ошибка при поиске сортамента по Ключу ImBase" & vbNewLine & ex.Message)
-        End Try
-    End Function
+    'Function Cet_PolObozByIMBkey(IMBkey As String) As String
+    '    Try
+    '        Dim IBKey As ImBase.ImbaseKey = ib.Utilites.ExploreKey(IMBkey)
+    '        Dim TableRecStr As String = IBKey.TableRecStr
+    '        Dim TableRecStrArray As Array = TableRecStr.Split(vbCrLf)
+    '        Dim PolnOboz, PolnObozStr As String
+    '        PolnObozStr = "Полное обозначение"
+    '        For Each str As String In TableRecStrArray
+    '            str = str.Trim(vbCrLf)
+    '            If str.IndexOf("Полное обозначение") > 0 Then
+    '                PolnOboz = str.Replace(PolnObozStr & "=", "")
+    '                PolnOboz = PolnOboz.Trim(vbLf)
+    '            End If
+    '        Next
+    '        If PolnOboz Is Nothing Then
+    '            MsgBox("Ошибка!" &
+    '                   vbNewLine & "В таблице " & IBKey.TableName & " расположенной по адресу " & IBKey.Path _
+    '                   & vbNewLine & "Не могу найти поле 'ПОЛНОЕ ОБОЗНАЧЕНИЕ'")
+    '        Else
+    '            Return PolnOboz
+    '        End If
+    '    Catch ex As Exception
+    '        MsgBox("Ошибка при поиске сортамента по Ключу ImBase" & vbNewLine & ex.Message)
+    '    End Try
+    'End Function
     Public Function SelectBOM() As Integer
         Try
             With s4
@@ -377,6 +390,10 @@ ifpozRAVNOTempPoz:
                 .SelectArticles()
                 SelectBOM = .GetSelectedArticleID(0)
                 .EndSelectArticles()
+                If SelectBOM > 0 Then
+                    .AddArticleUserEventToLog(SelectBOM, .ErrorCode, "Для объекта был выгружен отчет о составе в модуле ВСНРМ2.0")
+                End If
+
             End With
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -402,12 +419,17 @@ ifpozRAVNOTempPoz:
         End Try
         Return False
     End Function
-    Function GetMaxRowInBOM(artID As Integer)
+    Function GetMaxRowInBOM(artID As Integer, PROJ_VER_ID As String)
         Dim Max_Positio As Integer
         Max_Positio = 0
         Try
             With s4
-                .OpenQuery("select * FROM PC WHERE proj_aid = '" & artID & "'")
+                If Verartfiltr Then
+                    .OpenQuery("select * FROM PC WHERE proj_aid = '" & artID & "' And (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & PROJ_VER_ID & ")" & CT_ID_in_Query)
+                Else
+                    .OpenQuery("select * FROM PC WHERE proj_aid = '" & artID & "'" & CT_ID_in_Query) ' And PROJ_VER_ID = " & PROJ_VER_ID)
+                End If
+
                 Max_Positio = .QueryRecordCount()
                 .CloseQuery()
             End With
@@ -421,7 +443,7 @@ ifpozRAVNOTempPoz:
         Dim Max_Positio As Integer
         Try
             With s4
-                .OpenQuery("select * FROM PC WHERE proj_aid = '" & ArtID & "'")
+                .OpenQuery("select * FROM PC WHERE proj_aid = '" & ArtID & "'" & CT_ID_in_Query)
                 Max_Positio = .QueryRecordCount()
                 .CloseQuery()
                 If Max_Positio > 0 Then
@@ -544,8 +566,16 @@ ifpozRAVNOTempPoz:
         TreeView1.Nodes.Add(root)
 
         With s4
-            Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main)
-            .OpenQuery("select * from PC where proj_aid = " & artID_Main)
+            .OpenArticle(artID_Main)
+            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+            .CloseArticle()
+
+            Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
+            If Verartfiltr Then
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
+            Else
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
+            End If
             .QueryGoFirst()
             For i As Integer = 0 To max_poz_mun - 1
                 Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
@@ -562,23 +592,27 @@ ifpozRAVNOTempPoz:
 
                     If exist_BOM_ChildNodesExist(Part_AID) Then
                         NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
-                        Perehov_Na_NUGHUY_strocu(artID_Main, i)
+                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     Else
-                        Perehov_Na_NUGHUY_strocu(artID_Main, i)
+                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     End If
                 Else
-                    Perehov_Na_NUGHUY_strocu(artID_Main, i)
+                    Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                 End If
             Next
 
             .CloseQuery()
         End With
     End Sub
-    Sub Perehov_Na_NUGHUY_strocu(ArtID As Integer, rownum As Integer)
+    Sub Perehov_Na_NUGHUY_strocu(ArtID As Integer, rownum As Integer, PROJ_VER_ID As String)
         Application.DoEvents()
         Try
             With s4
-                .OpenQuery("select * FROM PC WHERE proj_aid = '" & ArtID & "'")
+                If Verartfiltr Then
+                    .OpenQuery("select * FROM PC WHERE proj_aid = '" & ArtID & "' and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & PROJ_VER_ID & ")" & CT_ID_in_Query)
+                Else
+                    .OpenQuery("select * FROM PC WHERE proj_aid = '" & ArtID & "'" & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & PROJ_VER_ID)
+                End If
                 .QueryGoFirst()
 
                 For i As Integer = 0 To rownum
@@ -604,14 +638,94 @@ ifpozRAVNOTempPoz:
         Application.DoEvents()
         БезРазделаДокументацияToolStripMenuItem.Checked = NO_Art_Documentacia
         БезТехнолическихСвязейToolStripMenuItem.Checked = NO_Ru4na9_Sv9z
+        СПеречнемДеталейToolStripMenuItem.Checked = NO_Parts
+        СПеречнемМатериаловToolStripMenuItem.Checked = NO_Purchated
+        ЗаменятьToolStripMenuItem.Checked = ReplaceTildaOnSpace
         TPServerInitializ()
         firstAppShow()
+        OutOptionsLoad()
+        If ToolStripComboBox1.Text Is Nothing Or ToolStripComboBox1.Text = "" Then
+            ToolStripComboBox1.Text = ToolStripComboBox1.Items(1).ToString
+        End If
+        CT_ID_in_Query_Change()
+    End Sub
+    Private Sub OutOptionsLoad()
+        Try
+            Dim file As System.IO.StreamReader = New System.IO.StreamReader("\\INTERMECH\im\Search\Search4.ini")
+
+            Dim counter As Integer = 0
+            Dim line As String = " "
+            While line IsNot Nothing
+                line = file.ReadLine()
+                'проверка актуальной версии
+                If UCase(line).IndexOf(UCase(Verartfiltr_str)) > 0 Then
+                    Try
+                        Verartfiltr = (line.Substring(line.LastIndexOf("=") + 1).Trim(" "))
+                    Catch ex As Exception
+
+                    End Try
+                End If
+                'соединение с TPServ
+                If UCase(line).IndexOf(UCase(TPsfilter_str)) > 0 Then
+                    Try
+                        TPsfilter = (line.Substring(line.LastIndexOf("=") + 1).Trim(" "))
+                    Catch ex As Exception
+
+                    End Try
+                End If
+                counter += 1
+            End While
+            file.Close()
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Public OPT_FirstShow As String = "ExcelReportFirstShow"
     Public OPT_LastInPut As String = "LastInPut"
 
-    Public Sheetname As String = "Лист1"
+    'ExcelSheets column numbers ВТОРОЙ ЛИСТ(ПЕРЕЧЕНЬ ПОКУПНЫХ(например))
+    Public ShName_Purchated As String = "ПЕРЕЧЕНЬ ПОКУПНЫХ"
+    Public RowN_Purchated_First As Integer = 3
+    Public CN_Purchated_Naim As Integer = 1
+    Public CN_Purchated_IBKey As Integer = 2
+    Public CN_Purchated_Count As Integer = 3
+    Public CN_Purchated_MU As Integer = 4
+    Private Sub addExTitlePurchated()
+        Add_NewSheet(ShName_Purchated)
+        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, RowN_Purchated_First - 1, "Наименование")
+        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First - 1, "Ключ IMBASE")
+        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, RowN_Purchated_First - 1, "Общ. кол-во/масса")
+        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, RowN_Purchated_First - 1, "Ед.изм.")
+
+        Dim CN_Purchated_last_ColNum As Integer = Get_Last_Column(ShName_Purchated, RowN_Purchated_First - 1)
+        SetCellsBorderLineStyle2(ShName_Purchated, 1, 1, CN_Purchated_last_ColNum, RowN_Purchated_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+    End Sub
+
+    'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
+    Public ShName_PartList As String = "ПЕРЕЧЕНЬ ДЕТАЛЕЙ"
+    Public RowN_PL_First As Integer = 3
+    Public CN_PL_ArtID As Integer = 1
+    Public CN_PL_Oboz As Integer = 2
+    Public CN_PL_Naim As Integer = 3
+    Public CN_PL_TotalCount As Integer = 4
+    Public CN_PL_Sort As Integer = 5
+    Public CN_PL_Sort_IBKey As Integer = 6
+    Public CN_PL_Referenc As Integer = 7
+    Private Sub addExTitlePartList()
+        Add_NewSheet(ShName_PartList)
+        set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, RowN_PL_First - 1, "ArtID")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, RowN_PL_First - 1, "Обозначение Детали")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Naim, RowN_PL_First - 1, "Наименование Детали")
+        set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, RowN_PL_First - 1, "Общ.кол-во, шт.")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Sort, RowN_PL_First - 1, "Сортамент")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, RowN_PL_First - 1, "Ключ IMBASE")
+        Dim CN_PL_last_ColNum As Integer = Get_Last_Column(Sheetname, RowN_PL_First - 1)
+        SetCellsBorderLineStyle2(ShName_PartList, 1, 1, CN_PL_last_ColNum, RowN_PL_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+
+    End Sub
+    'ExcelSheets column numbers ПЕРВЫЙ ЛИСТ(СОСТАВ ИЗДЕЛИЯ(например))
+    Public Sheetname As String = "СОСТАВ ИЗДЕЛИЯ"
     Public RowN_First As Integer = 3
     Public last_ColNum As Integer
     Public last_Rowmun As Integer
@@ -639,15 +753,20 @@ ifpozRAVNOTempPoz:
     Public CN_MatZagotovki_IBKey As Integer = 22
     Public CN_NormaRashoda As Integer = 23
     Public CN_RazmerZag As Integer = 24
-    Public CN_KIM As Integer = 25
-    Public CN_ZagCount As Integer = 26
+    'Public CN_KIM As Integer = 25
+    Public CN_ZagCount As Integer = 25
+    Public CN_ZagSumCount As Integer = 26
     Public CN_VspomMat As Integer = 27
-    Public CN_VspomMat_IBKey As Integer = 28
+    Public CN_VspomMat_IBKey As Integer = 8
     Sub WriteEXCellTitle()
         Application.DoEvents()
         Create_EX_Doc(True)
+        SheetReName("Лист1", Sheetname)
         Dim MainArtInfo As Array = Get_Short_Article_Param(TreeView1.Nodes.Item(0).Tag)
-        Dim MainTPInfo As Array = Get_TP_ParmArray(artID_Main)
+        Dim MainTPInfo As Array
+        If TPsfilter Then
+            MainTPInfo = Get_TP_ParmArray(artID_Main)
+        End If
         set_Value_From_Cell(Sheetname, CN_ArtID, 1, artID_Main)
 
         set_Value_From_Cell(Sheetname, CN_Oboz, 1, MainArtInfo(0)) ' & " - " & MainArtInfo(1))
@@ -656,7 +775,7 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_ArchName, 1, MainArtInfo(4))
         Try
             set_Value_From_Cell(Sheetname, CN_Raszehovka, 1, MainTPInfo(0))
-            set_Value_From_Cell(Sheetname, CN_VspomMat, 1, MainTPInfo(9))
+            'set_Value_From_Cell(Sheetname, CN_VspomMat, 1, MainTPInfo(9))
         Catch ex As Exception
 
         End Try
@@ -681,12 +800,13 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_ContexrtType, RowN_First - 1, "Контекст связи")
         set_Value_From_Cell(Sheetname, CN_TPArtKey, RowN_First - 1, "TCZagKey")
         set_Value_From_Cell(Sheetname, CN_Raszehovka, RowN_First - 1, "Расцеховка")
-        set_Value_From_Cell(Sheetname, CN_MatZagotovki, RowN_First - 1, "Материал" & vbNewLine & "заготовки")
+        set_Value_From_Cell(Sheetname, CN_MatZagotovki, RowN_First - 1, "Сортамент")
         set_Value_From_Cell(Sheetname, CN_MatZagotovki_IBKey, RowN_First - 1, "Ключ IMBase" & vbNewLine & "для заготовки")
         set_Value_From_Cell(Sheetname, CN_RazmerZag, RowN_First - 1, "Размер заготовки")
-        set_Value_From_Cell(Sheetname, CN_KIM, RowN_First - 1, "КИМ")
+        'set_Value_From_Cell(Sheetname, CN_KIM, RowN_First - 1, "КИМ")
         set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода")
-        set_Value_From_Cell(Sheetname, CN_ZagCount, RowN_First - 1, "Кол-во заготовок" & vbNewLine & "из листа (шт)")
+        set_Value_From_Cell(Sheetname, CN_ZagCount, RowN_First - 1, "Кол-во деталей" & vbNewLine & "из заготовки")
+        set_Value_From_Cell(Sheetname, CN_ZagSumCount, RowN_First - 1, "Кол-во необх." & vbNewLine & "заготовки")
         'set_Value_From_Cell(Sheetname, CN_VspomMat, RowN_First - 1, "Вспомогательный материал" & vbNewLine & "^&Ключ IMBase")
         'set_Value_From_Cell(Sheetname, CN_VspomMat_IBKey, RowN_First - 1, "Ключ IMBase" & vbNewLine & "Вспомогательный материал")
 
@@ -734,7 +854,47 @@ ifpozRAVNOTempPoz:
         SetAutoFIT(Sheetname)
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
+        If Not NO_Parts Then
+            'тут будет процедура для листов с ПЕРЕЧНЕМ МАТЕРИАЛОВ
 
+        End If
+        If Not NO_Purchated Then
+            'тут будет процедура для листов с ПЕРЕЧНЕМ ДЕТАЛЕЙ
+
+        End If
+    End Sub
+    Sub addExcelAboutArtStructure(ArtID As Integer)
+        If NO_Parts Then addExTitlePartList()
+        If NO_Purchated Then addExTitlePurchated()
+
+        With s4
+            .OpenArticleStructureExpanded2(ArtID, -1, 2)
+            .asFirst()
+            Dim GetArtKind As Integer = .asGetArtKind
+            While .asEof = 0
+                Select Case GetArtKind
+                    Case 4, 5, 6, 7
+                        Dim tmp_ArtID As Integer = .asGetArtID
+                        Dim total_count As Integer = .asGetArtCount
+                        Dim Count_MU As String = .asGetArtCount_MU_ID
+                        Dim S4_Info, TC_Info As Array
+                        S4_Info = Get_Article_Param(tmp_ArtID)
+                        If TPsfilter Then
+                            TC_Info = Get_TP_ParmArray(tmp_ArtID)
+                        End If
+                        If GetArtKind = 4 And NO_Parts Then
+                            'процедура длязаполнения листа ПЕРЕЧЕНЬ ДЕТАЛЕЙ
+                            excel_write_aboutPart_in_PartList(tmp_ArtID, S4_Info, TC_Info, total_count, Count_MU)
+                        End If
+                        If NO_Purchated Then
+                            'процедура длязаполнения листа ПЕРЕЧЕНЬ МАТЕРИАЛОВ
+
+                        End If
+                End Select
+                .asNext()
+            End While
+            .CloseArticleStructure()
+        End With
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
@@ -749,6 +909,57 @@ ifpozRAVNOTempPoz:
             End If
         Next
     End Sub
+    Sub excel_write_aboutPart_in_PartList(ArtID As Integer, Art_Info As Array, TC_Info As Array, Total_Count As String, MU As String)
+        Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_ArtID) + 1
+        set_Value_From_Cell(Sheetname, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
+
+
+        set_Value_From_Cell(Sheetname, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
+        set_Value_From_Cell(Sheetname, CN_PL_Naim, lastRowNumInPartlist, Art_Info(1))
+        set_Value_From_Cell(Sheetname, CN_PL_TotalCount, lastRowNumInPartlist, Total_Count)
+        Try
+            set_Value_From_Cell(Sheetname, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3))
+            set_Value_From_Cell(Sheetname, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4))
+        Catch ex As Exception
+            set_Value_From_Cell(Sheetname, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5))
+            set_Value_From_Cell(Sheetname, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6))
+        End Try
+    End Sub
+    Sub excel_write_aboutPart_in_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, Total_Count As String, MU As String)
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
+        Dim tmp_row As Integer
+        Select Case Art_Info(12)
+            Case 4 'детали
+                Try
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(4))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
+                    set_Value_From_Cell(Sheetname, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+                Catch ex As Exception
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(6))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
+                    set_Value_From_Cell(Sheetname, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+                End Try
+                get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
+            Case 5, 6, 7 'станд изделия
+                Try
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(3))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(3))
+                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Total_Count)
+
+                Catch ex As Exception
+
+                End Try
+            Case 6 'прочие
+
+            Case 7 'материалы
+
+        End Select
+
+    End Sub
     Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double)
         Application.DoEvents()
         Dim PRJLINK_Param, Art_Param, TP_Array As Array
@@ -757,7 +968,9 @@ ifpozRAVNOTempPoz:
         PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
         Art_Param = Get_Article_Param(ArtID)
         'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
-        TP_Array = Get_TP_ParmArray(ArtID)
+        If TPsfilter Then
+            TP_Array = Get_TP_ParmArray(ArtID)
+        End If
         Dim lastRowNum As Integer = Get_LastRowInOneColumn(Sheetname, CN_ContexrtType) + 1
         'If lastRowNum < Get_LastRowInOneColumn(Sheetname, last_ColNum) + 1 Then lastRowNum = Get_LastRowInOneColumn(Sheetname, last_ColNum) + 1
         set_Value_From_Cell(Sheetname, CN_NumPP, lastRowNum, "'" & Positio)
@@ -773,7 +986,6 @@ ifpozRAVNOTempPoz:
             set_Value_From_Cell(Sheetname, CN_Mater, lastRowNum, Art_Param(5))
             set_Value_From_Cell(Sheetname, CN_MaterIBKey, lastRowNum, Art_Param(6))
         Catch ex As Exception
-
         End Try
 
         set_Value_From_Cell(Sheetname, CN_Kolvo, lastRowNum, PRJLINK_Param(2))
@@ -794,7 +1006,16 @@ ifpozRAVNOTempPoz:
             set_Value_From_Cell(Sheetname, CN_ZagCount, lastRowNum, TP_Array(6))
             set_Value_From_Cell(Sheetname, CN_RazmerZag, lastRowNum, TP_Array(7))
             If TP_Array(2) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_NormaRashoda, lastRowNum, (TP_Array(2).ToString.Replace(",", ".")))
-            If TP_Array(1) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_KIM, lastRowNum, TP_Array(1).ToString.Replace(",", "."))
+            'If TP_Array(1) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_KIM, lastRowNum, TP_Array(1).ToString.Replace(",", "."))
+            Try
+                If CDbl(TP_Array(6)) <> 0 Then
+                    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, (Count_Summ / CDbl(TP_Array(6))))
+                Else
+                    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, 0)
+                End If
+            Catch ex As Exception
+
+            End Try
         Catch ex As Exception
 
         End Try
@@ -867,8 +1088,13 @@ ifpozRAVNOTempPoz:
             Dim TRout As TPServer.TRoute = TArt.Route
             Dim count_Rout As Integer = TRout.VarCount
             Dim TRout1 As TPServer.TRouteVariant = TRout.First()
-
-            rascexovka = TRout1.Stroka
+            For g As Integer = 0 To count_Rout - 1
+                If TRout1.isDefault = 1 Then
+                    rascexovka = TRout1.Stroka
+                    Exit For
+                End If
+                TRout1 = TRout.Next()
+            Next
             Dim zagsCount As Integer
             Try
                 Dim Zags As TPServer.ITZags = TArt.Zags
@@ -880,10 +1106,13 @@ ifpozRAVNOTempPoz:
                         Norma = .Value("НР")
                         Sortament = .Value("SORT")
                         SortamentIMKey = .Value("%ZAG")
-                        ZagCount = .Value("КДТ")
+                        ZagCount = .Value("КЗаг")
                         Zag_key = .Key
                         RazmZag = .Value("РАЗМ")
                     End With
+                End If
+                If ReplaceTildaOnSpace Then
+                    Sortament = Replace(Sortament, "~", " ")
                 End If
             Catch ex As Exception
 
@@ -923,6 +1152,7 @@ ifpozRAVNOTempPoz:
         Application.DoEvents()
         Try
             With s4
+
                 .OpenQuery("select * from PC where PRJLINK_ID = " & PRJLINK_ID)
                 Dim PROJ_AID As Integer = .QueryFieldByName("PROJ_AID")
                 Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
@@ -1012,15 +1242,20 @@ ifpozRAVNOTempPoz:
             With s4
                 .OpenArticle(Art_ID)
                 .ReturnFieldValueWithImbaseKey = 0
-                Dim oboz, naim, mass, Imbase_key, purchased, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName As String
+                Dim oboz, naim, mass, Imbase_key, purchased, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName, ArtKind As String
                 oboz = .GetFieldValue_Articles("Обозначение")
                 naim = .GetFieldValue_Articles("Наименование")
                 mass = .GetArticleMassa
                 Imbase_key = .GetFieldValue_Articles("Ключ Imbase")
                 purchased = .GetFieldValue_Articles("Покупное")
                 material = .GetArticleMaterial
+                If ReplaceTildaOnSpace Then
+                    material = Replace(material, "~", " ")
+                    naim = Replace(naim, "~", " ")
+                End If
                 materialIMKey = .GetFieldImbaseKey_Articles("Материал")
                 ArtKindName = .GetArtKindName
+                ArtKind = .GetArtKind
                 Try
                     Dim docID As Integer = .GetArticleDocID
                     If docID > 0 Then
@@ -1061,6 +1296,7 @@ ifpozRAVNOTempPoz:
                 array(9) = mass_MU_ID_Str
                 array(10) = ArchID
                 array(11) = ArchName
+                array(12) = ArtKind
                 Return array
             End With
         Catch ex As Exception
@@ -1123,12 +1359,51 @@ ifpozRAVNOTempPoz:
         End Try
     End Sub
 
+    Private Sub ЗаменятьToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ЗаменятьToolStripMenuItem.Click
+        ЗаменятьToolStripMenuItem.Checked = Not (ЗаменятьToolStripMenuItem.Checked)
+        If ЗаменятьToolStripMenuItem.Checked Then ReplaceTildaOnSpace = 1 Else ReplaceTildaOnSpace = 0
+    End Sub
+
+    Sub CT_ID_in_Query_Change()
+        If ToolStripComboBox1.Text = "Конструкторский" Then
+            CT_ID_in_Query = ""
+        Else
+            CT_ID_in_Query = " and (ctx_id = 0 or ctx_id = 2)"
+        End If
+    End Sub
+
+    Private Sub ToolStripComboBox1_TextChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox1.TextChanged
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub ToolStripComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox1.SelectedIndexChanged
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СПеречнемДеталейToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемДеталейToolStripMenuItem.Click
+        СПеречнемДеталейToolStripMenuItem.Checked = Not (СПеречнемДеталейToolStripMenuItem.Checked)
+        NO_Parts = СПеречнемДеталейToolStripMenuItem.Checked
+    End Sub
+
+    Private Sub СПеречнемМатериаловToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемМатериаловToolStripMenuItem.Click
+        СПеречнемМатериаловToolStripMenuItem.Checked = Not (СПеречнемМатериаловToolStripMenuItem.Checked)
+        NO_Purchated = СПеречнемМатериаловToolStripMenuItem.Checked
+    End Sub
+
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
         Application.DoEvents()
         With s4
-            Dim max_poz_mun As Integer = GetMaxRowInBOM(Proj_Aid)
 
-            .OpenQuery("select * from PC where proj_aid = " & Proj_Aid)
+            .OpenArticle(Proj_Aid)
+            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+            .CloseArticle()
+
+            Dim max_poz_mun As Integer = GetMaxRowInBOM(Proj_Aid, VERS)
+            If Verartfiltr Then
+                .OpenQuery("select * from PC where proj_aid = " & Proj_Aid & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
+            Else
+                .OpenQuery("select * from PC where proj_aid = " & Proj_Aid & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
+            End If
             .QueryGoFirst()
             For i As Integer = 0 To max_poz_mun - 1
                 Dim TempPos As String = SubPositio & "." & .QueryFieldByName("positio")
@@ -1145,12 +1420,12 @@ ifpozRAVNOTempPoz:
 
                     If exist_BOM_ChildNodesExist(Part_AID) Then
                         NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
-                        Perehov_Na_NUGHUY_strocu(Proj_Aid, i)
+                        Perehov_Na_NUGHUY_strocu(Proj_Aid, i, VERS)
                     Else
-                        Perehov_Na_NUGHUY_strocu(Proj_Aid, i)
+                        Perehov_Na_NUGHUY_strocu(Proj_Aid, i, VERS)
                     End If
                 Else
-                    Perehov_Na_NUGHUY_strocu(Proj_Aid, i)
+                    Perehov_Na_NUGHUY_strocu(Proj_Aid, i, VERS)
                 End If
             Next
 

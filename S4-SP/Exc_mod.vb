@@ -33,7 +33,21 @@ Module Exc_mod
         WB = xlApp.Workbooks.Open(excel_file_path)
         WS = WB.Sheets.Item(1)
     End Sub
+    Public Sub Add_NewSheet(NewSheetName As String)
+        Try
+            Dim NewSheet As Excel.Workbook = WB.Sheets.Item(NewSheetName)
+        Catch ex As Exception
 
+        End Try
+    End Sub
+    Public Sub SheetReName(OldSheetName As String, NewSheetName As String)
+        Try
+            Dim ActiveSheet As Worksheet = WB.Sheets.Item(OldSheetName)
+            ActiveSheet.Name = NewSheetName
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Public Sub Open_Second_EX_Doc(Visible As Double, excel_file_path As String)
         xlApp2 = New Excel.Application()
         xlApp2.Visible = Visible

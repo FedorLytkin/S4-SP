@@ -105,6 +105,56 @@
         End If
     End Function
 
+    Public Sub C()
+        Try
+            Dim file As System.IO.StreamReader = New System.IO.StreamReader("\\INTERMECH\im\Search\Search4.ini")
+
+
+
+            Dim counter As Integer = 0
+            Dim line As String = " "
+            While line IsNot Nothing
+                line = file.ReadLine()
+                If UCase(line).IndexOf(UCase("ldFiltr")) > 0 Then
+                    Dim ld As String = line.Substring(line.LastIndexOf("=") + 1).Trim(" ")
+                    dCompare(ld)
+                    Exit While
+                End If
+                counter += 1
+            End While
+            file.Close()
+        Catch ex As Exception
+            Block_Controls(False)
+        End Try
+    End Sub
+
+    Sub dCompare(Ldate As Date)
+        Try
+            Dim td As Date = Now.ToShortDateString
+            If td > Ldate Then
+                Block_Controls(False)
+            Else
+                Block_Controls(True)
+            End If
+        Catch ex As Exception
+            Block_Controls(False)
+        End Try
+    End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

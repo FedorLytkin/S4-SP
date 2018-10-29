@@ -83,6 +83,16 @@ Namespace My.Resources
         '''<summary>
         '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property _space_bar_90666() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("-space-bar_90666", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property About() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("About", resourceCulture)
@@ -376,6 +386,16 @@ Namespace My.Resources
         Friend ReadOnly Property SP() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("SP", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property te3B3() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("te3B3", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

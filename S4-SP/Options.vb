@@ -12,6 +12,7 @@ Public Class Options
     Public Dlina_Componenta_VSNRM As String = "L"
     Public ParamSostavVisible As String
     Public AddPurchatedArticles As String
+    Public ChekSubAssemly As String
     Public PreStartCompareMaterialInVSNRMWithMaterialTable As String
     Public Stop_Process_BOMCreate As String
     Public SeparatorObozna4InVSNRMTitle As String = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
@@ -33,6 +34,7 @@ Public Class Options
         Dlina_Componenta_VSNRM = get_reesrt_value("Dlina_Componenta_VSNRM", Dlina_Componenta_VSNRM)
         ParamSostavVisible = get_reesrt_value("ParamSostavVisible", False.ToString)
         AddPurchatedArticles = get_reesrt_value("AddPurchatedArticles", False.ToString)
+        ChekSubAssemly = get_reesrt_value("ChekSubAssemly", False.ToString)
         PreStartCompareMaterialInVSNRMWithMaterialTable = get_reesrt_value("PreStartCompareMaterialInVSNRMWithMaterialTable", False.ToString)
         Stop_Process_BOMCreate = get_reesrt_value("Stop_Process_BOMCreate", False.ToString)
         SeparatorObozna4InVSNRMTitle = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
@@ -50,6 +52,7 @@ Public Class Options
         CheckBox7.Checked = Convert.ToBoolean(AddPurchatedArticles)
         CheckBox5.Checked = Convert.ToBoolean(PreStartCompareMaterialInVSNRMWithMaterialTable)
         CheckBox4.Checked = Convert.ToBoolean(Stop_Process_BOMCreate)
+        CheckBox6.Checked = Convert.ToBoolean(ChekSubAssemly)
         TextBox11.Text = SeparatorObozna4InVSNRMTitle
         TextBox12.Text = Form1.query_s4("ARCHIVES", "ARCHIVE_ID", "DESCRIPTIO", Arch_ID)
     End Sub
@@ -102,6 +105,7 @@ Public Class Options
         set_reesrt_value("Dlina_Componenta_VSNRM", TextBox6.Text)
         set_reesrt_value("ParamSostavVisible", CheckBox3.Checked.ToString)
         set_reesrt_value("AddPurchatedArticles", CheckBox7.Checked.ToString)
+        set_reesrt_value("ChekSubAssemly", CheckBox6.Checked.ToString)
         set_reesrt_value("PreStartCompareMaterialInVSNRMWithMaterialTable", CheckBox5.Checked.ToString)
         set_reesrt_value("Stop_Process_BOMCreate", CheckBox4.Checked.ToString)
         set_reesrt_value("SeparatorObozna4InVSNRMTitle", TextBox11.Text)
@@ -122,6 +126,7 @@ Public Class Options
         Form1.PreStartCompareMaterialInVSNRMWithMaterialTable = CheckBox5.Checked
         Form1.Stop_Process_BOMCreate = CheckBox4.Checked
         Form1.SeparatorObozna4InVSNRMTitle = TextBox11.Text
+        Form1.ChekSubAssemly = CheckBox6.Checked
         new_doc.Arch_ID = Arch_ID
     End Sub
     Function doctypes_array_chanche_save()
@@ -266,4 +271,5 @@ Public Class Options
             .OpenArchive(Arch_ID)
         End With
     End Sub
+
 End Class

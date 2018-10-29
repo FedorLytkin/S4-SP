@@ -54,7 +54,7 @@ Public Class Form1
     Public SeparatorObozna4InVSNRMTitle As String = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
     Public Carto4kaS4SPEnable As Boolean
     Public App_Vers As String = get_reesrt_value("App_Vers", System.Windows.Forms.Application.ProductVersion)
-
+    Public ChekSubAssemly As Boolean
 
     Public VSNRM_path, Doc_list_path As String
     Public SB_doc_types_file_Format, detal_doc_types_file_Format As String
@@ -144,8 +144,10 @@ Public Class Form1
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Me.Height = MainFormHeght()
+        Me.Width = MainFormWidht()
         tempform = Me
-        VersCange()
+        'VersCange()
         Search_Subdirectories = Convert.ToBoolean(get_reesrt_value("Search_Subdirectories", True.ToString))
         material_table_path = get_reesrt_value("material_table_path", System.Windows.Forms.Application.StartupPath & "\material_with_ImBaseKey.xlsx")
         doctypes_array = get_reesrt_value("doctypes_array", Options.doctypes_array_default)
@@ -155,6 +157,7 @@ Public Class Form1
         Dlina_Componenta_VSNRM = get_reesrt_value("Dlina_Componenta_VSNRM", Options.Dlina_Componenta_VSNRM)
         ParamSostavVisible = get_reesrt_value("ParamSostavVisible", False.ToString)
         SeparatorObozna4InVSNRMTitle = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
+        ChekSubAssemly = get_reesrt_value("ChekSubAssemly", False.ToString)
 
         AddPurchatedArticles = get_reesrt_value("AddPurchatedArticles", False.ToString)
         PreStartCompareMaterialInVSNRMWithMaterialTable = get_reesrt_value("PreStartCompareMaterialInVSNRMWithMaterialTable", False.ToString)
@@ -182,8 +185,29 @@ Public Class Form1
             Carto4kaS4SPEnable = False
             ЖурналОТДToolStripMenuItem.Enabled = False
         End If
-        Chek_licenc()
+        C()
+        'Chek_licenc()
         'VSNRM2.ShowDialog()
+    End Sub
+    Function MainFormHeght() As Double
+        Dim FormHeght As Double = get_reesrt_value("MainFormHeght", Me.Height)
+        If FormHeght = 0 Then
+            set_reesrt_value("MainFormHeght", Me.Height)
+            FormHeght = get_reesrt_value("MainFormHeght", Me.Height)
+        End If
+        Return FormHeght
+    End Function
+    Function MainFormWidht() As Double
+        Dim FormWidht As Double = get_reesrt_value("MainFormWidht", Me.Width)
+        If FormWidht = 0 Then
+            set_reesrt_value("MainFormWidht", Me.Width)
+            FormWidht = get_reesrt_value("MainFormWidht", Me.Width)
+        End If
+        Return FormWidht
+    End Function
+    Public Sub MainFormSize()
+        set_reesrt_value("MainFormHeght", Me.Height)
+        set_reesrt_value("MainFormWidht", Me.Width)
     End Sub
     Public Sub createDocs_in_Documents()
         Dim LastInd_InDoc = WS_DOC.Cells(WS_DOC.Rows.Count, Naim_Doc_col_number).End(Excel.XlDirection.xlUp).Row
@@ -299,6 +323,11 @@ Public Class Form1
                 Dim Doc_Format, Doc_Oboz, Doc_Naim As String
                 Dim ArtIDinDoc, PRJLINK_ID, razdel As Integer : razdel = 1
                 Doc_Format = WS_DOC.Cells(i, format_Doc_col_number).value
+                Try
+                    Doc_Format = Doc_Format.Replace("А", "A") ' замена киррилицы на латиницу
+                Catch ex As Exception
+
+                End Try
                 Doc_Oboz = WS_DOC.Cells(i, Oboz_Doc_col_number).value
                 Doc_Naim = WS_DOC.Cells(i, Naim_Doc_col_number).value
                 With ITS4App
@@ -317,6 +346,7 @@ Public Class Form1
                         .OpenBOMItem(PRJLINK_ID)
                         If .GetFieldValue_BOM("Формат") <> "" Then
                             .SetFieldValue_BOM("Формат", Doc_Format)
+                            .AddArticleUserEventToLog(ProjAID, 1, "Изменен формат с '" & .GetFieldValue_BOM("Формат") & "' на '" & Doc_Format & "'")
                         End If
                         .CloseBOMItem()
                     Catch ex As Exception
@@ -354,7 +384,7 @@ Public Class Form1
             ITS4App.CloseProgressBarForm()
         End If
     End Sub
-    Private Function recvAdd(node As TreeNode, rownum As Integer, isFirst As Boolean,totalNum As Integer)
+    Private Function recvAdd(node As TreeNode, rownum As Integer, isFirst As Boolean, totalNum As Integer)
         'прогресс бар заполнение 
         SetProgressBarData_and_CheckUserBreak(rownum - 5, LastInd - 4)
 
@@ -373,11 +403,18 @@ Public Class Form1
             If Not ptrn1.IsMatch(numpp) Then
                 Exit While
             End If
+
+            Dim part_type As String = WS.Cells(rownum, TypDSE_col_number).value
+
+            'здесь будет процедура, которая будет проверять существование сборочной единицы в архиве, и если такой объет есть, будет пропускать его
+            If part_type = "Сборочная единица" And check_exist_SB_in_S4(WS.Cells(rownum, Oboz_col_number).Value()) And ChekSubAssemly Then
+                Exit While
+            End If
+
             'запустить создание объекта в с4 (Тип объекта брать из ТИПА ДСЕ). Вернет ее PartAID (понадобится следующем уровне)
             'Dim chekc_art_exist = ITS4App.GetArtID_ByDesignation(WS.Cells(rownum, Oboz_col_number).value)
 
             Dim newNode As New TreeNode(numpp & " " & WS.Cells(rownum, Oboz_col_number).Value() & " - " & WS.Cells(rownum, Naim_col_number).Value())
-            Dim part_type As String = WS.Cells(rownum, TypDSE_col_number).value
             If (part_type = "Деталь" Or part_type = "Сборочная единица") Then
                 newNode.Tag = add_article(rownum)
                 If only_Articles = False Then DocID = add_document(rownum)
@@ -423,6 +460,12 @@ Public Class Form1
             End If
         End While
         Return rownum
+    End Function
+    Function check_exist_SB_in_S4(Designatio As String) As Boolean
+        With ITS4App
+            Dim search_Art_ID As Integer = .GetArtID_ByDesignation(Designatio)
+            If search_Art_ID > 0 Then Return True Else Return False
+        End With
     End Function
     Private Function recvAdd_Only_treeview(node As TreeNode, rownum As Integer, isFirst As Boolean, totalNum As Integer)
         Dim numpp As String = WS.Cells(rownum, NumPP_col_number).Value()
@@ -486,6 +529,7 @@ Public Class Form1
         new_ArtID = ITS4App.AddNewArticle2("", "", Naim, Razdel)
         ITS4App.OpenArticle(new_ArtID)
         ITS4App.SetFieldValue_Articles("Ключ Imbase", ImbaseKeys)
+        ITS4App.AddArticleUserEventToLog(new_ArtID, 1, "Изменен Ключ Imbase на '" & ImbaseKeys & "'")
         If new_ArtID > 0 Then progress_txt_im_ListBox1("Создан объект: ArtID: " & new_ArtID & " * " & Naim & " - Ключ IMBase: " & ImbaseKeys)
         Return new_ArtID
     End Function
@@ -537,16 +581,20 @@ ifDocID_is_null:
         End If
         ITS4App.OpenArticle(new_ArtID)
         If material IsNot Nothing Then
-            Call ITS4App.SetFieldValue_Articles("Материал", material_with_IMBKey(material))
+            Dim material_IMB As String = material_with_IMBKey(material)
+            Call ITS4App.SetFieldValue_Articles("Материал", material_IMB)
+            ITS4App.AddArticleUserEventToLog(new_ArtID, ITS4App.ErrorCode(), "Изменен Материал с '" & ITS4App.GetArticleMaterial & "' на '" & material_IMB & "'")
         End If
         If tolshina_diameter IsNot Nothing Then
             Call ITS4App.SetFieldValue_Articles("Толщина/Диаметр", tolshina_diameter)
         End If
         If dlina IsNot Nothing And Razdel <> 3 Then
             Call ITS4App.SetFieldValue_Articles("Примечание", Dlina_Componenta_VSNRM & "=" & dlina)
+            ITS4App.AddArticleUserEventToLog(new_ArtID, ITS4App.ErrorCode(), "Примечание" & Dlina_Componenta_VSNRM & "=" & dlina)
         End If
         Call ITS4App.SetFieldValue_Articles("Масса", mass)
         progress_txt_im_ListBox1("Создан объект: ArtID: " & new_ArtID & " * " & designation & " - " & Naim)
+        ITS4App.AddArticleUserEventToLog(new_ArtID, ITS4App.ErrorCode(), "Создан объект: ArtID: " & new_ArtID & " * " & designation & " - " & Naim)
         Return new_ArtID
     End Function
     Function add_document(rownum As Integer) As Integer
@@ -579,6 +627,7 @@ ifDocID_is_null:
             If format_doc IsNot Nothing Then
                 ITS4App.OpenDocument(DocID)
                 ITS4App.SetFieldValue("Формат", format_doc)
+                ITS4App.AddDocumentUserEventToLog(DocID, ITS4App.ErrorCode(), -1, "Формат изменен с '" & ITS4App.GetFieldValue("Формат") & "' на '" & format_doc & "'")
                 ITS4App.CloseDocument()
             End If
             progress_txt_im_ListBox1("Создан документ: DocID: " & DocID & " * " & designation & " - " & Naim)
@@ -636,6 +685,7 @@ ifDocID_is_null:
             If format_doc IsNot Nothing Then
                 ITS4App.OpenDocument(DocID)
                 ITS4App.SetFieldValue("Формат", format_doc)
+                ITS4App.AddDocumentUserEventToLog(DocID, ITS4App.ErrorCode(), -1, "Формат изменен с '" & ITS4App.GetFieldValue("Формат") & "' на '" & format_doc & "'")
                 ITS4App.CloseDocument()
             End If
             'здесь будет процедура по созданию/изменению версии документа 
@@ -662,10 +712,15 @@ ifDocID_is_null:
         If search_rownum > 5 Then
             add_document_on_Isponenie = add_document(search_rownum)
             With ITS4App
-                .OpenArticle(.GetArtID_ByDocID(add_document_on_Isponenie))
-                .SetFieldValue_Articles("Масса", WS.Cells(Mass_col_number, search_rownum).value)
+                Dim ArtID_Isp As Integer = .GetArtID_ByDocID(add_document_on_Isponenie)
+                Dim massInVSNRM As String = WS.Cells(Mass_col_number, search_rownum).value
+                Dim materialIB As String = material_with_IMBKey(WS.Cells(Material_col_number, search_rownum).value)
+                .OpenArticle(ArtID_Isp)
+                .SetFieldValue_Articles("Масса", massInVSNRM)
+                .AddArticleUserEventToLog(ArtID_Isp, .ErrorCode(), "Масса изменена с '" & .GetArticleMassa & "' на '" & massInVSNRM & "'")
                 .SetFieldValue_Articles("Толщина/Диаметр", WS.Cells(Tolshina_Diameter_col_number, search_rownum).value)
-                .SetFieldValue_Articles("Материал", material_with_IMBKey(WS.Cells(Material_col_number, search_rownum).value))
+                .SetFieldValue_Articles("Материал", materialIB)
+                .AddArticleUserEventToLog(ArtID_Isp, .ErrorCode(), "Материал изменен с '" & .GetArticleMaterial & "' на '" & materialIB & "'")
                 progress_txt_im_ListBox1("Создан Объект: ArtID:" & .GetArtID_ByDocID(add_document_on_Isponenie) & " * " & designatio & " - " & .GetFieldValue_Articles("Наименование"))
             End With
         End If
@@ -758,11 +813,24 @@ ifDocID_is_null:
         End If
     End Function
     Function check_in_BOM_exist(ProjAID As Integer, PartAID As Integer, position As String) As Boolean
+        'процедура проверки существования позиции в подсборке
+        'сравнивается инфентарный номер и номер позиции. Если они совпадают - создается объект и вложенность
+        Dim IBKey As String
+        With ITS4App
+            .OpenArticle(PartAID)
+            IBKey = .GetArticleImbaseKey
+            .CloseArticle()
+        End With
         Try
             ITS4App.OpenArticleStructure(ProjAID)
             ITS4App.asFirst()
             While ITS4App.asEof = 0
                 If ITS4App.asGetArtID = PartAID And ITS4App.asGetPosition = position Then
+                    ITS4App.CloseArticleStructure()
+                    Return True
+                    Exit While
+                End If
+                If ITS4App.asGetArtImbaseKey = IBKey Then
                     ITS4App.CloseArticleStructure()
                     Return True
                     Exit While
@@ -855,9 +923,11 @@ ifDocID_is_null:
         If check_in_BOM_exist(ProjAID, PartAID, position) = False Then
             With ITS4App
                 Dim pojID As Integer = .AddBOMItem(ProjAID, PartAID, CountPC, MuID, Razdel, position, Note)
+                .AddArticleUserEventToLog(ProjAID, .ErrorCode(), "В состав добавлен '" & PartAID & "'")
                 If format_L IsNot Nothing Or format_L <> "" Then
                     .OpenBOMItem(pojID)
                     .SetFieldValue_BOM("Формат", format_L)
+                    .AddArticleUserEventToLog(pojID, .ErrorCode(), "Формат изменен с '" & .GetFieldValue_BOM("Формат") & "' на '" & format_L & "'")
                     'If DlinaL IsNot Nothing Or format_L <> "" Then .SetFieldValue_BOM("Размеры", DlinaL)
                     '.GetFieldValue_BOM("Формат")
                     .CloseBOMItem()
@@ -869,21 +939,31 @@ ifDocID_is_null:
     Function B4_Note_Parser(Note As String)
         Dim thick_Char As String = "s"
         Dim pref_Char As String = "\S"
-        Dim post_Char As String = "^; "
+        Dim post_Char As String = "^"
         Dim perenos_Char As String = "?"
         Dim separator As String = vbLf
         Dim thick_Val, thick_Error As String
 
+        Dim note_Split() As String
         If Note.IndexOf(thick_Char) >= 0 Then
-            If Note.IndexOf(separator) >= 0 Then
-                Dim note_Split() As String = Note.Split(separator)
-                thick_Val = note_Split(0).Substring(0, note_Split(0).LastIndexOf("+"))
-                thick_Error = note_Split(0).Substring(note_Split(0).LastIndexOf("+"))
-                B4_Note_Parser = thick_Val + pref_Char + thick_Error + post_Char + perenos_Char + note_Split(1)
+            If Note.IndexOf(post_Char) >= 0 Then
+                If Note.IndexOf(separator) >= 0 Then
+                    note_Split = Note.Split(separator)
+                    B4_Note_Parser = note_Split(0) '.ToString.Replace(thick_Char, "")
+                Else
+                    B4_Note_Parser = Note.ToString '.Replace(thick_Char, "")
+                End If
             Else
-                thick_Val = Note.Substring(0, Note.LastIndexOf("+"))
-                thick_Error = Note.Substring(Note.LastIndexOf("+"))
-                B4_Note_Parser = thick_Val + pref_Char + thick_Error + post_Char
+                If Note.IndexOf(separator) >= 0 Then
+                    note_Split = Note.Split(separator)
+                    thick_Val = note_Split(0).Substring(0, note_Split(0).LastIndexOf("+"))
+                    thick_Error = note_Split(0).Substring(note_Split(0).LastIndexOf("+"))
+                    B4_Note_Parser = thick_Val + pref_Char + thick_Error + post_Char + perenos_Char + note_Split(1)
+                Else
+                    thick_Val = Note.Substring(0, Note.LastIndexOf("+"))
+                    thick_Error = Note.Substring(Note.LastIndexOf("+"))
+                    B4_Note_Parser = thick_Val + pref_Char + thick_Error + post_Char
+                End If
             End If
         Else
             B4_Note_Parser = Note
@@ -910,6 +990,7 @@ ifDocID_is_null:
                 If format_L IsNot Nothing Or format_L <> "" Then
                     .OpenArticleStructure(pojID)
                     .SetFieldValue_BOM("Формат", format_L)
+                    .AddArticleUserEventToLog(pojID, .ErrorCode(), "Формат изменен с '" & .GetFieldValue_BOM("Формат") & "' на '" & format_L & "'")
                     .CloseArticleStructure()
                 End If
             End With
@@ -1023,6 +1104,7 @@ ifDocID_is_null:
     End Sub
 
     Private Sub Form1_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+        MainFormSize()
         exc_close()
     End Sub
 
@@ -1364,7 +1446,8 @@ ifDocID_is_null:
         whatsNew()
     End Sub
     Public Sub whatsNew()
-        Process.Start("http://www.evernote.com/l/AjJ5PRJAb7ZB3raLw5_efcpQ5Zd5Wtz_MWc/")
+        Process.Start(System.Windows.Forms.Application.StartupPath & "\what's new.txt")
+        'Process.Start("http://www.evernote.com/l/AjJ5PRJAb7ZB3raLw5_efcpQ5Zd5Wtz_MWc/")
     End Sub
 
     Private Sub ShowArtDocumentationToolStripMenuItem_Click(sender As Object, e As EventArgs)
@@ -1473,7 +1556,7 @@ ifDocID_is_null:
                 If progId <= 0 Then Exit Sub
                 CopyToDirProc(progId, Copy_directory)
                 '.GetSelectedArticleID()
-                .OpenArticleStructureExpanded(progId)
+                .OpenArticleStructureExpanded2(progId, -1, 2)
                 .asFirst()
                 While .asEof = 0
                     Dim tmp_artID As Integer = .asGetArtID
@@ -1644,14 +1727,18 @@ Rz23")
             With ITS4App
                 .OpenDocument(VersDocID) '4040
                 .SetFieldValue_DocVersion("OTD_STATUS", OTD_cmd)
+                .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "OTD_STATUS изменен на '" & OTD_cmd & "'")
                 .SetFieldValue_DocVersion("OTD_reg", OTD_reg)
+                .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "OTD_reg изменен на '" & OTD_reg & "'")
                 .SetFieldValue_DocVersion("OTD_Annul", OTD_Annul)
+                .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "OTD_Annul изменен на '" & OTD_Annul & "'")
                 Select Case OTD_cmd
                     Case 1 'регистрировать в ОТД
                         'If .GetFieldValue_DocVersion("OTD_STATUS") > 0 Then Exit Sub
                         If .GetFieldValue_DocVersion("OTDREGNUM") = "" Then
                             Dim maxOTDregnum As String = MAXotdregnumSQLQuere()
                             .SetFieldValue_DocVersion("OTDREGNUM", maxOTDregnum)
+                            .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "зарегестрирован в ОТД. OTDRegnum = " & maxOTDregnum)
                             progressStatus = str_DocID & VersDocID & separator & "(" & .GetFieldValue("Обозначение") & ") зарегестрирован в ОТД. OTDRegnum = " & maxOTDregnum
                         Else
                             progressStatus = str_DocID & VersDocID & separator & "(" & .GetFieldValue("Обозначение") & ") уже зарегестрирован в ОТД! " & "Инвентарный номер ОТД: " & .GetFieldValue_DocVersion("OTDREGNUM")
@@ -1659,9 +1746,11 @@ Rz23")
                         End If
                     Case 2 'аннулировать
                         progressStatus = str_DocID & VersDocID & separator & " (" & .GetFieldValue("Обозначение") & ") аннулирован в ОТД."
+                        .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "Документ аннулирован в ОТД")
                     Case 0 'не зарегестрирован в ОТД 
                         .SetFieldValue_DocVersion("OTDREGNUM", "")
                         progressStatus = str_DocID & VersDocID & separator & " (" & .GetFieldValue("Обозначение") & ") снят с учета (не зарегестрирован) в ОТД."
+                        .AddDocumentUserEventToLog(VersDocID, -1, .ErrorCode(), "Документ снят с учета (не зарегестрирован) в ОТД")
                 End Select
                 .CloseDocument()
                 OTDEditor.ProcessAdd(progressStatus)
@@ -1701,18 +1790,18 @@ Rz23")
     End Sub
 
     Private Sub ImbaseToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        Dim IB As ImBase.IImbaseApplication = CreateObject("ImBase.ImbaseApplication")
-        Dim status As ImBase.ImbaseStatus = IB.Status
-        If IB Is Nothing Then
-            IB = CreateObject("ImBase.ImbaseApplication")
-            While True
-                status = IB.Status
-                System.Windows.Forms.Application.DoEvents()
-                If status = "IST_READY" Then Exit While
-            End While
-        End If
-        Dim fname As String = IB.Catalogs.Item(1).Name
-        IB.Blobs.sh
+        'Dim IB As ImBase.IImbaseApplication = CreateObject("ImBase.ImbaseApplication")
+        'Dim status As ImBase.ImbaseStatus = IB.Status
+        'If IB Is Nothing Then
+        '    IB = CreateObject("ImBase.ImbaseApplication")
+        '    While True
+        '        status = IB.Status
+        '        System.Windows.Forms.Application.DoEvents()
+        '        If status = "IST_READY" Then Exit While
+        '    End While
+        'End If
+        'Dim fname As String = IB.Catalogs.Item(1).Name
+        'IB.Blobs.sh
     End Sub
 
     Private Sub ПроверкаToolStripMenuItem_Click(sender As Object, e As EventArgs)
@@ -1775,8 +1864,9 @@ Rz23")
             If find_mass <> "" Or find_mass IsNot Nothing Then
                 .OpenArticle(AID)
                 .SetFieldValue_Articles("Масса", find_mass)
-                .GetFieldValue_Articles("Масса")
+
                 progress_txt_im_ListBox1("У объекта " & AID & " (" & .GetFieldValue_Articles("Обозначение") & ") была изменена масса. Новая М = " & find_mass)
+                .AddArticleUserEventToLog(AID, 1, "Изменена масса с '" & .GetFieldValue_Articles("Масса") & "' на '" & find_mass & "'")
                 .CloseArticle()
             End If
         End With
@@ -1814,6 +1904,31 @@ Rz23")
 
     Private Sub ТетсToolStripMenuItem_Click(sender As Object, e As EventArgs)
         MsgBox("ghbdtn")
+    End Sub
+
+    Private Sub ВерсияToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+        With ITS4App
+            .OpenArticle(14284)
+            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+            .CloseArticle()
+        End With
+    End Sub
+
+    Private Sub TxtToolStripMenuItem_Click(sender As Object, e As EventArgs)
+        C()
+    End Sub
+
+    Private Sub EventToolStripMenuItem_Click(sender As Object, e As EventArgs)
+        With ITS4App
+            Dim EvID As Integer = .AddArticleUserEventToLog(14905, 1, "Привет")
+        End With
+    End Sub
+
+    Private Sub ImbaseToolStripMenuItem_Click_1(sender As Object, e As EventArgs)
+        With ITS4App
+            .OpenArticle(15026)
+            Dim IMKey As String = .GetArticleImbaseKey()
+        End With
     End Sub
 
     Public Sub CompareMaterialInVSNRMWithMaterialTable()

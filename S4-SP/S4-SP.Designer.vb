@@ -173,6 +173,7 @@ Partial Class Form1
         Me.ВСНРМ2ToolStripMenuItem.Name = "ВСНРМ2ToolStripMenuItem"
         Me.ВСНРМ2ToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
         Me.ВСНРМ2ToolStripMenuItem.Text = "ВСНРМ 2.0"
+        Me.ВСНРМ2ToolStripMenuItem.ToolTipText = "Выгружает сводную ведомость состава из архива" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "(В данной версии не доступна)"
         '
         'СервисToolStripMenuItem
         '
@@ -207,6 +208,7 @@ Partial Class Form1
         '
         'СправкаToolStripMenuItem
         '
+        Me.СправкаToolStripMenuItem.Enabled = False
         Me.СправкаToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.Help1
         Me.СправкаToolStripMenuItem.Name = "СправкаToolStripMenuItem"
         Me.СправкаToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1
