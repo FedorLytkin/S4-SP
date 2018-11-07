@@ -987,7 +987,7 @@ ifpozRAVNOTempPoz:
 
                     If TC_Info(9) IsNot Nothing Then
                         sum = CDbl(Total_Count) / CDbl(TC_Info(6))
-                        'totalsum = CDbl(PRJLINK_Param(2)) * CDbl(Total_Count)
+                        totalsum = CDbl(Total_Count)
                     Else
                         sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
                         totalsum = CDbl(Total_Count)
