@@ -60,7 +60,6 @@ Partial Class Form1
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.BTToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -202,7 +201,7 @@ Partial Class Form1
         '
         'ПомощьToolStripMenuItem
         '
-        Me.ПомощьToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.СправкаToolStripMenuItem, Me.ОПрограммеToolStripMenuItem, Me.TestToolStripMenuItem, Me.BTToolStripMenuItem})
+        Me.ПомощьToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.СправкаToolStripMenuItem, Me.ОПрограммеToolStripMenuItem, Me.TestToolStripMenuItem})
         Me.ПомощьToolStripMenuItem.Name = "ПомощьToolStripMenuItem"
         Me.ПомощьToolStripMenuItem.Size = New System.Drawing.Size(65, 20)
         Me.ПомощьToolStripMenuItem.Text = "Справка"
@@ -357,12 +356,6 @@ Partial Class Form1
         '
         Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
-        'BTToolStripMenuItem
-        '
-        Me.BTToolStripMenuItem.Name = "BTToolStripMenuItem"
-        Me.BTToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
-        Me.BTToolStripMenuItem.Text = "BT"
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -424,5 +417,4 @@ Partial Class Form1
     Friend WithEvents ToolStripTextBox1 As ToolStripTextBox
     Friend WithEvents ПравитьОбъектToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ВСНРМ2ToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents BTToolStripMenuItem As ToolStripMenuItem
 End Class

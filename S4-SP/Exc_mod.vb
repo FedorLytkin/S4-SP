@@ -35,7 +35,8 @@ Module Exc_mod
     End Sub
     Public Sub Add_NewSheet(NewSheetName As String)
         Try
-            Dim NewSheet As Excel.Workbook = WB.Sheets.Item(NewSheetName)
+            Dim NewSheet As Worksheet = WB.Sheets.Add 'Item(NewSheetName)
+            NewSheet.Name = NewSheetName
         Catch ex As Exception
 
         End Try
@@ -373,12 +374,13 @@ Module Exc_mod
         End Try
     End Function
 
-    Public Function get_value_bay_FindText_Strong(SheetName As String, columnIndex As Integer, row_index As Integer, FindText As String)
+    Public Function get_value_bay_FindText_Strong(SheetName As String, columnIndex As Integer, start_row As Integer, FindText As String)
+        Dim row_index As Integer = start_row
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         Dim lastrow As Integer = Get_LastRowInOneColumn(SheetName, columnIndex)
         Try
             With ActiveSheet
-                While row_index < lastrow
+                While row_index <= lastrow
                     If .Cells(row_index, columnIndex).Value = FindText Then
                         Exit While
                     End If
@@ -387,7 +389,7 @@ Module Exc_mod
             End With
             Return row_index
         Catch ex As Exception
-
+            Return lastrow + 1
         End Try
     End Function
     Public Sub Сreate_Headers(row As Integer, col As Integer, htext As Integer, cell1 As String, cell2 As String,

@@ -24,7 +24,7 @@
     'Public NO_TSE As Boolean = 0
     Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
         Application.DoEvents()
-        generalTree_Bez_Positio()
+        generalTree_Bez_Positio(0)
     End Sub
 
     'отправка sqz запросов напрямую в БД и если раздел 3 тогда 
@@ -543,66 +543,68 @@ ifpozRAVNOTempPoz:
         myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "STANDARD.ICO"))
         myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "SET.ICO"))
     End Sub
-    Sub generalTree_Bez_Positio()
+    Sub generalTree_Bez_Positio(TreeUpdate As Boolean)
         Application.DoEvents()
-        artID_Main = SelectBOM()
+        If Not TreeUpdate Then
+            artID_Main = SelectBOM()
+        End If
 
         If artID_Main <= 0 Then Exit Sub
-        Dim chechUtvArch As Boolean = chechUtvArch_func(artID_Main)
-        If Not chechUtvArch Then
-            Exit Sub
-        End If
-        Dim check_SP As Boolean = check_SP_Funk(artID_Main)
-        If Not check_SP Then
-            Exit Sub
-        End If
-        TreeView1.Nodes.Clear()
-        Dim Main_ArticleParam_List As Array = Get_Short_Article_Param(artID_Main)
-        Dim root = New TreeNode(Main_ArticleParam_List(0) & Spletter & Main_ArticleParam_List(1))
-        root.Tag = artID_Main
-        ImagesAdd()
-
-        TreeView1.ImageList = myImageList
-        TreeView1.Nodes.Add(root)
-
-        With s4
-            .OpenArticle(artID_Main)
-            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
-            .CloseArticle()
-
-            Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
-            If Verartfiltr Then
-                .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
-            Else
-                .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
+            Dim chechUtvArch As Boolean = chechUtvArch_func(artID_Main)
+            If Not chechUtvArch Then
+                Exit Sub
             End If
-            .QueryGoFirst()
-            For i As Integer = 0 To max_poz_mun - 1
-                Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
-                Dim TempPos As String = .QueryFieldByName("positio")
-                Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
-                Dim RAZDEL As Integer = .QueryFieldByName("RAZDEL")
-                Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
-                Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
-                Dim COUNT_PC As Double = .QueryFieldByName("COUNT_PC")
+            Dim check_SP As Boolean = check_SP_Funk(artID_Main)
+            If Not check_SP Then
+                Exit Sub
+            End If
+            TreeView1.Nodes.Clear()
+            Dim Main_ArticleParam_List As Array = Get_Short_Article_Param(artID_Main)
+            Dim root = New TreeNode(Main_ArticleParam_List(0) & Spletter & Main_ArticleParam_List(1))
+            root.Tag = artID_Main
+            ImagesAdd()
 
-                'Dim ge_Article_Param_List As Array = Get_Article_Param(Part_AID)
-                If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
-                    Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
+            TreeView1.ImageList = myImageList
+            TreeView1.Nodes.Add(root)
 
-                    If exist_BOM_ChildNodesExist(Part_AID) Then
-                        NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
-                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+            With s4
+                .OpenArticle(artID_Main)
+                Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+                .CloseArticle()
+
+                Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
+                If Verartfiltr Then
+                    .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
+                Else
+                    .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
+                End If
+                .QueryGoFirst()
+                For i As Integer = 0 To max_poz_mun - 1
+                    Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
+                    Dim TempPos As String = .QueryFieldByName("positio")
+                    Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
+                    Dim RAZDEL As Integer = .QueryFieldByName("RAZDEL")
+                    Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
+                    Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
+                    Dim COUNT_PC As Double = .QueryFieldByName("COUNT_PC")
+
+                    'Dim ge_Article_Param_List As Array = Get_Article_Param(Part_AID)
+                    If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
+                        Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
+
+                        If exist_BOM_ChildNodesExist(Part_AID) Then
+                            NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
+                            Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                        Else
+                            Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                        End If
                     Else
                         Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     End If
-                Else
-                    Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
-                End If
-            Next
+                Next
 
-            .CloseQuery()
-        End With
+                .CloseQuery()
+            End With
     End Sub
     Sub Perehov_Na_NUGHUY_strocu(ArtID As Integer, rownum As Integer, PROJ_VER_ID As String)
         Application.DoEvents()
@@ -644,10 +646,11 @@ ifpozRAVNOTempPoz:
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
-        If ToolStripComboBox1.Text Is Nothing Or ToolStripComboBox1.Text = "" Then
-            ToolStripComboBox1.Text = ToolStripComboBox1.Items(1).ToString
+
+        If ToolStripComboBox1.SelectedItem Is Nothing Or ToolStripComboBox1.SelectedItem = "" Then '
+            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(0)
+            'CT_ID_in_Query_Change()
         End If
-        CT_ID_in_Query_Change()
     End Sub
     Private Sub OutOptionsLoad()
         Try
@@ -700,6 +703,13 @@ ifpozRAVNOTempPoz:
 
         Dim CN_Purchated_last_ColNum As Integer = Get_Last_Column(ShName_Purchated, RowN_Purchated_First - 1)
         SetCellsBorderLineStyle2(ShName_Purchated, 1, 1, CN_Purchated_last_ColNum, RowN_Purchated_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+        Try
+            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
+            If VSpom_Mater_for_Main IsNot Nothing Then
+                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main)
+            End If
+        Catch ex As Exception
+        End Try
     End Sub
 
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
@@ -708,19 +718,29 @@ ifpozRAVNOTempPoz:
     Public CN_PL_ArtID As Integer = 1
     Public CN_PL_Oboz As Integer = 2
     Public CN_PL_Naim As Integer = 3
-    Public CN_PL_TotalCount As Integer = 4
-    Public CN_PL_Sort As Integer = 5
-    Public CN_PL_Sort_IBKey As Integer = 6
-    Public CN_PL_Referenc As Integer = 7
+    Public CN_PL_PROJ_ID As Integer = 4
+    Public CN_PL_Primen9emost As Integer = 5
+    Public CN_PL_Count As Integer = 6
+    Public CN_PL_TotalCount As Integer = 7
+    'Public CN_PL_MU As Integer = 8
+    Public CN_PL_LinkType As Integer = 8
+    Public CN_PL_Sort As Integer = 9
+    Public CN_PL_Sort_IBKey As Integer = 10
+    Public CN_PL_Referenc As Integer = 11
     Private Sub addExTitlePartList()
         Add_NewSheet(ShName_PartList)
         set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, RowN_PL_First - 1, "ArtID")
         set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, RowN_PL_First - 1, "Обозначение Детали")
         set_Value_From_Cell(ShName_PartList, CN_PL_Naim, RowN_PL_First - 1, "Наименование Детали")
+        set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, RowN_PL_First - 1, "PROJID")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, RowN_PL_First - 1, "Применяемость")
+        set_Value_From_Cell(ShName_PartList, CN_PL_Count, RowN_PL_First - 1, "Кол-во на сб, шт.")
         set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, RowN_PL_First - 1, "Общ.кол-во, шт.")
+        'set_Value_From_Cell(ShName_PartList, CN_PL_MU, RowN_PL_First - 1, "ед.изм")
+        set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, RowN_PL_First - 1, "Тип связи")
         set_Value_From_Cell(ShName_PartList, CN_PL_Sort, RowN_PL_First - 1, "Сортамент")
         set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, RowN_PL_First - 1, "Ключ IMBASE")
-        Dim CN_PL_last_ColNum As Integer = Get_Last_Column(Sheetname, RowN_PL_First - 1)
+        Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_PartList, RowN_PL_First - 1)
         SetCellsBorderLineStyle2(ShName_PartList, 1, 1, CN_PL_last_ColNum, RowN_PL_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
     End Sub
@@ -760,21 +780,28 @@ ifpozRAVNOTempPoz:
     'Public CN_KIM As Integer = 25
     Public CN_VspomMat As Integer = 28
     Public CN_VspomMat_IBKey As Integer = 8
+
     Sub WriteEXCellTitle()
         Application.DoEvents()
         Create_EX_Doc(True)
         SheetReName("Лист1", Sheetname)
-        Dim MainArtInfo As Array = Get_Short_Article_Param(TreeView1.Nodes.Item(0).Tag)
-        Dim MainTPInfo As Array
-        If TPsfilter Then
-            MainTPInfo = Get_TP_ParmArray(artID_Main)
-        End If
-        set_Value_From_Cell(Sheetname, CN_ArtID, 1, artID_Main)
+        Dim MainTPInfo, MainArtInfo As Array
+        Try
+            MainArtInfo = Get_Short_Article_Param(TreeView1.Nodes.Item(0).Tag)
 
-        set_Value_From_Cell(Sheetname, CN_Oboz, 1, MainArtInfo(0)) ' & " - " & MainArtInfo(1))
-        set_Value_From_Cell(Sheetname, CN_Naim, 1, MainArtInfo(1))
-        set_Value_From_Cell(Sheetname, CN_Mass, 1, MainArtInfo(2))
-        set_Value_From_Cell(Sheetname, CN_ArchName, 1, MainArtInfo(4))
+            If TPsfilter Then
+                MainTPInfo = Get_TP_ParmArray(artID_Main, -1)
+            End If
+            set_Value_From_Cell(Sheetname, CN_ArtID, 1, artID_Main)
+
+            set_Value_From_Cell(Sheetname, CN_Oboz, 1, MainArtInfo(0)) ' & " - " & MainArtInfo(1))
+            set_Value_From_Cell(Sheetname, CN_Naim, 1, MainArtInfo(1))
+            set_Value_From_Cell(Sheetname, CN_Mass, 1, MainArtInfo(2))
+            set_Value_From_Cell(Sheetname, CN_ArchName, 1, MainArtInfo(4))
+            set_Value_From_Cell(Sheetname, CN_ContexrtType, 1, ToolStripComboBox1.Text)
+        Catch ex As Exception
+
+        End Try
         Try
             set_Value_From_Cell(Sheetname, CN_Raszehovka, 1, MainTPInfo(0))
             'set_Value_From_Cell(Sheetname, CN_VspomMat, 1, MainTPInfo(9))
@@ -806,8 +833,8 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_MatZagotovki_IBKey, RowN_First - 1, "Ключ IMBase" & vbNewLine & "для заготовки")
         set_Value_From_Cell(Sheetname, CN_RazmerZag, RowN_First - 1, "Размер заготовки")
         'set_Value_From_Cell(Sheetname, CN_KIM, RowN_First - 1, "КИМ")
-        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода" & vbCr & "на ед.")
-        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода" & vbCr & "общ.")
+        set_Value_From_Cell(Sheetname, CN_NormaRashoda, RowN_First - 1, "Норма расхода" & vbNewLine & "на ед.")
+        set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, RowN_First - 1, "Норма расхода" & vbNewLine & "общ.")
         set_Value_From_Cell(Sheetname, CN_NormaRashoda_MU, RowN_First - 1, "ед.изм")
         set_Value_From_Cell(Sheetname, CN_ZagCount, RowN_First - 1, "Кол-во деталей" & vbNewLine & "из заготовки")
         set_Value_From_Cell(Sheetname, CN_ZagSumCount, RowN_First - 1, "Кол-во необх." & vbNewLine & "заготовки")
@@ -822,9 +849,13 @@ ifpozRAVNOTempPoz:
         'выделить первую строку зеленым цветом
         SetCellsColor(Sheetname, 1, 1, last_ColNum, 1, Color.LawnGreen)
         'выделить красным, если головная специя лежит в архиве РАЗАРБОТКА
-        If MainArtInfo(3) = "7" Or MainArtInfo(3) Is Nothing Then
-            SetCellsColor(Sheetname, CN_ArchName, 1, CN_ArchName, 1, Color.Red)
-        End If
+        Try
+            If MainArtInfo(3) = "7" Or MainArtInfo(3) Is Nothing Then
+                SetCellsColor(Sheetname, CN_ArchName, 1, CN_ArchName, 1, Color.Red)
+            End If
+        Catch ex As Exception
+
+        End Try
         CellsTextBold(Sheetname, 1, 1, last_ColNum, 1)
 
         SetCellsBorderLineStyle2(Sheetname, 1, 1, last_ColNum, RowN_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
@@ -843,6 +874,10 @@ ifpozRAVNOTempPoz:
             Exit Sub
         End If
         WriteEXCellTitle()
+
+        If NO_Purchated Then addExTitlePurchated() 'создать ВЕДОМОСТЬ ПОКУПНЫХ
+        If NO_Parts Then addExTitlePartList() 'создать ВЕДОМОСТЬ ДЕТАЛЕЙ
+
         read_NEXTLEVELtreeview(TreeView1.Nodes.Item(0))
 
         last_Rowmun = Get_LastRowInOneColumn(Sheetname, CN_Naim)
@@ -854,18 +889,12 @@ ifpozRAVNOTempPoz:
 
         CellsTextHorisAligment(Sheetname, CN_NumPP, RowN_First, last_ColNum, last_Rowmun, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft)
 
-
         SetAutoFIT(Sheetname)
+        If NO_Purchated Then SetAutoFIT(ShName_Purchated)
+        If NO_Parts Then SetAutoFIT(ShName_PartList)
+
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
-        If Not NO_Parts Then
-            'тут будет процедура для листов с ПЕРЕЧНЕМ МАТЕРИАЛОВ
-
-        End If
-        If Not NO_Purchated Then
-            'тут будет процедура для листов с ПЕРЕЧНЕМ ДЕТАЛЕЙ
-
-        End If
     End Sub
     Sub addExcelAboutArtStructure(ArtID As Integer)
         If NO_Parts Then addExTitlePartList()
@@ -884,11 +913,11 @@ ifpozRAVNOTempPoz:
                         Dim S4_Info, TC_Info As Array
                         S4_Info = Get_Article_Param(tmp_ArtID)
                         If TPsfilter Then
-                            TC_Info = Get_TP_ParmArray(tmp_ArtID)
+                            'TC_Info = Get_TP_ParmArray(tmp_ArtID)
                         End If
                         If GetArtKind = 4 And NO_Parts Then
                             'процедура длязаполнения листа ПЕРЕЧЕНЬ ДЕТАЛЕЙ
-                            excel_write_aboutPart_in_PartList(tmp_ArtID, S4_Info, TC_Info, total_count, Count_MU)
+                            'excel_write_aboutPart_in_PartList(tmp_ArtID, S4_Info, TC_Info, total_count, Count_MU)
                         End If
                         If NO_Purchated Then
                             'процедура длязаполнения листа ПЕРЕЧЕНЬ МАТЕРИАЛОВ
@@ -906,75 +935,202 @@ ifpozRAVNOTempPoz:
         For Each myNode In myNextNode.Nodes
             Dim param_Array As Array = myNode.Tag.ToString.Split(Spletter)
             'MsgBox(param_Array(0) & Spletter & param_Array(1) & Spletter & param_Array(2))
-            excel_write_about_TreeNode(param_Array(0), param_Array(1), param_Array(2), param_Array(3))
+            Dim ArtID, PRJLINK_ID As Integer
+            Dim Positio, Count_Summ As String
+            Positio = param_Array(0)
+            ArtID = param_Array(1)
+            PRJLINK_ID = param_Array(2)
+            Count_Summ = param_Array(3)
+
+            Dim PRJLINK_Param, Art_Param, TP_Array, TP_Vspom_Mater_Array As Array
+            'Dim TP_VspMat_Array As Array
+            PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
+            Art_Param = Get_Article_Param(ArtID)
+            'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
+            If TPsfilter Then
+                TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
+                TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
+                Try
+                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array)
+                Catch ex As Exception
+                End Try
+            End If
+            excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
 
             If myNode.Nodes.Count > 0 Then
                 read_NEXTLEVELtreeview(myNode)
+            Else
+                If NO_Purchated Then excel_write_aboutPart_in_Purchated(ArtID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
+                If NO_Parts Then excel_write_aboutPart_in_PartList(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
             End If
         Next
     End Sub
-    Sub excel_write_aboutPart_in_PartList(ArtID As Integer, Art_Info As Array, TC_Info As Array, Total_Count As String, MU As String)
-        Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_ArtID) + 1
-        set_Value_From_Cell(Sheetname, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
+    Sub excel_write_aboutPart_in_PartList(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+        Dim sum, totalsum As Double
+        Dim tmp_row As Integer
 
+        Select Case Art_Info(12)
+            Case 4
+                Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_ArtID) + 1
+                Try
+                    'tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_PL_ArtID, RowN_PL_First, ArtID)
+                    'If tmp_row > 0 Then lastRowNumInPartlist = tmp_row
 
-        set_Value_From_Cell(Sheetname, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
-        set_Value_From_Cell(Sheetname, CN_PL_Naim, lastRowNumInPartlist, Art_Info(1))
-        set_Value_From_Cell(Sheetname, CN_PL_TotalCount, lastRowNumInPartlist, Total_Count)
-        Try
-            set_Value_From_Cell(Sheetname, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3))
-            set_Value_From_Cell(Sheetname, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4))
-        Catch ex As Exception
-            set_Value_From_Cell(Sheetname, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5))
-            set_Value_From_Cell(Sheetname, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6))
-        End Try
+                    set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
+                    set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
+                    set_Value_From_Cell(ShName_PartList, CN_PL_Naim, lastRowNumInPartlist, Art_Info(1))
+                    set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, lastRowNumInPartlist, PRJLINK_Param(0))
+                    set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, lastRowNumInPartlist, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+
+                    If TC_Info(9) IsNot Nothing Or TC_Info(9) <> 0 Then
+                        sum = CDbl(Total_Count) / CDbl(TC_Info(6))
+                        'totalsum = CDbl(PRJLINK_Param(2)) * CDbl(Total_Count)
+                    Else
+                        sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
+                        totalsum = CDbl(Total_Count)
+                    End If
+                    set_Value_From_Cell(ShName_PartList, CN_PL_Count, lastRowNumInPartlist, sum) 'колво
+
+                    set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, lastRowNumInPartlist, totalsum) 'колво общее
+
+                    'set_Value_From_Cell(ShName_PartList, CN_PL_MU, lastRowNumInPartlist, PRJLINK_Param(11)) 'ед изм
+                    set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, lastRowNumInPartlist, PRJLINK_Param(9)) 'тип связи
+
+                    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3)) 'Сортамент
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4)) 'ключ имбайз сортамента 
+                    Else
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5)) 'Сортамент
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6)) 'ключ имбайз сортамента
+                    End If
+                Catch ex As Exception
+
+                End Try
+
+                'Try
+
+                '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3))
+                '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4))
+                'Catch ex As Exception
+                '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5))
+                '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6))
+                'End Try
+
+                SetCellsBorderLineStyle2(ShName_PartList, 1, lastRowNumInPartlist, CN_PL_Sort_IBKey, lastRowNumInPartlist, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+
+        End Select
     End Sub
-    Sub excel_write_aboutPart_in_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, Total_Count As String, MU As String)
+    Function get_OBOZ_by_Part_AID(Part_AID As Integer) As String
+        Dim oboz_str As String
+        Try
+            With s4
+                .OpenArticle(Part_AID)
+                oboz_str = .GetArticleDesignation
+                .CloseArticle()
+                Return oboz_str
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Function
+    Sub excel_write_aboutPart_in_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+        Dim tmp_colors As Color = Color.Khaki
         Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
         Dim tmp_row As Integer
+        Dim sum As Double
         Select Case Art_Info(12)
             Case 4 'детали
                 Try
-                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(4))
-                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
-                    set_Value_From_Cell(Sheetname, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+                    If TC_Info(4) IsNot Nothing Then
+                        tmp_colors = Color.Tan
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
+
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(TC_Info(2))), 3)
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    Else
+                        tmp_colors = Color.LightSteelBlue
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(6))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, Art_Info(9))
+
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))), 3)
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    End If
                 Catch ex As Exception
-                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(6))
-                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
-                    set_Value_From_Cell(Sheetname, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+
                 End Try
                 'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
             Case 5, 6, 7 'станд изделия
                 Try
-                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(3))
+                    tmp_colors = Color.LightGreen
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
-                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(3))
-                    set_Value_From_Cell(Sheetname, CN_Purchated_Naim, lastRowNumPurchated, Total_Count)
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+
+                    sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    'красим вспомогательный материал в свой цвет
+                    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
 
                 Catch ex As Exception
 
                 End Try
-            Case 6 'прочие
+                'Case 6 'прочие
 
-            Case 7 'материалы
+                'Case 7 'материалы
 
         End Select
+        'красим в свой цвет
+        SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+        SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
     End Sub
-    Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double)
+    Sub excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array As Array)
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
+        Dim tmp_row As Integer
+        Dim sum As Double
+        Dim tmp_colors As Color = Color.DarkSalmon
+        Try
+            If UBound(TP_Vspom_Mater_Array, 1) >= 0 Then
+                For q As Integer = 0 To UBound(TP_Vspom_Mater_Array, 1)
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TP_Vspom_Mater_Array(q, 1))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 0))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 1))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 3))
+
+                    sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(TP_Vspom_Mater_Array(q, 2))), 3)
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+
+                    'красим вспомогательный материал в свой цвет
+                    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+                    SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+                Next
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double, PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
+
         Application.DoEvents()
-        Dim PRJLINK_Param, Art_Param, TP_Array As Array
-        'Dim TP_VspMat_Array As Array
+        'Dim PRJLINK_Param, Art_Param, TP_Array As Array
+        ''Dim TP_VspMat_Array As Array
         Dim temp_color As Color
-        PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
-        Art_Param = Get_Article_Param(ArtID)
-        'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
-        If TPsfilter Then
-            TP_Array = Get_TP_ParmArray(ArtID)
-        End If
+        'PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
+        'Art_Param = Get_Article_Param(ArtID)
+        ''TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
+        'If TPsfilter Then
+        '    TP_Array = Get_TP_ParmArray(ArtID)
+        'End If
         Dim lastRowNum As Integer = Get_LastRowInOneColumn(Sheetname, CN_ContexrtType) + 1
         'If lastRowNum < Get_LastRowInOneColumn(Sheetname, last_ColNum) + 1 Then lastRowNum = Get_LastRowInOneColumn(Sheetname, last_ColNum) + 1
         set_Value_From_Cell(Sheetname, CN_NumPP, lastRowNum, "'" & Positio)
@@ -1017,10 +1173,16 @@ ifpozRAVNOTempPoz:
             End Try
             'If TP_Array(1) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_KIM, lastRowNum, TP_Array(1).ToString.Replace(",", "."))
             Try
+                Dim ZagSumCount As Double
+                Dim Norma_ras_SUM As Double
                 If CDbl(TP_Array(6)) <> 0 Then
-                    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, (Count_Summ / CDbl(TP_Array(6))))
+                    ZagSumCount = Count_Summ / CDbl(TP_Array(6))
+                    Norma_ras_SUM = ZagSumCount * CDbl(TP_Array(2))
+                    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, ZagSumCount)
+                    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, Norma_ras_SUM.ToString.Replace(",", "."))
                 Else
                     set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, 0)
+                    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, 0)
                 End If
             Catch ex As Exception
 
@@ -1066,7 +1228,7 @@ ifpozRAVNOTempPoz:
     Function TP_VspMat_Array_func(Art_ID As Integer) As Object
         Application.DoEvents()
         Try
-            Dim MatNAme, MatIMKey As String
+            Dim MatNAme, MatIMKey, NormaG As String
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
             Dim mats As TPServer.ITMaterials = TArt.Materials
             Dim Mats_Count As Integer = mats.Count - 1
@@ -1087,7 +1249,54 @@ ifpozRAVNOTempPoz:
 
         End Try
     End Function
-    Function Get_TP_ParmArray(Art_ID As Integer) As Array
+    Function Get_Vspom_Mater_Array(Art_ID As Integer, Proj_Id As Integer) As Array
+        Application.DoEvents()
+        Dim array(0, 0), MaterName, MaterIBKey, MaterNorma, MaterMU As String
+        Try
+            Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
+            Dim Tmats As TPServer.ITMaterials = TArt.Materials
+            Dim MatCount As Integer = Tmats.Count
+
+            Dim imat As TPServer.ITMaterial
+            imat = Tmats.First
+
+            Dim j As Integer = 0
+            Try
+                For i As Integer = 0 To MatCount - 1
+                    If imat.Materials.Count = 0 Then j += 1
+                    imat = Tmats.Next
+                Next
+                j -= 1
+            Catch ex As Exception
+            End Try
+            ReDim array(j, 3)
+            Try
+                j = 0
+                imat = Tmats.First
+                For i As Integer = 0 To MatCount - 1
+                    If imat.Materials.Count = 0 Then
+                        'ReDim Preserve array(j + 1, 3)
+                        MaterName = imat.Value("Овсм")
+                        MaterIBKey = imat.Value("%MAT")
+                        MaterNorma = imat.Norma
+                        MaterMU = imat.Value("едНв")
+
+                        array(j, 0) = MaterName
+                        array(j, 1) = MaterIBKey
+                        array(j, 2) = MaterNorma
+                        array(j, 3) = MaterMU
+                        j += 1
+                    End If
+                    imat = Tmats.Next
+                Next
+            Catch ex As Exception
+            End Try
+            Return array
+        Catch ex As Exception
+            Return array
+        End Try
+    End Function
+    Function Get_TP_ParmArray(Art_ID As Integer, Proj_Id As Integer) As Array
         Application.DoEvents()
         Dim array(10) As String
         Try
@@ -1109,18 +1318,32 @@ ifpozRAVNOTempPoz:
                 Dim Zags As TPServer.ITZags = TArt.Zags
                 zagsCount = Zags.Count
                 Dim Zag As TPServer.ITZag = Zags.First
-                If Zag IsNot Nothing Then
-                    With Zag
-                        KIM = .Value("КИМ")
-                        Norma = .Value("НР")
-                        Norma_MU = .Value("едНР")
-                        Sortament = .Value("SORT")
-                        SortamentIMKey = .Value("%ZAG")
-                        ZagCount = .Value("КЗаг")
-                        Zag_key = .Key
-                        RazmZag = .Value("РАЗМ")
-                    End With
-                End If
+                For i As Integer = 0 To zagsCount - 1
+                    Dim RefArts As TPServer.ITArticle = Zag.InArts.First
+                    For j As Integer = 0 To Zag.InArts.Count - 1
+                        'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
+                        Try
+                            If RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0 Then
+                                With Zag
+                                    KIM = .Value("КИМ")
+                                    Norma = .Value("НР")
+                                    Norma_MU = .Value("едНР")
+                                    Sortament = .Value("SORT")
+                                    SortamentIMKey = .Value("%ZAG")
+                                    ZagCount = .Value("КЗаг")
+                                    Zag_key = .Key
+                                    RazmZag = .Value("РАЗМ")
+                                End With
+                                Exit For
+                            End If
+                        Catch ex As Exception
+
+                        End Try
+                        RefArts = Zag.InArts.Next
+                    Next
+                    Zag = Zags.Next
+                Next
+
                 If ReplaceTildaOnSpace Then
                     Sortament = Replace(Sortament, "~", " ")
                 End If
@@ -1134,7 +1357,7 @@ ifpozRAVNOTempPoz:
                 Dim mats As TPServer.ITMaterials = TArt.Materials
                 Dim mat As TPServer.ITMaterial = mats.First
                 While mats.EOF <> 1
-                    MatNAme = mat.Value("Овсм")
+                    MatNAme = mat.Value("1")
                     MatIMKey = mat.Value("%MAT")
                     If MatNAme IsNot Nothing Then MatVspom = MatNAme & "^&" & MatIMKey & vbNewLine & MatVspom
                     mat = mats.Next
@@ -1142,6 +1365,7 @@ ifpozRAVNOTempPoz:
             Catch ex As Exception
 
             End Try
+            If Norma_MU = "" Or Norma_MU Is Nothing Then Norma_MU = "кг"
 
             array(0) = rascexovka
             array(1) = KIM
@@ -1258,7 +1482,7 @@ ifpozRAVNOTempPoz:
                 naim = .GetFieldValue_Articles("Наименование")
                 mass = .GetArticleMassa
                 Imbase_key = .GetFieldValue_Articles("Ключ Imbase")
-                purchased = .GetFieldValue_Articles("Покупное")
+                purchased = .GetArticlePurchased
                 material = .GetArticleMaterial
                 If ReplaceTildaOnSpace Then
                     material = Replace(material, "~", " ")
@@ -1319,11 +1543,13 @@ ifpozRAVNOTempPoz:
     Private Sub БезРазделаДокументацияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles БезРазделаДокументацияToolStripMenuItem.Click
         БезРазделаДокументацияToolStripMenuItem.Checked = Not (БезРазделаДокументацияToolStripMenuItem.Checked)
         NO_Art_Documentacia = БезРазделаДокументацияToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
     End Sub
 
     Private Sub БезТехнолическихСвязейToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles БезТехнолическихСвязейToolStripMenuItem.Click
         БезТехнолическихСвязейToolStripMenuItem.Checked = Not (БезТехнолическихСвязейToolStripMenuItem.Checked)
         NO_Ru4na9_Sv9z = БезТехнолическихСвязейToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
     End Sub
 
     Private Sub ToolStripButton5_Click(sender As Object, e As EventArgs) Handles Справка.Click
@@ -1333,8 +1559,8 @@ ifpozRAVNOTempPoz:
         Process.Start("http://www.evernote.com/l/AjJuLpie6c9F_ZTbh_5rFgRgRcQN9CrJnZ8/")
     End Sub
     Private Sub ОткрытьToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ОткрытьToolStripMenuItem.Click
+        Dim selectNode As TreeNode = TreeView1.SelectedNode
         Try
-            Dim selectNode As TreeNode = TreeView1.SelectedNode
             Dim param_Array As Array = selectNode.Tag.ToString.Split(Spletter)
             With s4
                 .OpenArticle(param_Array(1))
@@ -1342,7 +1568,11 @@ ifpozRAVNOTempPoz:
                 .CloseArticle()
             End With
         Catch ex As Exception
-
+            With s4
+                .OpenArticle(selectNode.Tag.ToString)
+                .EditParameters_Article()
+                .CloseArticle()
+            End With
         End Try
     End Sub
 
@@ -1377,12 +1607,21 @@ ifpozRAVNOTempPoz:
 
     Sub CT_ID_in_Query_Change()
         If ToolStripComboBox1.Text = "Конструкторский" Then
-            CT_ID_in_Query = ""
+            CT_ID_in_Query = " and (ctx_id = 0 or ctx_id = 1) "
+        ElseIf ToolStripComboBox1.Text = "Комбинированный" Then
+            CT_ID_in_Query = " "
         Else
             CT_ID_in_Query = " and (ctx_id = 0 or ctx_id = 2)"
         End If
+        treeUpdate()
     End Sub
-
+    Sub treeUpdate()
+        If TreeView1.Nodes.Count = 0 Then Exit Sub
+        If MsgBox("В настройке произошли изменения" & vbNewLine & "Обновить дерево состава в приложении?", vbYesNo + vbQuestion, "ВСНРМ 2.0") = DialogResult.Yes Then
+            'процедура обновления дерево состава
+            generalTree_Bez_Positio(1)
+        End If
+    End Sub
     Private Sub ToolStripComboBox1_TextChanged(sender As Object, e As EventArgs) Handles ToolStripComboBox1.TextChanged
         CT_ID_in_Query_Change()
     End Sub
@@ -1399,6 +1638,15 @@ ifpozRAVNOTempPoz:
     Private Sub СПеречнемМатериаловToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемМатериаловToolStripMenuItem.Click
         СПеречнемМатериаловToolStripMenuItem.Checked = Not (СПеречнемМатериаловToolStripMenuItem.Checked)
         NO_Purchated = СПеречнемМатериаловToolStripMenuItem.Checked
+    End Sub
+
+
+    Private Sub ToolStripButton4_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+        'Dim values As New List(Of Tuple(Of String, String, String))
+        'values.Add(Tuple.Create("a1", "a2", "a2"))
+        'values.Add(Tuple.Create("b1", "b2", "a2"))
+        'values.Add(Tuple.Create("c1", "c2", "a2"))
+        Get_Vspom_Mater_Array(15383, -1)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
