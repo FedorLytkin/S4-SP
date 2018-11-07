@@ -533,15 +533,18 @@ ifpozRAVNOTempPoz:
         End With
     End Function
     Sub ImagesAdd()
+        Try
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "ASSEMBLY.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "DOCUMENT.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "KOMPLEKT.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "MATERIAL.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "PART.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "RADIO2.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "STANDARD.ICO"))
+            myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "SET.ICO"))
+        Catch ex As Exception
 
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "ASSEMBLY.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "DOCUMENT.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "KOMPLEKT.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "MATERIAL.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "PART.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "RADIO2.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "STANDARD.ICO"))
-        myImageList.Images.Add(Image.FromFile(Application.StartupPath & "\imagelist\" & "SET.ICO"))
+        End Try
     End Sub
     Sub generalTree_Bez_Positio(TreeUpdate As Boolean)
         Application.DoEvents()
@@ -982,7 +985,7 @@ ifpozRAVNOTempPoz:
                     set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, lastRowNumInPartlist, PRJLINK_Param(0))
                     set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, lastRowNumInPartlist, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
 
-                    If TC_Info(9) IsNot Nothing Or TC_Info(9) <> 0 Then
+                    If TC_Info(9) IsNot Nothing Then
                         sum = CDbl(Total_Count) / CDbl(TC_Info(6))
                         'totalsum = CDbl(PRJLINK_Param(2)) * CDbl(Total_Count)
                     Else

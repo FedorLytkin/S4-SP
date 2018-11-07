@@ -76,7 +76,7 @@ Public Class Form1
     Public rw As Excel.Range
 
 
-    Public DocNames As New ListView.TreeListNode
+    'Public DocNames As New ListView.TreeListNode
     Private Sub ВыбратьОбъектToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ВыбратьОбъектToolStripMenuItem.Click
         select_VSNRM()
     End Sub
