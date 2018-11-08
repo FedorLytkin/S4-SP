@@ -1303,7 +1303,7 @@ ifpozRAVNOTempPoz:
         Application.DoEvents()
         Dim array(10) As String
         Try
-            Dim rascexovka, KIM, Norma, Sortament, SortamentIMKey, ZagCount, Zag_key, RazmZag, MatVspom, Norma_MU As String
+            Dim rascexovka, KIM, Norma, Sortament, SortamentIMKey, ZagCount, Zag_key, RazmZag, Norma_MU As String
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
 
             Dim TRout As TPServer.TRoute = TArt.Route
@@ -1354,20 +1354,6 @@ ifpozRAVNOTempPoz:
 
             End Try
 
-            'ищем вспомогательный материал для объекта
-            Try
-                Dim MatNAme, MatIMKey As String
-                Dim mats As TPServer.ITMaterials = TArt.Materials
-                Dim mat As TPServer.ITMaterial = mats.First
-                While mats.EOF <> 1
-                    MatNAme = mat.Value("1")
-                    MatIMKey = mat.Value("%MAT")
-                    If MatNAme IsNot Nothing Then MatVspom = MatNAme & "^&" & MatIMKey & vbNewLine & MatVspom
-                    mat = mats.Next
-                End While
-            Catch ex As Exception
-
-            End Try
             If Norma_MU = "" Or Norma_MU Is Nothing Then Norma_MU = "кг"
 
             array(0) = rascexovka
@@ -1379,7 +1365,7 @@ ifpozRAVNOTempPoz:
             array(6) = ZagCount
             array(7) = RazmZag
             array(8) = zagsCount
-            array(9) = MatVspom
+            'array(9) = MatVspom
             array(10) = Norma_MU
             Return array
         Catch ex As Exception
