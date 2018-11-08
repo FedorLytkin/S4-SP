@@ -327,6 +327,18 @@ Module Exc_mod
 
         End Try
     End Sub
+    Public Sub add_NewRow(SheetName As String, row_index As Integer)
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                Dim line As Range = .Rows(row_index)
+                line.Insert()
+                '.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2)).Insert(Shift:=xlDown)
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Public Function get_value_bay_cellColor(SheetName As String, columnIndex As Integer, row_index As Integer, Text_in_Cells As Color ) As Integer
 
     End Function
@@ -375,17 +387,23 @@ Module Exc_mod
     End Function
 
     Public Function get_value_bay_FindText_Strong(SheetName As String, columnIndex As Integer, start_row As Integer, FindText As String)
-        Dim row_index As Integer = start_row
+        Dim row_index As Integer = -1
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         Dim lastrow As Integer = Get_LastRowInOneColumn(SheetName, columnIndex)
         Try
             With ActiveSheet
-                While row_index <= lastrow
-                    If .Cells(row_index, columnIndex).Value = FindText Then
-                        Exit While
+                For i As Integer = start_row To lastrow
+                    If .Cells(i, columnIndex).Value = FindText Then
+                        row_index = i
+                        Exit For
                     End If
-                    row_index = row_index + 1
-                End While
+                Next
+                'While row_index <= lastrow
+                '    If .Cells(row_index, columnIndex).Value = FindText Then
+                '        Exit While
+                '        row_index = .Rows.
+                '    End If
+                'End While
             End With
             Return row_index
         Catch ex As Exception

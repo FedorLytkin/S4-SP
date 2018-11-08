@@ -976,36 +976,67 @@ ifpozRAVNOTempPoz:
             Case 4
                 Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_ArtID) + 1
                 Try
-                    'tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_PL_ArtID, RowN_PL_First, ArtID)
-                    'If tmp_row > 0 Then lastRowNumInPartlist = tmp_row
+                    tmp_row = get_value_bay_FindText_Strong(ShName_PartList, CN_PL_ArtID, RowN_PL_First, ArtID)
 
-                    set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
-                    set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
-                    set_Value_From_Cell(ShName_PartList, CN_PL_Naim, lastRowNumInPartlist, Art_Info(1))
-                    set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, lastRowNumInPartlist, PRJLINK_Param(0))
-                    set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, lastRowNumInPartlist, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                    If tmp_row > 0 Then
+                        'создание новой строки
+                        add_NewRow(ShName_PartList, tmp_row + 1)
+                        'объединить ячейки из созданной и предыдущей строки
+                        CellsMerge(ShName_PartList, CN_PL_ArtID, tmp_row, CN_PL_ArtID, tmp_row + 1) 'Колонка ArtID
+                        CellsMerge(ShName_PartList, CN_PL_Oboz, tmp_row, CN_PL_Oboz, tmp_row + 1) 'Колонка обозначение
+                        CellsMerge(ShName_PartList, CN_PL_Naim, tmp_row, CN_PL_Naim, tmp_row + 1) 'Колонка наименование
+                        'дописать в новой строчке информацию о новой детали
+                        tmp_row += 1
+                        set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, tmp_row, PRJLINK_Param(0)) 'Колонка PROJ_ID
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
 
-                    If TC_Info(9) IsNot Nothing Then
-                        sum = CDbl(Total_Count) / CDbl(TC_Info(6))
-                        totalsum = CDbl(Total_Count)
+                        set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, tmp_row, PRJLINK_Param(9)) 'тип связи
+
+                        If TC_Info(9) IsNot Nothing Then
+                            sum = CDbl(Total_Count) / CDbl(TC_Info(6))
+                            totalsum = CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, tmp_row)) + CDbl(Total_Count)
+                        Else
+                            sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
+                            totalsum = CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, tmp_row)) + CDbl(Total_Count)
+                        End If
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Count, tmp_row, sum) 'колво
+
+                        If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort, tmp_row, TC_Info(3)) 'Сортамент
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, tmp_row, TC_Info(4)) 'ключ имбайз сортамента 
+                        Else
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort, tmp_row, Art_Info(5)) 'Сортамент
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, tmp_row, Art_Info(6)) 'ключ имбайз сортамента
+                        End If
                     Else
-                        sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
-                        totalsum = CDbl(Total_Count)
+                        set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Naim, lastRowNumInPartlist, Art_Info(1))
+                        set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, lastRowNumInPartlist, PRJLINK_Param(0))
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, lastRowNumInPartlist, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+
+                        set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, lastRowNumInPartlist, totalsum) 'колво общее
+                        'set_Value_From_Cell(ShName_PartList, CN_PL_MU, lastRowNumInPartlist, PRJLINK_Param(11)) 'ед изм
+                        set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, lastRowNumInPartlist, PRJLINK_Param(9)) 'тип связи
+
+                        If TC_Info(9) IsNot Nothing Then
+                            sum = CDbl(Total_Count) / CDbl(TC_Info(6))
+                            totalsum = CDbl(Total_Count)
+                        Else
+                            sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
+                            totalsum = CDbl(Total_Count)
+                        End If
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Count, lastRowNumInPartlist, sum) 'колво
+
+                        If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3)) 'Сортамент
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4)) 'ключ имбайз сортамента 
+                        Else
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5)) 'Сортамент
+                            set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6)) 'ключ имбайз сортамента
+                        End If
                     End If
-                    set_Value_From_Cell(ShName_PartList, CN_PL_Count, lastRowNumInPartlist, sum) 'колво
 
-                    set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, lastRowNumInPartlist, totalsum) 'колво общее
-
-                    'set_Value_From_Cell(ShName_PartList, CN_PL_MU, lastRowNumInPartlist, PRJLINK_Param(11)) 'ед изм
-                    set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, lastRowNumInPartlist, PRJLINK_Param(9)) 'тип связи
-
-                    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
-                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, TC_Info(3)) 'Сортамент
-                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, TC_Info(4)) 'ключ имбайз сортамента 
-                    Else
-                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort, lastRowNumInPartlist, Art_Info(5)) 'Сортамент
-                        set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, lastRowNumInPartlist, Art_Info(6)) 'ключ имбайз сортамента
-                    End If
                 Catch ex As Exception
 
                 End Try
