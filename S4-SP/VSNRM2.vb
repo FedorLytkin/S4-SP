@@ -826,7 +826,7 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_Mass_MUIDStr, RowN_First - 1, "ед.изм" & vbNewLine & "массы")
         set_Value_From_Cell(Sheetname, CN_Prim, RowN_First - 1, "Прим.")
         set_Value_From_Cell(Sheetname, CN_Type_Article, RowN_First - 1, "Тип Объекта")
-        set_Value_From_Cell(Sheetname, CN_Purchated, RowN_First - 1, "Покупное")
+        set_Value_From_Cell(Sheetname, CN_Purchated, RowN_First - 1, "Признак" & vbNewLine & "изготовления")
         set_Value_From_Cell(Sheetname, CN_IBKey_purchated, RowN_First - 1, "Ключ IMBase" & vbNewLine & "для покупного")
         set_Value_From_Cell(Sheetname, CN_TypeLink, RowN_First - 1, "Тип связи")
         set_Value_From_Cell(Sheetname, CN_ContexrtType, RowN_First - 1, "Контекст связи")
@@ -1142,7 +1142,7 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_Naim, lastRowNum, Art_Param(1))
         set_Value_From_Cell(Sheetname, CN_Mass, lastRowNum, Art_Param(2))
         set_Value_From_Cell(Sheetname, CN_Mass_MUIDStr, lastRowNum, Art_Param(9))
-        set_Value_From_Cell(Sheetname, CN_Purchated, lastRowNum, Art_Param(4))
+        set_Value_From_Cell(Sheetname, CN_Purchated, lastRowNum, Art_Param(13))
         set_Value_From_Cell(Sheetname, CN_IBKey_purchated, lastRowNum, Art_Param(3))
         Try
             If Art_Param(2) IsNot Nothing Then set_Value_From_Cell(Sheetname, CN_Mass, lastRowNum, Art_Param(2).ToString.Replace(",", "."))
@@ -1461,17 +1461,33 @@ ifpozRAVNOTempPoz:
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
         Application.DoEvents()
-        Dim array(12) As String
+        Dim array(13) As String
         Try
             With s4
                 .OpenArticle(Art_ID)
                 .ReturnFieldValueWithImbaseKey = 0
-                Dim oboz, naim, mass, Imbase_key, purchased, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName, ArtKind As String
+                Dim oboz, naim, mass, Imbase_key, purchased, purchased_str, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName, ArtKind As String
                 oboz = .GetFieldValue_Articles("Обозначение")
                 naim = .GetFieldValue_Articles("Наименование")
                 mass = .GetArticleMassa
                 Imbase_key = .GetFieldValue_Articles("Ключ Imbase")
                 purchased = .GetArticlePurchased
+
+                Select Case purchased
+                    Case "+"
+                        purchased_str = "Покупное"
+                    Case "*"
+                        purchased_str = "По кооперации"
+                    Case "-"
+                        purchased_str = "Собственное"
+                    Case "!"
+                        purchased_str = "Не изготавливать"
+                    Case "&"
+                        purchased_str = "Неопределен"
+                    Case "^"
+                        purchased_str = "Доработка"
+                End Select
+
                 material = .GetArticleMaterial
                 If ReplaceTildaOnSpace Then
                     material = Replace(material, "~", " ")
@@ -1521,6 +1537,7 @@ ifpozRAVNOTempPoz:
                 array(10) = ArchID
                 array(11) = ArchName
                 array(12) = ArtKind
+                array(13) = purchased_str
                 Return array
             End With
         Catch ex As Exception
@@ -1631,11 +1648,12 @@ ifpozRAVNOTempPoz:
 
 
     Private Sub ToolStripButton4_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+        Get_Article_Param(15209)
         'Dim values As New List(Of Tuple(Of String, String, String))
         'values.Add(Tuple.Create("a1", "a2", "a2"))
         'values.Add(Tuple.Create("b1", "b2", "a2"))
         'values.Add(Tuple.Create("c1", "c2", "a2"))
-        Get_Vspom_Mater_Array(15383, -1)
+        'Get_Vspom_Mater_Array(15383, -1)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
