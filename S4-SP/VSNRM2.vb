@@ -899,39 +899,6 @@ ifpozRAVNOTempPoz:
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
     End Sub
-    Sub addExcelAboutArtStructure(ArtID As Integer)
-        If NO_Parts Then addExTitlePartList()
-        If NO_Purchated Then addExTitlePurchated()
-
-        With s4
-            .OpenArticleStructureExpanded2(ArtID, -1, 2)
-            .asFirst()
-            Dim GetArtKind As Integer = .asGetArtKind
-            While .asEof = 0
-                Select Case GetArtKind
-                    Case 4, 5, 6, 7
-                        Dim tmp_ArtID As Integer = .asGetArtID
-                        Dim total_count As Integer = .asGetArtCount
-                        Dim Count_MU As String = .asGetArtCount_MU_ID
-                        Dim S4_Info, TC_Info As Array
-                        S4_Info = Get_Article_Param(tmp_ArtID)
-                        If TPsfilter Then
-                            'TC_Info = Get_TP_ParmArray(tmp_ArtID)
-                        End If
-                        If GetArtKind = 4 And NO_Parts Then
-                            'процедура длязаполнения листа ПЕРЕЧЕНЬ ДЕТАЛЕЙ
-                            'excel_write_aboutPart_in_PartList(tmp_ArtID, S4_Info, TC_Info, total_count, Count_MU)
-                        End If
-                        If NO_Purchated Then
-                            'процедура длязаполнения листа ПЕРЕЧЕНЬ МАТЕРИАЛОВ
-
-                        End If
-                End Select
-                .asNext()
-            End While
-            .CloseArticleStructure()
-        End With
-    End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
         Dim myNode As TreeNode
@@ -1103,7 +1070,7 @@ ifpozRAVNOTempPoz:
 
                 End Try
                 'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
-            Case 5, 6, 7 'станд изделия
+            Case 5, 6 'станд изделия
                 Try
                     tmp_colors = Color.LightGreen
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
@@ -1122,8 +1089,38 @@ ifpozRAVNOTempPoz:
                 End Try
                 'Case 6 'прочие
 
-                'Case 7 'материалы
+            Case 7 'материалы
+                Try
+                    tmp_colors = Color.LightSkyBlue
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                    If CDbl(TC_Info(6)) <> 0 Then
+                        sum = (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                    Else
+                        sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
+                    End If
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    'красим вспомогательный материал в свой цвет
+                    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
 
+
+                    'Dim Norma_ras_SUM As Double
+                    'If CDbl(TP_Array(6)) <> 0 Then
+                    '    ZagSumCount = Count_Summ / CDbl(TP_Array(6))
+                    '    Norma_ras_SUM = ZagSumCount * CDbl(TP_Array(2))
+                    '    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, ZagSumCount)
+                    '    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, Norma_ras_SUM.ToString.Replace(",", "."))
+                    'Else
+                    '    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, 0)
+                    '    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, 0)
+                    'End If
+
+                Catch ex As Exception
+
+                End Try
         End Select
         'красим в свой цвет
         SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
