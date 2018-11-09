@@ -27,6 +27,9 @@ Module Exc_mod
         WB = xlApp.Workbooks.Add(1)
         WS = WB.Sheets(1)
     End Sub
+    Public Sub EX_Doc_VisibleChanche(Visible As Double)
+        xlApp.Visible = Visible
+    End Sub
     Public Sub Open_EX_Doc(Visible As Double, excel_file_path As String)
         xlApp = New Excel.Application()
         xlApp.Visible = Visible
@@ -55,6 +58,7 @@ Module Exc_mod
         WB2 = xlApp2.Workbooks.Open(excel_file_path)
         WS2 = WB2.Sheets.Item(1)
     End Sub
+
     Sub exc_WB1_save()
         WB.Save()
     End Sub
