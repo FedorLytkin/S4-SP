@@ -713,6 +713,8 @@ ifpozRAVNOTempPoz:
             End If
         Catch ex As Exception
         End Try
+        'зафиксировать шапку
+        SetTitleFixirovano(ShName_Purchated, CN_Purchated_Naim, RowN_Purchated_First - 1, True)
     End Sub
 
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
@@ -746,6 +748,8 @@ ifpozRAVNOTempPoz:
         Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_PartList, RowN_PL_First - 1)
         SetCellsBorderLineStyle2(ShName_PartList, 1, 1, CN_PL_last_ColNum, RowN_PL_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
+        'зафиксировать шапку
+        SetTitleFixirovano(ShName_PartList, CN_PL_Oboz, RowN_PL_First - 1, True)
     End Sub
     'ExcelSheets column numbers ПЕРВЫЙ ЛИСТ(СОСТАВ ИЗДЕЛИЯ(например))
     Public Sheetname As String = "СОСТАВ ИЗДЕЛИЯ"
