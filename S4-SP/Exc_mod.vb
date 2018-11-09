@@ -191,6 +191,21 @@ Module Exc_mod
 
         End Try
     End Sub
+    Public Sub CellsMergeWithTextAlignment(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer, VerticalAlignment As XlVAlign, HorizontalAlignment As XlHAlign)
+        'Процедура объединяет ячейки
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                With .Cells.Range(.Cells(row_index1, columnIndex1), .Cells(row_index2, columnIndex2))
+                    .Merge()
+                    .VerticalAlignment = VerticalAlignment ' - 4160
+                    .HorizontalAlignment = HorizontalAlignment ' - 4131
+                End With
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Public Sub CellsTextBold(SheetName As String, columnIndex1 As Integer, row_index1 As Integer, columnIndex2 As Integer, row_index2 As Integer)
         'Процедура в выделенныех ячейках меняет отображение текста (жирный, курсив, обычный)
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)

@@ -982,12 +982,12 @@ ifpozRAVNOTempPoz:
                         'создание новой строки
                         add_NewRow(ShName_PartList, tmp_row)
                         'объединить ячейки из созданной и предыдущей строки
-                        CellsMerge(ShName_PartList, CN_PL_ArtID, tmp_row - 1, CN_PL_ArtID, tmp_row) 'Колонка ArtID
-                        CellsMerge(ShName_PartList, CN_PL_Oboz, tmp_row - 1, CN_PL_Oboz, tmp_row) 'Колонка обозначение
-                        CellsMerge(ShName_PartList, CN_PL_Naim, tmp_row - 1, CN_PL_Naim, tmp_row) 'Колонка наименование
-                        CellsMerge(ShName_PartList, CN_PL_TotalCount, tmp_row - 1, CN_PL_TotalCount, tmp_row) 'Колонка Общее колво
-                        CellsMerge(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row) 'Колонка сортамент
-                        CellsMerge(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row) 'Колонка ключ ImBase
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_ArtID, tmp_row - 1, CN_PL_ArtID, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ArtID
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Oboz, tmp_row - 1, CN_PL_Oboz, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка обозначение
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Naim, tmp_row - 1, CN_PL_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_TotalCount, tmp_row - 1, CN_PL_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка сортамент
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ключ ImBase
                         'дописать в новой строчке информацию о новой детали
                         set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, tmp_row, PRJLINK_Param(0)) 'Колонка PROJ_ID
                         set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
