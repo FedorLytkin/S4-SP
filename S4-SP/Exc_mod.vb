@@ -167,6 +167,16 @@ Module Exc_mod
             .Columns(Col_index).ColumnWidth = ColumnWidth
         End With
     End Sub
+    Public Sub SetColumnVisible(SheetName As String, columnIndex As Integer, NotVisible As Boolean)
+        'изменяет видимость столбца
+        Try
+            Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+            With ActiveSheet
+                .Columns(columnIndex).Hidden = NotVisible
+            End With
+        Catch ex As Exception
+        End Try
+    End Sub
     Public Sub SetOneCellTextHorisAligment(SheetName As String, columnIndex As Integer, row_index As Integer, XlHorisAlign As XlHAlign)
         'Выравнивает текст в ячейках по горизонтали
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)

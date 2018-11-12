@@ -131,7 +131,6 @@
 
     Sub dCompare(Ldate As Date)
         Try
-            If Ldate = "" Then Block_Controls(False) : Exit Sub
             Dim td As Date = Now.ToShortDateString
             If td > Ldate Then
                 Block_Controls(False)
