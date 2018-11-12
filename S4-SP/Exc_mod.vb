@@ -16,9 +16,6 @@ Module Exc_mod
     Public xlApp2 As Excel.Application ' = New Microsoft.Office.Interop.Excel.Application()
     Public WB2 As Excel.Workbook
     Public WS2 As Excel.Worksheet
-    Public Sub FromWorksheetToTree(sheet As Worksheet)
-
-    End Sub
 
 
     Public Sub Create_EX_Doc(Visible As Double)
@@ -58,7 +55,12 @@ Module Exc_mod
         WB2 = xlApp2.Workbooks.Open(excel_file_path)
         WS2 = WB2.Sheets.Item(1)
     End Sub
-
+    Public Sub CreateExcelCustomProperty(PtopertyName As String, PropertyValue As String, PropertyType As Microsoft.Office.Core.MsoDocProperties, LinkToContent As Boolean)
+        With WB.CustomDocumentProperties
+            'проверка на существование свойства
+            .add(PtopertyName, LinkToContent, PropertyType, PropertyValue)
+        End With
+    End Sub
     Sub exc_WB1_save()
         WB.Save()
     End Sub
