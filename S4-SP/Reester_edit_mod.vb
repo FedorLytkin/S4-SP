@@ -109,20 +109,21 @@
         Try
             Dim file As System.IO.StreamReader = New System.IO.StreamReader("\\INTERMECH\im\Search\Search4.ini")
 
-
+            Dim ld As String
 
             Dim counter As Integer = 0
             Dim line As String = " "
             While line IsNot Nothing
                 line = file.ReadLine()
                 If UCase(line).IndexOf(UCase("ldFiltr")) > 0 Then
-                    Dim ld As String = line.Substring(line.LastIndexOf("=") + 1).Trim(" ")
+                    ld = line.Substring(line.LastIndexOf("=") + 1).Trim(" ")
                     dCompare(ld)
                     Exit While
                 End If
                 counter += 1
             End While
             file.Close()
+            If ld Is Nothing Or ld = "" Then Block_Controls(False)
         Catch ex As Exception
             Block_Controls(False)
         End Try
@@ -130,6 +131,7 @@
 
     Sub dCompare(Ldate As Date)
         Try
+            If Ldate = "" Then Block_Controls(False) : Exit Sub
             Dim td As Date = Now.ToShortDateString
             If td > Ldate Then
                 Block_Controls(False)

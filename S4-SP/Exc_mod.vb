@@ -56,10 +56,13 @@ Module Exc_mod
         WS2 = WB2.Sheets.Item(1)
     End Sub
     Public Sub CreateExcelCustomProperty(PtopertyName As String, PropertyValue As String, PropertyType As Microsoft.Office.Core.MsoDocProperties, LinkToContent As Boolean)
-        With WB.CustomDocumentProperties
-            'проверка на существование свойства
-            .add(PtopertyName, LinkToContent, PropertyType, PropertyValue)
-        End With
+        Try
+            With WB.CustomDocumentProperties
+                'проверка на существование свойства
+                .add(PtopertyName, LinkToContent, PropertyType, PropertyValue)
+            End With
+        Catch ex As Exception
+        End Try
     End Sub
     Sub exc_WB1_save()
         WB.Save()

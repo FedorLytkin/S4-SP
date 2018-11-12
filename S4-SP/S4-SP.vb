@@ -1446,8 +1446,12 @@ ifDocID_is_null:
         whatsNew()
     End Sub
     Public Sub whatsNew()
-        Process.Start(System.Windows.Forms.Application.StartupPath & "\what's new.txt")
-        'Process.Start("http://www.evernote.com/l/AjJ5PRJAb7ZB3raLw5_efcpQ5Zd5Wtz_MWc/")
+        Try
+            Process.Start(System.Windows.Forms.Application.StartupPath & "\what's new.txt")
+            'Process.Start("http://www.evernote.com/l/AjJ5PRJAb7ZB3raLw5_efcpQ5Zd5Wtz_MWc/")
+        Catch ex As Exception
+            MsgBox("Не могу открыть файл: " & System.Windows.Forms.Application.StartupPath & "\what's new.txt" & vbNewLine & "Проверьте существование файла в указанной директории")
+        End Try
     End Sub
 
     Private Sub ShowArtDocumentationToolStripMenuItem_Click(sender As Object, e As EventArgs)
