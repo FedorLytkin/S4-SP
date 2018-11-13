@@ -7,6 +7,12 @@
     'параметр не выводящий типы объектов и компоненты с ручной связью
     Public NO_Art_Documentacia As Boolean = 0
     Public NO_Ru4na9_Sv9z As Boolean = 0
+    Public NO_Sborka As Boolean = 1
+    Public NO_PartSecion As Boolean = 1
+    Public NO_Standart As Boolean = 1
+    Public NO_Pro4ee As Boolean = 1
+    Public NO_Material As Boolean = 1
+
     'параметр заменяющий "~" на " "
     Public ReplaceTildaOnSpace As Boolean = 1
     'параметр модульный
@@ -19,6 +25,13 @@
     Public NO_Parts As Boolean = 1
     'параметр экспортирующий данные о материалах и покупных
     Public NO_Purchated As Boolean = 1
+
+
+    'параметр экспортирующий данные о материалах и покупных
+    Public NO_ExlProc_Visible As Boolean = 1
+
+    'параметр экспортирующий данные серчовских параметрах
+    Public NO_S4_Columns As Boolean = 0
 
     Public myImageList As New ImageList()
     'Public NO_TSE As Boolean = 0
@@ -408,6 +421,31 @@ ifpozRAVNOTempPoz:
                     Return False
                 End If
             End If
+            If NO_Sborka = False Then
+                If RAZDEL = 3 Then
+                    Return False
+                End If
+            End If
+            If NO_PartSecion = False Then
+                If RAZDEL = 4 Then
+                    Return False
+                End If
+            End If
+            If NO_Standart = False Then
+                If RAZDEL = 5 Then
+                    Return False
+                End If
+            End If
+            If NO_Pro4ee = False Then
+                If RAZDEL = 6 Then
+                    Return False
+                End If
+            End If
+            If NO_Material = False Then
+                If RAZDEL = 7 Then
+                    Return False
+                End If
+            End If
             If NO_Ru4na9_Sv9z = False Then
                 If LINK_TYPE = "M" Then
                     Return False
@@ -646,6 +684,13 @@ ifpozRAVNOTempPoz:
         СПеречнемДеталейToolStripMenuItem.Checked = NO_Parts
         СПеречнемМатериаловToolStripMenuItem.Checked = NO_Purchated
         ЗаменятьToolStripMenuItem.Checked = ReplaceTildaOnSpace
+        ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked = NO_ExlProc_Visible
+        ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked = NO_S4_Columns
+        СРазделомДеталиToolStripMenuItem.Checked = NO_PartSecion
+        СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = NO_Sborka
+        СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = NO_Standart
+        СРазделомПрочиеИзделияToolStripMenuItem.Checked = NO_Pro4ee
+        СРазделомМатериалыToolStripMenuItem.Checked = NO_Material
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
@@ -790,7 +835,7 @@ ifpozRAVNOTempPoz:
 
     Sub WriteEXCellTitle()
         Application.DoEvents()
-        Create_EX_Doc(True)
+        Create_EX_Doc(NO_ExlProc_Visible)
         SheetReName("Лист1", Sheetname)
         Dim MainTPInfo, MainArtInfo As Array
         Try
@@ -899,9 +944,39 @@ ifpozRAVNOTempPoz:
         SetAutoFIT(Sheetname)
         If NO_Purchated Then SetAutoFIT(ShName_Purchated)
         If NO_Parts Then SetAutoFIT(ShName_PartList)
-
+        If Not NO_ExlProc_Visible Then EX_Doc_VisibleChanche(Not NO_ExlProc_Visible)
+        If Not NO_S4_Columns Then ChancheVisibleColumn()
+        'создание свойства
+        CustomDocProp()
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
+    End Sub
+    Sub ChancheVisibleColumn()
+        SetColumnVisible(Sheetname, CN_ArtID, True)
+        SetColumnVisible(Sheetname, CN_ArchName, True)
+        SetColumnVisible(Sheetname, CN_MaterIBKey, True)
+        SetColumnVisible(Sheetname, CN_Prim, True)
+        SetColumnVisible(Sheetname, CN_Type_Article, True)
+        SetColumnVisible(Sheetname, CN_IBKey_purchated, True)
+        SetColumnVisible(Sheetname, CN_TypeLink, True)
+        SetColumnVisible(Sheetname, CN_TPArtKey, True)
+        SetColumnVisible(Sheetname, CN_ContexrtType, True)
+        SetColumnVisible(Sheetname, CN_PL_Sort_IBKey, True)
+
+        SetColumnVisible(ShName_Purchated, CN_Purchated_IBKey, True)
+
+        SetColumnVisible(ShName_PartList, CN_PL_ArtID, True)
+        SetColumnVisible(ShName_PartList, CN_PL_PROJ_ID, True)
+        SetColumnVisible(ShName_PartList, CN_PL_LinkType, True)
+        SetColumnVisible(ShName_PartList, CN_PL_Sort_IBKey, True)
+    End Sub
+    Sub CustomDocProp()
+        CreateExcelCustomProperty("Программа", Application.ProductName, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        CreateExcelCustomProperty("Версия", Application.ProductVersion, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        CreateExcelCustomProperty("Дата создания", Now, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        CreateExcelCustomProperty("Пользователь", Form1.ToolStripTextBox1.Text, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        CreateExcelCustomProperty("Рабочая станция", Environment.MachineName, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
@@ -940,6 +1015,7 @@ ifpozRAVNOTempPoz:
         Next
     End Sub
     Sub excel_write_aboutPart_in_PartList(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+        Application.DoEvents()
         Dim sum, totalsum As Double
         Dim tmp_row As Integer
 
@@ -1029,6 +1105,7 @@ ifpozRAVNOTempPoz:
         End Select
     End Sub
     Function get_OBOZ_by_Part_AID(Part_AID As Integer) As String
+        Application.DoEvents()
         Dim oboz_str As String
         Try
             With s4
@@ -1042,6 +1119,7 @@ ifpozRAVNOTempPoz:
         End Try
     End Function
     Sub excel_write_aboutPart_in_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+        Application.DoEvents()
         Dim tmp_colors As Color = Color.Khaki
         Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
         Dim tmp_row As Integer
@@ -1098,11 +1176,19 @@ ifpozRAVNOTempPoz:
                     tmp_colors = Color.LightSkyBlue
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
-                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
-                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
+                    Else
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                    End If
                     If CDbl(TC_Info(6)) <> 0 Then
-                        sum = (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                        sum = CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
                     Else
                         sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
                     End If
@@ -1132,6 +1218,7 @@ ifpozRAVNOTempPoz:
 
     End Sub
     Sub excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array As Array)
+        Application.DoEvents()
         Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
         Dim tmp_row As Integer
         Dim sum As Double
@@ -1139,6 +1226,7 @@ ifpozRAVNOTempPoz:
         Try
             If UBound(TP_Vspom_Mater_Array, 1) >= 0 Then
                 For q As Integer = 0 To UBound(TP_Vspom_Mater_Array, 1)
+                    lastRowNumPurchated = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TP_Vspom_Mater_Array(q, 1))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 0))
@@ -1618,13 +1706,15 @@ ifpozRAVNOTempPoz:
     End Sub
 
     Private Sub ОчиститьДеревоToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ОчиститьДеревоToolStripMenuItem.Click
+        TreeCleaner()
+    End Sub
+    Private Sub TreeCleaner()
         Try
             TreeView1.Nodes.Item(0).Remove()
         Catch ex As Exception
 
         End Try
     End Sub
-
     Private Sub УдалитьВетвьToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles УдалитьВетвьToolStripMenuItem.Click
         Try
             Dim selNode As TreeNode = TreeView1.SelectedNode
@@ -1682,13 +1772,57 @@ ifpozRAVNOTempPoz:
     End Sub
 
 
-    Private Sub ToolStripButton4_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+    Private Sub ToolStripButton4_Click_1(sender As Object, e As EventArgs)
         Get_Article_Param(15209)
         'Dim values As New List(Of Tuple(Of String, String, String))
         'values.Add(Tuple.Create("a1", "a2", "a2"))
         'values.Add(Tuple.Create("b1", "b2", "a2"))
         'values.Add(Tuple.Create("c1", "c2", "a2"))
         'Get_Vspom_Mater_Array(15383, -1)
+    End Sub
+
+    Private Sub ПоказыватьПроцессЭкспортаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьПроцессЭкспортаToolStripMenuItem.Click
+        ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked = Not (ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked)
+        NO_ExlProc_Visible = ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked
+    End Sub
+
+    Private Sub ToolStripButton3_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton3.Click
+        TreeCleaner()
+    End Sub
+
+    Private Sub ПоказыватьСистемнуюИнформациюToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьСистемнуюИнформациюToolStripMenuItem.Click
+        ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked = Not (ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked)
+        NO_S4_Columns = ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked
+    End Sub
+
+    Private Sub СРазделомСборочныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСборочныеЕдиницыToolStripMenuItem.Click
+        СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСборочныеЕдиницыToolStripMenuItem.Checked)
+        NO_Sborka = СРазделомСборочныеЕдиницыToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СРазделомДеталиToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомДеталиToolStripMenuItem.Click
+        СРазделомДеталиToolStripMenuItem.Checked = Not (СРазделомДеталиToolStripMenuItem.Checked)
+        NO_PartSecion = СРазделомДеталиToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СРазделомСтандартныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСтандартныеЕдиницыToolStripMenuItem.Click
+        СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked)
+        NO_Standart = СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СРазделомПрочиеИзделияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомПрочиеИзделияToolStripMenuItem.Click
+        СРазделомПрочиеИзделияToolStripMenuItem.Checked = Not (СРазделомПрочиеИзделияToolStripMenuItem.Checked)
+        NO_Pro4ee = СРазделомПрочиеИзделияToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СРазделомМатериалыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомМатериалыToolStripMenuItem.Click
+        СРазделомМатериалыToolStripMenuItem.Checked = Not (СРазделомМатериалыToolStripMenuItem.Checked)
+        NO_Material = СРазделомМатериалыToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
