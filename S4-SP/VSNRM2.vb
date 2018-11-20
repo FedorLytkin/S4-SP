@@ -121,7 +121,7 @@ ifpozRAVNOTempPoz:
                 End If
             End With
         Catch ex As Exception
-            MsgBox("Ошибка при проверке на наличие подузлов" & vbNewLine & ex.Message )
+            MsgBox("Ошибка при проверке на наличие подузлов" & vbNewLine & ex.Message)
             checkChaildNode = False
         End Try
     End Function
@@ -1243,7 +1243,7 @@ ifpozRAVNOTempPoz:
             End With
         Catch ex As Exception
 
-            Return Array
+            Return array
         End Try
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
@@ -1312,7 +1312,7 @@ ifpozRAVNOTempPoz:
             End With
         Catch ex As Exception
 
-            Return Array
+            Return array
         End Try
     End Function
 
