@@ -1389,7 +1389,7 @@ ifpozRAVNOTempPoz:
             Dim j As Integer = 0
             Try
                 For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 Then j += 1
+                    If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
                     imat = Tmats.Next
                 Next
                 j -= 1
@@ -1400,7 +1400,7 @@ ifpozRAVNOTempPoz:
                 j = 0
                 imat = Tmats.First
                 For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 Then
+                    If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
                         'ReDim Preserve array(j + 1, 3)
                         MaterName = imat.Value("Овсм")
                         MaterIBKey = imat.Value("%MAT")
