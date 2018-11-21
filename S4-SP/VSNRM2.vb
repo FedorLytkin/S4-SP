@@ -1382,48 +1382,55 @@ ifpozRAVNOTempPoz:
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
             Dim grpMaters As TPServer.ITGroupMaterials = TArt.GroupMaterials
             Dim grpmat As TPServer.ITGroupMaterial = grpMaters.First
-
+            'grpmat.InArts.First.
             While grpMaters.EOF <> 1
                 If grpmat.Status = 0 Then
-                    Dim Tmats As TPServer.ITMaterials = grpmat.Materials
-                    Dim MatCount As Integer = Tmats.Count
+                    Dim ref_GrMaterials As TPServer.ITArticles = grpmat.InArts
+                    Dim ref_GrMat As TPServer.ITArticle = ref_GrMaterials.First
+                    For q = 0 To ref_GrMaterials.Count - 1
+                        If ref_GrMat.ArchID = Proj_Id Or ref_GrMat.ArchID = -1 Or ref_GrMat.ArchID = 0 Then
+                            Dim Tmats As TPServer.ITMaterials = grpmat.Materials
+                            Dim MatCount As Integer = Tmats.Count
 
-                    Dim imat As TPServer.ITMaterial
-                    imat = Tmats.First
+                            Dim imat As TPServer.ITMaterial
+                            imat = Tmats.First
 
-                    Dim j As Integer = 0
-                    Try
-                        For i As Integer = 0 To MatCount - 1
-                            If imat.Materials.Count = 0 Then j += 1
-                            imat = Tmats.Next
-                        Next
-                        j -= 1
-                    Catch ex As Exception
-                    End Try
-                    ReDim array(j, 3)
+                            Dim j As Integer = 0
+                            Try
+                                For i As Integer = 0 To MatCount - 1
+                                    If imat.Materials.Count = 0 Then j += 1
+                                    imat = Tmats.Next
+                                Next
+                                j -= 1
+                            Catch ex As Exception
+                            End Try
+                            ReDim array(j, 3)
 
-                    Try
-                        j = 0
-                        imat = Tmats.First
-                        For i As Integer = 0 To MatCount - 1
-                            If imat.Materials.Count = 0 Then
-                                'ReDim Preserve array(j + 1, 3)
-                                MaterName = imat.Value("Овсм")
-                                MaterIBKey = imat.Value("%MAT")
-                                MaterNorma = imat.Norma
-                                MaterMU = imat.Value("едНв")
+                            Try
+                                j = 0
+                                imat = Tmats.First
+                                For i As Integer = 0 To MatCount - 1
+                                    If imat.Materials.Count = 0 Then
+                                        'ReDim Preserve array(j + 1, 3)
+                                        MaterName = imat.Value("Овсм")
+                                        MaterIBKey = imat.Value("%MAT")
+                                        MaterNorma = imat.Norma
+                                        MaterMU = imat.Value("едНв")
 
-                                array(j, 0) = MaterName
-                                array(j, 1) = MaterIBKey
-                                array(j, 2) = MaterNorma
-                                array(j, 3) = MaterMU
-                                j += 1
-                            End If
-                            imat = Tmats.Next
-                        Next
-                    Catch ex As Exception
-                    End Try
-                    Return array
+                                        array(j, 0) = MaterName
+                                        array(j, 1) = MaterIBKey
+                                        array(j, 2) = MaterNorma
+                                        array(j, 3) = MaterMU
+                                        j += 1
+                                    End If
+                                    imat = Tmats.Next
+                                Next
+                            Catch ex As Exception
+                            End Try
+                            Return array
+                        End If
+                        ref_GrMat = ref_GrMaterials.Next
+                    Next
                 End If
                 grpmat = grpMaters.Next
             End While
