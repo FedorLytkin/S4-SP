@@ -1447,6 +1447,16 @@ ifpozRAVNOTempPoz:
             Dim count_Rout As Integer = TRout.VarCount
             Dim TRout1 As TPServer.TRouteVariant = TRout.First()
             For g As Integer = 0 To count_Rout - 1
+                'ищем расцеховку по применяемости! Если условие не строгое, то нужно дать значение "-1"
+                Dim ref_Rout As TPServer.ITArticle = TRout1.InArts.First
+                For k = 0 To TRout1.InArts.Count - 1
+                    If ref_Rout.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0 Or TRout1.isDefault = 1 Then
+                        rascexovka = TRout1.Stroka
+                        Exit For
+                    End If
+                    ref_Rout = TRout1.InArts.Next
+                Next
+                If rascexovka IsNot Nothing Or rascexovka <> "" Then Exit For
                 If TRout1.isDefault = 1 Then
                     rascexovka = TRout1.Stroka
                     Exit For
