@@ -1388,7 +1388,7 @@ ifpozRAVNOTempPoz:
                     Dim ref_GrMaterials As TPServer.ITArticles = grpmat.InArts
                     Dim ref_GrMat As TPServer.ITArticle = ref_GrMaterials.First
                     For q = 0 To ref_GrMaterials.Count - 1
-                        If ref_GrMat.ArchID = Proj_Id Or ref_GrMat.ArchID = -1 Or ref_GrMat.ArchID = 0 Then
+                        If ref_GrMat.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0 Then
                             Dim Tmats As TPServer.ITMaterials = grpmat.Materials
                             Dim MatCount As Integer = Tmats.Count
 
