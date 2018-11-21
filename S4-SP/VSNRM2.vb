@@ -1425,6 +1425,7 @@ ifpozRAVNOTempPoz:
                     End Try
                     Return array
                 End If
+                grpmat = grpMaters.Next
             End While
 
 
