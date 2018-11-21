@@ -1380,44 +1380,57 @@ ifpozRAVNOTempPoz:
         Dim array(0, 0), MaterName, MaterIBKey, MaterNorma, MaterMU As String
         Try
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
-            Dim Tmats As TPServer.ITMaterials = TArt.Materials
-            Dim MatCount As Integer = Tmats.Count
+            Dim grpMaters As TPServer.ITGroupMaterials = TArt.GroupMaterials
+            Dim grpmat As TPServer.ITGroupMaterial = grpMaters.First
 
-            Dim imat As TPServer.ITMaterial
-            imat = Tmats.First
+            While grpMaters.EOF <> 1
+                If grpmat.Status = 0 Then
+                    Dim Tmats As TPServer.ITMaterials = grpmat.Materials
+                    Dim MatCount As Integer = Tmats.Count
 
-            Dim j As Integer = 0
-            Try
-                For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 Then j += 1
-                    imat = Tmats.Next
-                Next
-                j -= 1
-            Catch ex As Exception
-            End Try
-            ReDim array(j, 3)
-            Try
-                j = 0
-                imat = Tmats.First
-                For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 Then
-                        'ReDim Preserve array(j + 1, 3)
-                        MaterName = imat.Value("Овсм")
-                        MaterIBKey = imat.Value("%MAT")
-                        MaterNorma = imat.Norma
-                        MaterMU = imat.Value("едНв")
+                    Dim imat As TPServer.ITMaterial
+                    imat = Tmats.First
 
-                        array(j, 0) = MaterName
-                        array(j, 1) = MaterIBKey
-                        array(j, 2) = MaterNorma
-                        array(j, 3) = MaterMU
-                        j += 1
-                    End If
-                    imat = Tmats.Next
-                Next
-            Catch ex As Exception
-            End Try
-            Return array
+                    Dim j As Integer = 0
+                    Try
+                        For i As Integer = 0 To MatCount - 1
+                            If imat.Materials.Count = 0 Then j += 1
+                            imat = Tmats.Next
+                        Next
+                        j -= 1
+                    Catch ex As Exception
+                    End Try
+                    ReDim array(j, 3)
+
+                    Try
+                        j = 0
+                        imat = Tmats.First
+                        For i As Integer = 0 To MatCount - 1
+                            If imat.Materials.Count = 0 Then
+                                'ReDim Preserve array(j + 1, 3)
+                                MaterName = imat.Value("Овсм")
+                                MaterIBKey = imat.Value("%MAT")
+                                MaterNorma = imat.Norma
+                                MaterMU = imat.Value("едНв")
+
+                                array(j, 0) = MaterName
+                                array(j, 1) = MaterIBKey
+                                array(j, 2) = MaterNorma
+                                array(j, 3) = MaterMU
+                                j += 1
+                            End If
+                            imat = Tmats.Next
+                        Next
+                    Catch ex As Exception
+                    End Try
+                    Return array
+                End If
+            End While
+
+
+
+
+
         Catch ex As Exception
             Return array
         End Try
