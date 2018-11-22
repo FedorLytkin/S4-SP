@@ -971,12 +971,18 @@ ifpozRAVNOTempPoz:
         SetColumnVisible(ShName_PartList, CN_PL_Sort_IBKey, True)
     End Sub
     Sub CustomDocProp()
+        'Сведения о продукте(программе)
         CreateExcelCustomProperty("Программа", Application.ProductName, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Версия", Application.ProductVersion, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Дата создания", Now, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Пользователь", Form1.ToolStripTextBox1.Text, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Рабочая станция", Environment.MachineName, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        'сведения о документе(объекте)
+        CreateExcelCustomProperty("ArtID", artID_Main, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        Dim t_DocID As Integer = get_DocIDbyArtId(artID_Main)
 
+        CreateExcelCustomProperty("DocID", t_DocID, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+        CreateExcelCustomProperty("Версия документа", get_VersIDbyDocID(t_DocID), Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
@@ -1116,6 +1122,34 @@ ifpozRAVNOTempPoz:
             End With
         Catch ex As Exception
 
+        End Try
+    End Function
+    Function get_DocIDbyArtId(ArtID As Integer) As Integer
+        Application.DoEvents()
+        Dim DocID As Integer
+        Try
+            With s4
+                .OpenArticle(ArtID)
+                DocID = .GetArticleDocID
+                .CloseArticle()
+                Return DocID
+            End With
+        Catch ex As Exception
+            Return -3
+        End Try
+    End Function
+    Function get_VersIDbyDocID(DocID As Integer) As Integer
+        Application.DoEvents()
+        Dim Vers As Integer
+        Try
+            With s4
+                .OpenDocument(DocID)
+                Vers = .GetDocActualVersionID
+                .CloseDocument()
+                Return Vers
+            End With
+        Catch ex As Exception
+            Return -3
         End Try
     End Function
     Sub excel_write_aboutPart_in_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
