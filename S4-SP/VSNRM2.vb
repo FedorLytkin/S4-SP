@@ -1203,9 +1203,7 @@ ifpozRAVNOTempPoz:
                 Catch ex As Exception
 
                 End Try
-                'Case 6 'прочие
-
-            Case 7 'материалы
+                'Case 6 'прочие            Case 7 'материалы
                 Try
                     tmp_colors = Color.LightSkyBlue
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
