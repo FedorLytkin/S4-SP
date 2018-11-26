@@ -1421,7 +1421,11 @@ ifpozRAVNOTempPoz:
             Dim j As Integer = 0
             Try
                 For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
+                    Try
+                        If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
+                    Catch ex As Exception
+                        If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
+                    End Try
                     imat = Tmats.Next
                 Next
                 j -= 1
@@ -1432,19 +1436,35 @@ ifpozRAVNOTempPoz:
                 j = 0
                 imat = Tmats.First
                 For i As Integer = 0 To MatCount - 1
-                    If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
-                        'ReDim Preserve array(j + 1, 3)
-                        MaterName = imat.Value("Овсм")
-                        MaterIBKey = imat.Value("%MAT")
-                        MaterNorma = imat.Norma
-                        MaterMU = imat.Value("едНв")
+                    Try
+                        If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
+                            'ReDim Preserve array(j + 1, 3)
+                            MaterName = imat.Value("Овсм")
+                            MaterIBKey = imat.Value("%MAT")
+                            MaterNorma = imat.Norma
+                            MaterMU = imat.Value("едНв")
 
-                        array(j, 0) = MaterName
-                        array(j, 1) = MaterIBKey
-                        array(j, 2) = MaterNorma
-                        array(j, 3) = MaterMU
-                        j += 1
-                    End If
+                            array(j, 0) = MaterName
+                            array(j, 1) = MaterIBKey
+                            array(j, 2) = MaterNorma
+                            array(j, 3) = MaterMU
+                            j += 1
+                        End If
+                    Catch ex As Exception
+                        If imat.Materials.Count = 0 And imat.Group = 0 Then
+                            'ReDim Preserve array(j + 1, 3)
+                            MaterName = imat.Value("Овсм")
+                            MaterIBKey = imat.Value("%MAT")
+                            MaterNorma = imat.Norma
+                            MaterMU = imat.Value("едНв")
+
+                            array(j, 0) = MaterName
+                            array(j, 1) = MaterIBKey
+                            array(j, 2) = MaterNorma
+                            array(j, 3) = MaterMU
+                            j += 1
+                        End If
+                    End Try
                     imat = Tmats.Next
                 Next
             Catch ex As Exception
