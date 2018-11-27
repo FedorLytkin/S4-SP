@@ -1204,6 +1204,7 @@ ifpozRAVNOTempPoz:
 
                 End Try
                 'Case 6 'прочие            Case 7 'материалы
+            Case 7 'материалы
                 Try
                     tmp_colors = Color.LightSkyBlue
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
@@ -1243,6 +1244,45 @@ ifpozRAVNOTempPoz:
                 Catch ex As Exception
 
                 End Try
+                'Try
+                '    tmp_colors = Color.LightSkyBlue
+                '    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
+                '    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                '    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                '        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
+                '        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
+                '    Else
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                '        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                '    End If
+                '    If CDbl(TC_Info(6)) <> 0 Then
+                '        sum = CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                '    Else
+                '        sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
+                '    End If
+                '    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                '    'красим вспомогательный материал в свой цвет
+                '    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+
+
+                '    'Dim Norma_ras_SUM As Double
+                '    'If CDbl(TP_Array(6)) <> 0 Then
+                '    '    ZagSumCount = Count_Summ / CDbl(TP_Array(6))
+                '    '    Norma_ras_SUM = ZagSumCount * CDbl(TP_Array(2))
+                '    '    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, ZagSumCount)
+                '    '    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, Norma_ras_SUM.ToString.Replace(",", "."))
+                '    'Else
+                '    '    set_Value_From_Cell(Sheetname, CN_ZagSumCount, lastRowNum, 0)
+                '    '    set_Value_From_Cell(Sheetname, CN_NormaRashoda_Sum, lastRowNum, 0)
+                '    'End If
+
+                'Catch ex As Exception
+
+                'End Try
         End Select
         'красим в свой цвет
         SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
