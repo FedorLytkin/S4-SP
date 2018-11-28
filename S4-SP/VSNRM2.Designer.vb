@@ -38,19 +38,16 @@ Partial Class VSNRM2
         Me.СРазделомПрочиеИзделияToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СРазделомМатериалыToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ЗаменятьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripComboBox1 = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.СПеречнемДеталейToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СПеречнемМатериаловToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ПоказыватьПроцессЭкспортаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripComboBox2 = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton3 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.Справка = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton4 = New System.Windows.Forms.ToolStripButton()
         Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ОткрытьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -58,13 +55,15 @@ Partial Class VSNRM2
         Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripLabel1 = New System.Windows.Forms.ToolStripLabel()
+        Me.ToolStripComboBox1 = New System.Windows.Forms.ToolStripComboBox()
+        Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStrip1.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton1, Me.ToolStripSeparator1, Me.ToolStripButton2, Me.ToolStripSeparator2, Me.ToolStripDropDownButton1, Me.ToolStripSeparator3, Me.ToolStripButton3, Me.ToolStripSeparator7, Me.Справка, Me.ToolStripButton4, Me.ToolStripLabel1})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton1, Me.ToolStripSeparator1, Me.ToolStripButton2, Me.ToolStripSeparator2, Me.ToolStripDropDownButton1, Me.ToolStripSeparator3, Me.ToolStripButton3, Me.ToolStripSeparator7, Me.Справка, Me.ToolStripLabel1, Me.ToolStripProgressBar1})
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(427, 25)
@@ -104,7 +103,7 @@ Partial Class VSNRM2
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem, Me.ToolStripComboBox2})
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem})
         Me.ToolStripDropDownButton1.Image = Global.S4_SP.My.Resources.Resources.wrench_512
         Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
@@ -174,13 +173,6 @@ Partial Class VSNRM2
         Me.ЗаменятьToolStripMenuItem.ToolTipText = "Символ ""~""(тильда) в материале, в разделах Материал, Стандарные и " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Прочие издели" &
     "я будет заменен на "" ""(пробел)"
         '
-        'ToolStripComboBox1
-        '
-        Me.ToolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ToolStripComboBox1.Items.AddRange(New Object() {"Технологический", "Конструкторский", "Комбинированный"})
-        Me.ToolStripComboBox1.Name = "ToolStripComboBox1"
-        Me.ToolStripComboBox1.Size = New System.Drawing.Size(121, 23)
-        '
         'ToolStripSeparator5
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
@@ -222,11 +214,6 @@ Partial Class VSNRM2
         Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
         Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem.Text = "Показывать системную информацию"
         '
-        'ToolStripComboBox2
-        '
-        Me.ToolStripComboBox2.Name = "ToolStripComboBox2"
-        Me.ToolStripComboBox2.Size = New System.Drawing.Size(121, 23)
-        '
         'ToolStripSeparator3
         '
         Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
@@ -256,15 +243,6 @@ Partial Class VSNRM2
         Me.Справка.Size = New System.Drawing.Size(23, 22)
         Me.Справка.Text = "ToolStripButton5"
         Me.Справка.ToolTipText = "Справка"
-        '
-        'ToolStripButton4
-        '
-        Me.ToolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton4.Image = CType(resources.GetObject("ToolStripButton4.Image"), System.Drawing.Image)
-        Me.ToolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton4.Name = "ToolStripButton4"
-        Me.ToolStripButton4.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton4.Text = "ToolStripButton4"
         '
         'TreeView1
         '
@@ -315,6 +293,20 @@ Partial Class VSNRM2
         Me.ToolStripLabel1.Name = "ToolStripLabel1"
         Me.ToolStripLabel1.Size = New System.Drawing.Size(0, 22)
         '
+        'ToolStripComboBox1
+        '
+        Me.ToolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.ToolStripComboBox1.Items.AddRange(New Object() {"Технологический", "Конструкторский", "Комбинированный"})
+        Me.ToolStripComboBox1.Name = "ToolStripComboBox1"
+        Me.ToolStripComboBox1.Size = New System.Drawing.Size(121, 23)
+        '
+        'ToolStripProgressBar1
+        '
+        Me.ToolStripProgressBar1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
+        Me.ToolStripProgressBar1.Name = "ToolStripProgressBar1"
+        Me.ToolStripProgressBar1.Size = New System.Drawing.Size(100, 22)
+        Me.ToolStripProgressBar1.Visible = False
+        '
         'VSNRM2
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -351,7 +343,6 @@ Partial Class VSNRM2
     Friend WithEvents УдалитьВетвьToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
     Friend WithEvents ЗаменятьToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripComboBox1 As ToolStripComboBox
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents СПеречнемДеталейToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents СПеречнемМатериаловToolStripMenuItem As ToolStripMenuItem
@@ -365,7 +356,7 @@ Partial Class VSNRM2
     Friend WithEvents СРазделомСтандартныеЕдиницыToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents СРазделомПрочиеИзделияToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents СРазделомМатериалыToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripComboBox2 As ToolStripComboBox
-    Friend WithEvents ToolStripButton4 As ToolStripButton
     Friend WithEvents ToolStripLabel1 As ToolStripLabel
+    Friend WithEvents ToolStripComboBox1 As ToolStripComboBox
+    Friend WithEvents ToolStripProgressBar1 As ToolStripProgressBar
 End Class

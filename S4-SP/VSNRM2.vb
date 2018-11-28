@@ -919,20 +919,32 @@ ifpozRAVNOTempPoz:
         'автоширина
         SetAutoFIT(Sheetname)
     End Sub
+    Function PBarLoad()
+        ToolStripProgressBar1.Value = 0
+        ToolStripProgressBar1.Visible = True
+        ToolStripProgressBar1.Maximum = TreeView1.GetNodeCount(True) - 1
+        ToolStripProgressBar1.Step = 1
+
+    End Function
+    Function PBarStep()
+        ToolStripProgressBar1.PerformStep()
+        If ToolStripProgressBar1.Value = ToolStripProgressBar1.Maximum Then
+            ToolStripProgressBar1.Visible = False
+        End If
+    End Function
     Private Sub ToolStripButton2_Click(sender As Object, e As EventArgs) Handles ToolStripButton2.Click
         Application.DoEvents()
-        ToolStripLabel1.Text = "Начинаю выгрузку ведомости в Excel"
         If TreeView1.Nodes.Count = 0 Then
             MsgBox("Для выгрузки Ведомости, выберите Объект")
             Exit Sub
         End If
+        PBarLoad()
         WriteEXCellTitle()
 
         If NO_Purchated Then addExTitlePurchated() 'создать ВЕДОМОСТЬ ПОКУПНЫХ
         If NO_Parts Then addExTitlePartList() 'создать ВЕДОМОСТЬ ДЕТАЛЕЙ
 
         read_NEXTLEVELtreeview(TreeView1.Nodes.Item(0))
-
         last_Rowmun = Get_LastRowInOneColumn(Sheetname, CN_Naim)
 
 
@@ -950,8 +962,8 @@ ifpozRAVNOTempPoz:
         'создание свойства
         CustomDocProp()
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
-        'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
-        ToolStripLabel1.Text = "Выгрузка ведомости завершена!"
+        'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой 
+        PBarStep()
         Beep()
     End Sub
     Sub ChancheVisibleColumn()
@@ -989,6 +1001,7 @@ ifpozRAVNOTempPoz:
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
+        PBarStep()
         Dim myNode As TreeNode
         For Each myNode In myNextNode.Nodes
             Dim param_Array As Array = myNode.Tag.ToString.Split(Spletter)
@@ -1542,7 +1555,8 @@ ifpozRAVNOTempPoz:
                     For j As Integer = 0 To Zag.InArts.Count - 1
                         'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
                         Try
-                            If RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0 Then
+                            If (RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0) Or Zag.IsMainVar = 1 Then
+
                                 With Zag
                                     KIM = .Value("КИМ")
                                     Norma = .Value("НР")
@@ -1889,36 +1903,48 @@ ifpozRAVNOTempPoz:
     End Sub
 
     Private Sub СРазделомСборочныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСборочныеЕдиницыToolStripMenuItem.Click
+        no_SborkaProc()
+    End Sub
+    Sub no_SborkaProc()
         СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСборочныеЕдиницыToolStripMenuItem.Checked)
         NO_Sborka = СРазделомСборочныеЕдиницыToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
     End Sub
-
     Private Sub СРазделомДеталиToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомДеталиToolStripMenuItem.Click
+        no_PartProc()
+    End Sub
+    Sub no_PartProc()
         СРазделомДеталиToolStripMenuItem.Checked = Not (СРазделомДеталиToolStripMenuItem.Checked)
         NO_PartSecion = СРазделомДеталиToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
     End Sub
-
     Private Sub СРазделомСтандартныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСтандартныеЕдиницыToolStripMenuItem.Click
         СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked)
         NO_Standart = СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
     End Sub
-
+    Sub no_StandProc()
+        СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked)
+        NO_Standart = СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
+        CT_ID_in_Query_Change()
+    End Sub
     Private Sub СРазделомПрочиеИзделияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомПрочиеИзделияToolStripMenuItem.Click
+        no_Pro4Proc()
+    End Sub
+    Sub no_Pro4Proc()
         СРазделомПрочиеИзделияToolStripMenuItem.Checked = Not (СРазделомПрочиеИзделияToolStripMenuItem.Checked)
         NO_Pro4ee = СРазделомПрочиеИзделияToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
     End Sub
-
     Private Sub СРазделомМатериалыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомМатериалыToolStripMenuItem.Click
+        no_MatProc()
+    End Sub
+    Sub no_MatProc()
         СРазделомМатериалыToolStripMenuItem.Checked = Not (СРазделомМатериалыToolStripMenuItem.Checked)
         NO_Material = СРазделомМатериалыToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
     End Sub
-
-    Private Sub ToolStripButton4_Click_2(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+    Private Sub ToolStripButton4_Click_2(sender As Object, e As EventArgs)
         Get_Vspom_Mater_Array(16188, -1)
     End Sub
 
@@ -1926,14 +1952,19 @@ ifpozRAVNOTempPoz:
 
         If e.Control And e.KeyCode.ToString = "O" Then
             Me.KeyPreview = False
-            СРазделомДеталиToolStripMenuItem.Checked = Not СРазделомДеталиToolStripMenuItem.Checked
-            СРазделомМатериалыToolStripMenuItem.Checked = Not СРазделомМатериалыToolStripMenuItem.Checked
-            СРазделомПрочиеИзделияToolStripMenuItem.Checked = Not СРазделомПрочиеИзделияToolStripMenuItem.Checked
-            СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = Not СРазделомСборочныеЕдиницыToolStripMenuItem.Checked
-            СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
+            no_MatProc()
+            no_PartProc()
+            no_Pro4Proc()
+            no_SborkaProc()
+            no_StandProc()
+
 
         End If
         Me.KeyPreview = True
+    End Sub
+
+    Private Sub ToolStripButton4_Click_3(sender As Object, e As EventArgs)
+        Get_TP_ParmArray(16358, -1)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
