@@ -1450,68 +1450,69 @@ ifpozRAVNOTempPoz:
     Function Get_Vspom_Mater_Array(Art_ID As Integer, Proj_Id As Integer) As Array
         Application.DoEvents()
         Dim array(0, 0), MaterName, MaterIBKey, MaterNorma, MaterMU As String
+
         Try
-            Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
-            Dim Tmats As TPServer.ITMaterials = TArt.Materials
-            Dim MatCount As Integer = Tmats.Count
+            ''    Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
+            ''    Dim Tmats As TPServer.ITMaterials = TArt.Materials
+            ''    Dim MatCount As Integer = Tmats.Count
 
-            Dim imat As TPServer.ITMaterial
-            imat = Tmats.First
+            ''    Dim imat As TPServer.ITMaterial
+            ''    imat = Tmats.First
 
-            Dim j As Integer = 0
-            Try
-                For i As Integer = 0 To MatCount - 1
-                    Try
-                        If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
-                    Catch ex As Exception
-                        If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
-                    End Try
-                    imat = Tmats.Next
-                Next
-                j -= 1
-            Catch ex As Exception
-            End Try
-            ReDim array(j, 3)
-            Try
-                j = 0
-                imat = Tmats.First
-                For i As Integer = 0 To MatCount - 1
-                    Try
-                        If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
-                            'ReDim Preserve array(j + 1, 3)
-                            MaterName = imat.Value("Овсм")
-                            MaterIBKey = imat.Value("%MAT")
-                            MaterNorma = imat.Norma
-                            MaterMU = imat.Value("едНв")
+            ''    Dim j As Integer = 0
+            ''    Try
+            ''        For i As Integer = 0 To MatCount - 1
+            ''            Try
+            ''                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
+            ''            Catch ex As Exception
+            ''                If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
+            ''            End Try
+            ''            imat = Tmats.Next
+            ''        Next
+            ''        j -= 1
+            ''    Catch ex As Exception
+            ''    End Try
+            ''    ReDim array(j, 3)
+            ''    Try
+            ''        j = 0
+            ''        imat = Tmats.First
+            ''        For i As Integer = 0 To MatCount - 1
+            ''            Try
+            ''                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
+            ''                    'ReDim Preserve array(j + 1, 3)
+            ''                    MaterName = imat.Value("Овсм")
+            ''                    MaterIBKey = imat.Value("%MAT")
+            ''                    MaterNorma = imat.Norma
+            ''                    MaterMU = imat.Value("едНв")
 
-                            array(j, 0) = MaterName
-                            array(j, 1) = MaterIBKey
-                            array(j, 2) = MaterNorma
-                            array(j, 3) = MaterMU
-                            j += 1
-                        End If
-                    Catch ex As Exception
-                        If imat.Materials.Count = 0 And imat.Group = 0 Then
-                            'ReDim Preserve array(j + 1, 3)
-                            MaterName = imat.Value("Овсм")
-                            MaterIBKey = imat.Value("%MAT")
-                            MaterNorma = imat.Norma
-                            MaterMU = imat.Value("едНв")
+            ''                    array(j, 0) = MaterName
+            ''                    array(j, 1) = MaterIBKey
+            ''                    array(j, 2) = MaterNorma
+            ''                    array(j, 3) = MaterMU
+            ''                    j += 1
+            ''                End If
+            ''            Catch ex As Exception
+            ''                If imat.Materials.Count = 0 And imat.Group = 0 Then
+            ''                    'ReDim Preserve array(j + 1, 3)
+            ''                    MaterName = imat.Value("Овсм")
+            ''                    MaterIBKey = imat.Value("%MAT")
+            ''                    MaterNorma = imat.Norma
+            ''                    MaterMU = imat.Value("едНв")
 
-                            array(j, 0) = MaterName
-                            array(j, 1) = MaterIBKey
-                            array(j, 2) = MaterNorma
-                            array(j, 3) = MaterMU
-                            j += 1
-                        End If
-                    End Try
-                    imat = Tmats.Next
-                Next
-            Catch ex As Exception
-            End Try
-            Return array
+            ''                    array(j, 0) = MaterName
+            ''                    array(j, 1) = MaterIBKey
+            ''                    array(j, 2) = MaterNorma
+            ''                    array(j, 3) = MaterMU
+            ''                    j += 1
+            ''                End If
+            ''            End Try
+            ''            imat = Tmats.Next
+            ''        Next
+            ''    Catch ex As Exception
+            ''    End Try
+            'Return array
         Catch ex As Exception
-            Return array
+        Return array
         End Try
     End Function
     Function Get_TP_ParmArray(Art_ID As Integer, Proj_Id As Integer) As Array
