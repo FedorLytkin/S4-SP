@@ -921,6 +921,7 @@ ifpozRAVNOTempPoz:
     End Sub
     Private Sub ToolStripButton2_Click(sender As Object, e As EventArgs) Handles ToolStripButton2.Click
         Application.DoEvents()
+        ToolStripLabel1.Text = "Начинаю выгрузку ведомости в Excel"
         If TreeView1.Nodes.Count = 0 Then
             MsgBox("Для выгрузки Ведомости, выберите Объект")
             Exit Sub
@@ -950,6 +951,8 @@ ifpozRAVNOTempPoz:
         CustomDocProp()
         'SetCellsCdbl(Sheetname, CN_NumPP, RowN_First, CN_NumPP, last_Rowmun) 'преобразовал в число столбцы с позицией
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой
+        ToolStripLabel1.Text = "Выгрузка ведомости завершена!"
+        Beep()
     End Sub
     Sub ChancheVisibleColumn()
         SetColumnVisible(Sheetname, CN_ArtID, True)
@@ -1450,40 +1453,50 @@ ifpozRAVNOTempPoz:
     Dim arSize As Integer
     Dim arVspMat(0, 0) As String
     Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, ReadInArray As Boolean)
-        Dim Group As TPServer.ITGroupMaterial = grpmats.First
-        While grpmats.EOF <> 1
-            If Group.Status = 0 Then
-                GetVspMatInGrMat(Group.Materials, ReadInArray)
+        Try
+            Dim Group As TPServer.ITGroupMaterial = grpmats.First
+            While grpmats.EOF <> 1
+                If Group.Status = 0 Then
+                    GetVspMatInGrMat(Group.Materials, ReadInArray)
 
-                If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, ReadInArray)
-            End If
-            Group = grpmats.First()
-        End While
+                    If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, ReadInArray)
+                End If
+                Group = grpmats.Next()
+            End While
+        Catch ex As Exception
+
+        End Try
     End Function
     Function GetVspMatInGrMat(mats As TPServer.ITMaterials, ReadInArray As Boolean)
-        Dim mat As TPServer.ITMaterial = mats.First
-        Dim MatNAme, MatIMKey, NormaG, MaterMU As String
-        While mats.EOF <> 1
-            If mat.Materials.Count > 0 Then
-                GetVspMatInGrMat(mat.Materials, ReadInArray)
-            Else
-                arSize += 1
-                If ReadInArray Then
-                    MatNAme = mat.Value("Овсм")
-                    MatIMKey = mat.Value("%MAT")
-                    NormaG = mat.Norma
-                    MaterMU = mat.Value("едНв")
-                    arVspMat(arSize, 0) = MatNAme
-                    arVspMat(arSize, 1) = MatIMKey
-                    arVspMat(arSize, 2) = NormaG
-                    arVspMat(arSize, 3) = MaterMU
+        Try
+            Dim mat As TPServer.ITMaterial = mats.First
+            Dim MatNAme, MatIMKey, NormaG, MaterMU As String
+            While mats.EOF <> 1
+                If mat.Materials.Count > 0 Then
+                    GetVspMatInGrMat(mat.Materials, ReadInArray)
                 Else
-                    ReDim arVspMat(arSize, 3)
-                End If
-            End If
+                    arSize += 1
+                    If ReadInArray Then
+                        Try
+                            MatNAme = mat.Value("Овсм")
+                            MatIMKey = mat.Value("%MAT")
+                            NormaG = mat.Norma
+                            MaterMU = mat.Value("едНв")
 
-            mat = mats.Next
-        End While
+                            arVspMat(arSize - 1, 0) = MatNAme
+                            arVspMat(arSize - 1, 1) = MatIMKey
+                            arVspMat(arSize - 1, 2) = NormaG
+                            arVspMat(arSize - 1, 3) = MaterMU
+                        Catch ex As Exception
+                        End Try
+                    Else
+                        ReDim arVspMat(arSize - 1, 3)
+                    End If
+                End If
+                mat = mats.Next
+            End While
+        Catch ex As Exception
+        End Try
     End Function
     Function Get_Vspom_Mater_Array(Art_ID As Integer, Proj_Id As Integer) As Array
         Application.DoEvents()
@@ -1492,69 +1505,14 @@ ifpozRAVNOTempPoz:
         Try
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
             Dim GrMat As TPServer.ITGroupMaterials = TArt.GroupMaterials
-
+            arSize = 0
             WalkInGroupMats(GrMat, False) 'считаем размер массива arVspMat(кол-во вспомогательных материалов)
+            arSize = 0
             WalkInGroupMats(GrMat, True) 'записывает данные в массив
-            '    Dim Tmats As TPServer.ITMaterials = TArt.Materials
-            '    Dim MatCount As Integer = Tmats.Count
 
-            '    Dim imat As TPServer.ITMaterial
-            '    imat = Tmats.First
-
-            '    Dim j As Integer = 0
-            '    Try
-            '        For i As Integer = 0 To MatCount - 1
-            '            Try
-            '                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
-            '            Catch ex As Exception
-            '                If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
-            '            End Try
-            '            imat = Tmats.Next
-            '        Next
-            '        j -= 1
-            '    Catch ex As Exception
-            '    End Try
-            '    ReDim array(j, 3)
-            '    Try
-            '        j = 0
-            '        imat = Tmats.First
-            '        For i As Integer = 0 To MatCount - 1
-            '            Try
-            '                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
-            '                    'ReDim Preserve array(j + 1, 3)
-            '                    MaterName = imat.Value("Овсм")
-            '                    MaterIBKey = imat.Value("%MAT")
-            '                    MaterNorma = imat.Norma
-            '                    MaterMU = imat.Value("едНв")
-
-            '                    array(j, 0) = MaterName
-            '                    array(j, 1) = MaterIBKey
-            '                    array(j, 2) = MaterNorma
-            '                    array(j, 3) = MaterMU
-            '                    j += 1
-            '                End If
-            '            Catch ex As Exception
-            '                If imat.Materials.Count = 0 And imat.Group = 0 Then
-            '                    'ReDim Preserve array(j + 1, 3)
-            '                    MaterName = imat.Value("Овсм")
-            '                    MaterIBKey = imat.Value("%MAT")
-            '                    MaterNorma = imat.Norma
-            '                    MaterMU = imat.Value("едНв")
-
-            '                    array(j, 0) = MaterName
-            '                    array(j, 1) = MaterIBKey
-            '                    array(j, 2) = MaterNorma
-            '                    array(j, 3) = MaterMU
-            '                    j += 1
-            '                End If
-            '            End Try
-            '            imat = Tmats.Next
-            '        Next
-            '    Catch ex As Exception
-            '    End Try
-            Return array
+            Return arVspMat
         Catch ex As Exception
-        Return array
+            Return arVspMat
         End Try
     End Function
     Function Get_TP_ParmArray(Art_ID As Integer, Proj_Id As Integer) As Array
@@ -1962,6 +1920,20 @@ ifpozRAVNOTempPoz:
 
     Private Sub ToolStripButton4_Click_2(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
         Get_Vspom_Mater_Array(16188, -1)
+    End Sub
+
+    Private Sub VSNRM2_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+
+        If e.Control And e.KeyCode.ToString = "O" Then
+            Me.KeyPreview = False
+            СРазделомДеталиToolStripMenuItem.Checked = Not СРазделомДеталиToolStripMenuItem.Checked
+            СРазделомМатериалыToolStripMenuItem.Checked = Not СРазделомМатериалыToolStripMenuItem.Checked
+            СРазделомПрочиеИзделияToolStripMenuItem.Checked = Not СРазделомПрочиеИзделияToolStripMenuItem.Checked
+            СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = Not СРазделомСборочныеЕдиницыToolStripMenuItem.Checked
+            СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
+
+        End If
+        Me.KeyPreview = True
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
