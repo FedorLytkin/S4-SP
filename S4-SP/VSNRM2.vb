@@ -1447,70 +1447,112 @@ ifpozRAVNOTempPoz:
 
         End Try
     End Function
+    Dim arSize As Integer
+    Dim arVspMat(0, 0) As String
+    Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, ReadInArray As Boolean)
+        Dim Group As TPServer.ITGroupMaterial = grpmats.First
+        While grpmats.EOF <> 1
+            If Group.Status = 0 Then
+                GetVspMatInGrMat(Group.Materials, ReadInArray)
+
+                If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, ReadInArray)
+            End If
+            Group = grpmats.First()
+        End While
+    End Function
+    Function GetVspMatInGrMat(mats As TPServer.ITMaterials, ReadInArray As Boolean)
+        Dim mat As TPServer.ITMaterial = mats.First
+        Dim MatNAme, MatIMKey, NormaG, MaterMU As String
+        While mats.EOF <> 1
+            If mat.Materials.Count > 0 Then
+                GetVspMatInGrMat(mat.Materials, ReadInArray)
+            Else
+                arSize += 1
+                If ReadInArray Then
+                    MatNAme = mat.Value("Овсм")
+                    MatIMKey = mat.Value("%MAT")
+                    NormaG = mat.Norma
+                    MaterMU = mat.Value("едНв")
+                    arVspMat(arSize, 0) = MatNAme
+                    arVspMat(arSize, 1) = MatIMKey
+                    arVspMat(arSize, 2) = NormaG
+                    arVspMat(arSize, 3) = MaterMU
+                Else
+                    ReDim arVspMat(arSize, 3)
+                End If
+            End If
+
+            mat = mats.Next
+        End While
+    End Function
     Function Get_Vspom_Mater_Array(Art_ID As Integer, Proj_Id As Integer) As Array
         Application.DoEvents()
-        Dim array(0, 0), MaterName, MaterIBKey, MaterNorma, MaterMU As String
-
+        Dim MaterName, MaterIBKey, MaterNorma, MaterMU As String
+        ReDim arVspMat(0, 0)
         Try
-            ''    Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
-            ''    Dim Tmats As TPServer.ITMaterials = TArt.Materials
-            ''    Dim MatCount As Integer = Tmats.Count
+            Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
+            Dim GrMat As TPServer.ITGroupMaterials = TArt.GroupMaterials
 
-            ''    Dim imat As TPServer.ITMaterial
-            ''    imat = Tmats.First
+            WalkInGroupMats(GrMat, False) 'считаем размер массива arVspMat(кол-во вспомогательных материалов)
+            WalkInGroupMats(GrMat, True) 'записывает данные в массив
+            '    Dim Tmats As TPServer.ITMaterials = TArt.Materials
+            '    Dim MatCount As Integer = Tmats.Count
 
-            ''    Dim j As Integer = 0
-            ''    Try
-            ''        For i As Integer = 0 To MatCount - 1
-            ''            Try
-            ''                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
-            ''            Catch ex As Exception
-            ''                If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
-            ''            End Try
-            ''            imat = Tmats.Next
-            ''        Next
-            ''        j -= 1
-            ''    Catch ex As Exception
-            ''    End Try
-            ''    ReDim array(j, 3)
-            ''    Try
-            ''        j = 0
-            ''        imat = Tmats.First
-            ''        For i As Integer = 0 To MatCount - 1
-            ''            Try
-            ''                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
-            ''                    'ReDim Preserve array(j + 1, 3)
-            ''                    MaterName = imat.Value("Овсм")
-            ''                    MaterIBKey = imat.Value("%MAT")
-            ''                    MaterNorma = imat.Norma
-            ''                    MaterMU = imat.Value("едНв")
+            '    Dim imat As TPServer.ITMaterial
+            '    imat = Tmats.First
 
-            ''                    array(j, 0) = MaterName
-            ''                    array(j, 1) = MaterIBKey
-            ''                    array(j, 2) = MaterNorma
-            ''                    array(j, 3) = MaterMU
-            ''                    j += 1
-            ''                End If
-            ''            Catch ex As Exception
-            ''                If imat.Materials.Count = 0 And imat.Group = 0 Then
-            ''                    'ReDim Preserve array(j + 1, 3)
-            ''                    MaterName = imat.Value("Овсм")
-            ''                    MaterIBKey = imat.Value("%MAT")
-            ''                    MaterNorma = imat.Norma
-            ''                    MaterMU = imat.Value("едНв")
+            '    Dim j As Integer = 0
+            '    Try
+            '        For i As Integer = 0 To MatCount - 1
+            '            Try
+            '                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then j += 1
+            '            Catch ex As Exception
+            '                If imat.Materials.Count = 0 And imat.Group = 0 Then j += 1
+            '            End Try
+            '            imat = Tmats.Next
+            '        Next
+            '        j -= 1
+            '    Catch ex As Exception
+            '    End Try
+            '    ReDim array(j, 3)
+            '    Try
+            '        j = 0
+            '        imat = Tmats.First
+            '        For i As Integer = 0 To MatCount - 1
+            '            Try
+            '                If imat.Materials.Count = 0 And imat.ParentGroupMaterial.Status = 0 Then
+            '                    'ReDim Preserve array(j + 1, 3)
+            '                    MaterName = imat.Value("Овсм")
+            '                    MaterIBKey = imat.Value("%MAT")
+            '                    MaterNorma = imat.Norma
+            '                    MaterMU = imat.Value("едНв")
 
-            ''                    array(j, 0) = MaterName
-            ''                    array(j, 1) = MaterIBKey
-            ''                    array(j, 2) = MaterNorma
-            ''                    array(j, 3) = MaterMU
-            ''                    j += 1
-            ''                End If
-            ''            End Try
-            ''            imat = Tmats.Next
-            ''        Next
-            ''    Catch ex As Exception
-            ''    End Try
-            'Return array
+            '                    array(j, 0) = MaterName
+            '                    array(j, 1) = MaterIBKey
+            '                    array(j, 2) = MaterNorma
+            '                    array(j, 3) = MaterMU
+            '                    j += 1
+            '                End If
+            '            Catch ex As Exception
+            '                If imat.Materials.Count = 0 And imat.Group = 0 Then
+            '                    'ReDim Preserve array(j + 1, 3)
+            '                    MaterName = imat.Value("Овсм")
+            '                    MaterIBKey = imat.Value("%MAT")
+            '                    MaterNorma = imat.Norma
+            '                    MaterMU = imat.Value("едНв")
+
+            '                    array(j, 0) = MaterName
+            '                    array(j, 1) = MaterIBKey
+            '                    array(j, 2) = MaterNorma
+            '                    array(j, 3) = MaterMU
+            '                    j += 1
+            '                End If
+            '            End Try
+            '            imat = Tmats.Next
+            '        Next
+            '    Catch ex As Exception
+            '    End Try
+            Return array
         Catch ex As Exception
         Return array
         End Try
@@ -1916,6 +1958,10 @@ ifpozRAVNOTempPoz:
         СРазделомМатериалыToolStripMenuItem.Checked = Not (СРазделомМатериалыToolStripMenuItem.Checked)
         NO_Material = СРазделомМатериалыToolStripMenuItem.Checked
         CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub ToolStripButton4_Click_2(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+        Get_Vspom_Mater_Array(16188, -1)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
