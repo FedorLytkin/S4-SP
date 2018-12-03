@@ -754,7 +754,7 @@ ifpozRAVNOTempPoz:
         Try
             Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
             If VSpom_Mater_for_Main IsNot Nothing Then
-                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main)
+                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
             End If
         Catch ex As Exception
         End Try
@@ -1021,7 +1021,7 @@ ifpozRAVNOTempPoz:
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
                 TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
                 Try
-                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array)
+                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ)
                 Catch ex As Exception
                 End Try
             End If
@@ -1305,7 +1305,7 @@ ifpozRAVNOTempPoz:
         SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
     End Sub
-    Sub excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array As Array)
+    Sub excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array As Array, Count_Sum As Double)
         Application.DoEvents()
         Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
         Dim tmp_row As Integer
@@ -1321,7 +1321,7 @@ ifpozRAVNOTempPoz:
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 1))
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 3))
 
-                    sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(TP_Vspom_Mater_Array(q, 2))), 3)
+                    sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))), 3)
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
 
                     'красим вспомогательный материал в свой цвет
