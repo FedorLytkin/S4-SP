@@ -1001,7 +1001,6 @@ ifpozRAVNOTempPoz:
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
-        PBarStep()
         Dim myNode As TreeNode
         For Each myNode In myNextNode.Nodes
             Dim param_Array As Array = myNode.Tag.ToString.Split(Spletter)
@@ -1026,6 +1025,7 @@ ifpozRAVNOTempPoz:
                 Catch ex As Exception
                 End Try
             End If
+            PBarStep()
             excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
 
             If myNode.Nodes.Count > 0 Then
@@ -1550,33 +1550,45 @@ ifpozRAVNOTempPoz:
                 Dim Zags As TPServer.ITZags = TArt.Zags
                 zagsCount = Zags.Count
                 Dim Zag As TPServer.ITZag = Zags.First
-                For i As Integer = 0 To zagsCount - 1
-                    Dim RefArts As TPServer.ITArticle = Zag.InArts.First
-                    For j As Integer = 0 To Zag.InArts.Count - 1
-                        'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
-                        Try
-                            If (RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0) Or Zag.IsMainVar = 1 Then
+                If Zag.IsMainVar <> 1 Then
+                    For i As Integer = 0 To zagsCount - 1
+                        Dim RefArts As TPServer.ITArticle = Zag.InArts.First
+                        For j As Integer = 0 To Zag.InArts.Count - 1
+                            'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
+                            Try
+                                If (RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0) Then
 
-                                With Zag
-                                    KIM = .Value("КИМ")
-                                    Norma = .Value("НР")
-                                    Norma_MU = .Value("едНР")
-                                    Sortament = .Value("SORT")
-                                    SortamentIMKey = .Value("%ZAG")
-                                    ZagCount = .Value("КЗаг")
-                                    Zag_key = .Key
-                                    RazmZag = .Value("РАЗМ")
-                                End With
-                                Exit For
-                            End If
-                        Catch ex As Exception
+                                    With Zag
+                                        KIM = .Value("КИМ")
+                                        Norma = .Value("НР")
+                                        Norma_MU = .Value("едНР")
+                                        Sortament = .Value("SORT")
+                                        SortamentIMKey = .Value("%ZAG")
+                                        ZagCount = .Value("КЗаг")
+                                        Zag_key = .Key
+                                        RazmZag = .Value("РАЗМ")
+                                    End With
+                                    Exit For
+                                End If
+                            Catch ex As Exception
 
-                        End Try
-                        RefArts = Zag.InArts.Next
+                            End Try
+                            RefArts = Zag.InArts.Next
+                        Next
+                        Zag = Zags.Next
                     Next
-                    Zag = Zags.Next
-                Next
-
+                ElseIf Zag.IsMainVar = 1 Then
+                    With Zag
+                        KIM = .Value("КИМ")
+                        Norma = .Value("НР")
+                        Norma_MU = .Value("едНР")
+                        Sortament = .Value("SORT")
+                        SortamentIMKey = .Value("%ZAG")
+                        ZagCount = .Value("КЗаг")
+                        Zag_key = .Key
+                        RazmZag = .Value("РАЗМ")
+                    End With
+                End If
                 If ReplaceTildaOnSpace Then
                     Sortament = Replace(Sortament, "~", " ")
                 End If
@@ -1965,6 +1977,10 @@ ifpozRAVNOTempPoz:
 
     Private Sub ToolStripButton4_Click_3(sender As Object, e As EventArgs)
         Get_TP_ParmArray(16358, -1)
+    End Sub
+
+    Private Sub ToolStripButton4_Click_4(sender As Object, e As EventArgs) 
+        TP_VspMat_Array_func(16353)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
