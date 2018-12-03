@@ -1550,8 +1550,8 @@ ifpozRAVNOTempPoz:
                 Dim Zags As TPServer.ITZags = TArt.Zags
                 zagsCount = Zags.Count
                 Dim Zag As TPServer.ITZag = Zags.First
-                If Zag.IsMainVar <> 1 Then
-                    For i As Integer = 0 To zagsCount - 1
+                For i As Integer = 0 To zagsCount - 1
+                    If Zag.IsMainVar <> 1 Then
                         Dim RefArts As TPServer.ITArticle = Zag.InArts.First
                         For j As Integer = 0 To Zag.InArts.Count - 1
                             'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
@@ -1575,20 +1575,22 @@ ifpozRAVNOTempPoz:
                             End Try
                             RefArts = Zag.InArts.Next
                         Next
-                        Zag = Zags.Next
-                    Next
-                ElseIf Zag.IsMainVar = 1 Then
-                    With Zag
-                        KIM = .Value("КИМ")
-                        Norma = .Value("НР")
-                        Norma_MU = .Value("едНР")
-                        Sortament = .Value("SORT")
-                        SortamentIMKey = .Value("%ZAG")
-                        ZagCount = .Value("КЗаг")
-                        Zag_key = .Key
-                        RazmZag = .Value("РАЗМ")
-                    End With
-                End If
+                    ElseIf Zag.IsMainVar = 1 Then
+                        With Zag
+                            KIM = .Value("КИМ")
+                            Norma = .Value("НР")
+                            Norma_MU = .Value("едНР")
+                            Sortament = .Value("SORT")
+                            SortamentIMKey = .Value("%ZAG")
+                            ZagCount = .Value("КЗаг")
+                            Zag_key = .Key
+                            RazmZag = .Value("РАЗМ")
+                        End With
+                        Exit For
+                    End If
+                    Zag = Zags.Next
+                Next
+
                 If ReplaceTildaOnSpace Then
                     Sortament = Replace(Sortament, "~", " ")
                 End If
