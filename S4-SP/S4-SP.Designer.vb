@@ -169,6 +169,7 @@ Partial Class Form1
         '
         'ВСНРМ2ToolStripMenuItem
         '
+        Me.ВСНРМ2ToolStripMenuItem.Enabled = False
         Me.ВСНРМ2ToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.Рисунок1
         Me.ВСНРМ2ToolStripMenuItem.Name = "ВСНРМ2ToolStripMenuItem"
         Me.ВСНРМ2ToolStripMenuItem.Size = New System.Drawing.Size(221, 22)
