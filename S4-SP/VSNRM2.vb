@@ -1087,6 +1087,10 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
         row_num += 1
 
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, VspomMaterialColor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал вспомогательный", 0, 1, 0)
+        row_num += 1
+
         SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColor_Purchated)
         set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Сортамент изделия", 0, 1, 0)
         row_num += 1
@@ -1602,7 +1606,18 @@ ifpozRAVNOTempPoz:
                             MatIMKey = mat.Value("%MAT")
                             NormaG = mat.Norma
                             MaterMU = mat.Value("едНв")
+                            'If MaterMU Is Nothing Then
+                            '    If mats.EOF = 1 Then
+                            '        mat = mats.Prior
+                            '        mat = mats.Next
+                            '        MaterMU = mat.Value("едНв")
 
+                            '    Else
+                            '        mat = mats.Next
+                            '        mat = mats.Prior
+                            '        MaterMU = mat.Value("едНв")
+                            '    End If
+                            'End If
                             arVspMat(arSize - 1, 0) = MatNAme
                             arVspMat(arSize - 1, 1) = MatIMKey
                             arVspMat(arSize - 1, 2) = NormaG
