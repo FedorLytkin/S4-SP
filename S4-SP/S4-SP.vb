@@ -830,7 +830,7 @@ ifDocID_is_null:
                     Return True
                     Exit While
                 End If
-                If ITS4App.asGetArtImbaseKey = IBKey Then
+                If ITS4App.asGetArtImbaseKey = IBKey And IBKey IsNot Nothing Then
                     ITS4App.CloseArticleStructure()
                     Return True
                     Exit While
