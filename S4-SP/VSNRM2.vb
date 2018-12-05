@@ -26,6 +26,8 @@
     'параметр экспортирующий данные о материалах и покупных
     Public NO_Purchated As Boolean = 1
 
+    'параметр экспортирующий данные о материалах и покупных
+    Public NO_ColorNote As Boolean = 1
 
     'параметр экспортирующий данные о материалах и покупных
     Public NO_ExlProc_Visible As Boolean = 1
@@ -691,6 +693,7 @@ ifpozRAVNOTempPoz:
         СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = NO_Standart
         СРазделомПрочиеИзделияToolStripMenuItem.Checked = NO_Pro4ee
         СРазделомМатериалыToolStripMenuItem.Checked = NO_Material
+        ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = NO_ColorNote
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
@@ -731,6 +734,41 @@ ifpozRAVNOTempPoz:
 
         End Try
     End Sub
+
+
+    'Case 1 'документация
+    '            temp_color = Color.Aqua
+    '        Case 2 'комплексы
+    '            temp_color = Color.Aquamarine
+    '        Case 3 'сборки
+    '            temp_color = Color.Yellow
+    '        Case 4 'детали
+    '            temp_color = Color.FromArgb(216, 228, 188) 'Color.DarkKhaki 'GreenYellow (255, 153, 0)
+    '        Case 5 'стандартные
+    '            temp_color = Color.IndianRed
+    '        Case 6 'прочие
+    '            temp_color = Color.LightBlue
+    '        Case 7 'материалы
+    '            temp_color = Color.Khaki
+    '        Case 8 'комплекты
+    '            temp_color = Color.LightPink
+
+    Dim AssemblyColor_Sostav As Color = Color.Yellow
+    Dim DocumColor_Sostav As Color = Color.Aqua
+    Dim PartColor_Sostav As Color = Color.FromArgb(216, 228, 188)
+    Dim StandartColor_Sostav As Color = Color.IndianRed
+    Dim Pro4eeColor_Sostav As Color = Color.LightBlue
+    Dim MaterialColor_Sostav As Color = Color.Khaki
+    Dim KomplekTColor_Sostav As Color = Color.LightPink
+    Dim TechContex_Sostav As Color = Color.Gray ' Color.LightPink
+
+    Dim StandartColor_Purchated As Color = Color.LightGreen
+    Dim Pro4eeColor_Purchated As Color = Color.LightGreen
+    Dim VspomMaterialColor_Purchated As Color = Color.DarkSalmon
+    Dim SortamentColor_Purchated As Color = Color.Tan
+    Dim SortamentColorKonstructor_Purchated As Color = Color.LightSteelBlue
+    Dim MaterialColor_Purchated As Color = Color.LightSkyBlue
+
 
     Public OPT_FirstShow As String = "ExcelReportFirstShow"
     Public OPT_LastInPut As String = "LastInPut"
@@ -954,6 +992,9 @@ ifpozRAVNOTempPoz:
 
         CellsTextHorisAligment(Sheetname, CN_NumPP, RowN_First, last_ColNum, last_Rowmun, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft)
 
+        'пояснение к цветовой гамме
+        If NO_ColorNote Then ColorNote()
+
         SetAutoFIT(Sheetname)
         If NO_Purchated Then SetAutoFIT(ShName_Purchated)
         If NO_Parts Then SetAutoFIT(ShName_PartList)
@@ -998,6 +1039,72 @@ ifpozRAVNOTempPoz:
 
         CreateExcelCustomProperty("DocID", t_DocID, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Версия документа", get_VersIDbyDocID(t_DocID), Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+    End Sub
+    Sub ColorNote()
+        Dim row_num As Integer = RowN_First
+        Dim col_num As Integer = last_ColNum + 3
+
+        'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, DocumColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Документация", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, AssemblyColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Сборочные единицы", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, PartColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Детали", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, StandartColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Стандартные изделия", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, Pro4eeColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Прочие изделия", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, MaterialColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Материалы", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, KomplekTColor_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Комплекты", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, TechContex_Sostav)
+        set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Технологич.связь", 0, 1, 0)
+
+
+        'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
+        row_num = RowN_Purchated_First
+        col_num = CN_Purchated_MU + 3
+
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
+        row_num += 1
+
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Сортамент изделия", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColorKonstructor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал изделия(Констр)", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, StandartColor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Стандартные изделия", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, Pro4eeColor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Прочие изделия", 0, 1, 0)
+        row_num += 1
+
+        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, MaterialColor_Purchated)
+        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал", 0, 1, 0)
     End Sub
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
@@ -1178,7 +1285,7 @@ ifpozRAVNOTempPoz:
             Case 4 'детали
                 Try
                     If TC_Info(4) IsNot Nothing Then
-                        tmp_colors = Color.Tan
+                        tmp_colors = SortamentColor_Purchated '  Color.Tan
                         tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
                         If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
@@ -1188,7 +1295,7 @@ ifpozRAVNOTempPoz:
                         sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(TC_Info(2))), 3)
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
                     Else
-                        tmp_colors = Color.LightSteelBlue
+                        tmp_colors = SortamentColorKonstructor_Purchated ' Color.LightSteelBlue
                         tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(6))
                         If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
@@ -1204,7 +1311,7 @@ ifpozRAVNOTempPoz:
                 'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
             Case 5, 6 'станд изделия
                 Try
-                    tmp_colors = Color.LightGreen
+                    tmp_colors = StandartColor_Purchated  ' Color.LightGreen
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
@@ -1214,7 +1321,7 @@ ifpozRAVNOTempPoz:
                     sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
                     'красим вспомогательный материал в свой цвет
-                    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+                    'SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
 
                 Catch ex As Exception
 
@@ -1222,7 +1329,7 @@ ifpozRAVNOTempPoz:
                 'Case 6 'прочие            Case 7 'материалы
             Case 7 'материалы
                 Try
-                    tmp_colors = Color.LightSkyBlue
+                    tmp_colors = MaterialColor_Purchated ' Color.LightSkyBlue
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                     If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
@@ -1243,7 +1350,7 @@ ifpozRAVNOTempPoz:
                     End If
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
                     'красим вспомогательный материал в свой цвет
-                    SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+                    'SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
 
 
                     'Dim Norma_ras_SUM As Double
@@ -1310,7 +1417,7 @@ ifpozRAVNOTempPoz:
         Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1
         Dim tmp_row As Integer
         Dim sum As Double
-        Dim tmp_colors As Color = Color.DarkSalmon
+        Dim tmp_colors As Color = VspomMaterialColor_Purchated  'Color.DarkSalmon
         Try
             If UBound(TP_Vspom_Mater_Array, 1) >= 0 Then
                 For q As Integer = 0 To UBound(TP_Vspom_Mater_Array, 1)
@@ -1408,25 +1515,25 @@ ifpozRAVNOTempPoz:
         SetCellsBorderLineStyle2(Sheetname, 1, lastRowNum, last_ColNum, lastRowNum, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
         Select Case PRJLINK_Param(4)
             Case 1 'документация
-                temp_color = Color.Aqua
+                temp_color = DocumColor_Sostav ' Color.Aqua
             Case 2 'комплексы
                 temp_color = Color.Aquamarine
             Case 3 'сборки
-                temp_color = Color.Yellow
+                temp_color = AssemblyColor_Sostav ' Color.Yellow
             Case 4 'детали
-                temp_color = Color.FromArgb(216, 228, 188) 'Color.DarkKhaki 'GreenYellow (255, 153, 0)
+                temp_color = PartColor_Sostav ' Color.FromArgb(216, 228, 188) 'Color.DarkKhaki 'GreenYellow (255, 153, 0)
             Case 5 'стандартные
-                temp_color = Color.IndianRed
+                temp_color = StandartColor_Sostav ' Color.IndianRed
             Case 6 'прочие
-                temp_color = Color.LightBlue
+                temp_color = Pro4eeColor_Sostav '  Color.LightBlue
             Case 7 'материалы
-                temp_color = Color.Khaki
+                temp_color = MaterialColor_Sostav ' Color.Khaki
             Case 8 'комплекты
-                temp_color = Color.LightPink
+                temp_color = KomplekTColor_Sostav ' Color.LightPink
         End Select
         SetCellsColor(Sheetname, 1, lastRowNum, last_ColNum, lastRowNum, temp_color)
         If PRJLINK_Param(8) = 2 Then
-            temp_color = Color.Gray
+            temp_color = TechContex_Sostav ' Color.Gray
             SetCellsColor(Sheetname, CN_ContexrtType, lastRowNum, last_ColNum, lastRowNum, temp_color)
         End If
         'Try
@@ -1983,6 +2090,11 @@ ifpozRAVNOTempPoz:
 
     Private Sub ToolStripButton4_Click_4(sender As Object, e As EventArgs) 
         TP_VspMat_Array_func(16353)
+    End Sub
+
+    Private Sub ПоказыватьПояснениеПоЗаливкеToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Click
+        ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = Not (ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked)
+        NO_ColorNote = ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)

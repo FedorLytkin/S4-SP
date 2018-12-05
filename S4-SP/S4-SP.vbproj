@@ -338,6 +338,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="207-Chart_file_tree_flow_chart_organize_structure_tree_view_-512.ico" />
+    <None Include="Resources\kisspng-color-wheel-computer-icons-color-picker-web-colors-colors-icon-5ab0cc7bdc0f66.4872065015215361239014.png" />
     <None Include="Resources\-space-bar_90666.png" />
     <None Include="Resources\te3B3.png" />
     <None Include="Resources\wrench-512.png" />

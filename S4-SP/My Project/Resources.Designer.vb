@@ -313,6 +313,17 @@ Namespace My.Resources
         '''<summary>
         '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property kisspng_color_wheel_computer_icons_color_picker_web_colors_colors_icon_5ab0cc7bdc0f66_4872065015215361239014() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("kisspng-color-wheel-computer-icons-color-picker-web-colors-colors-icon-5ab0cc7bdc"& _ 
+                        "0f66.4872065015215361239014", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property newKTD() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("newKTD", resourceCulture)

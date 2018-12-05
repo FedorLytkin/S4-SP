@@ -361,6 +361,19 @@ Module Exc_mod
 
         End Try
     End Sub
+    Public Sub set_Value_From_Cell_with_Proerty(SheetName As String, columnIndex As Integer, row_index As Integer, Text_in_Cells As String, Bold As Boolean, Italic As Boolean, Underline As Boolean)
+        Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
+        Try
+            With ActiveSheet
+                .Cells(row_index, columnIndex) = Text_in_Cells
+                .Range(.Cells(row_index, columnIndex), .Cells(row_index, columnIndex)).Font.Italic = Italic
+                .Range(.Cells(row_index, columnIndex), .Cells(row_index, columnIndex)).Font.Bold = Bold
+                .Range(.Cells(row_index, columnIndex), .Cells(row_index, columnIndex)).Font.Underline = Underline
+            End With
+        Catch ex As Exception
+
+        End Try
+    End Sub
     Public Sub add_NewRow(SheetName As String, row_index As Integer)
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         Try
