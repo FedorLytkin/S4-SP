@@ -51,6 +51,7 @@
         colorDialogLoad()
     End Sub
     Sub colorDialogLoad()
+        ColorDialog1.FullOpen = 1
         If ColorDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel Then
             DownButton.BackColor = ColorDialog1.Color
         End If

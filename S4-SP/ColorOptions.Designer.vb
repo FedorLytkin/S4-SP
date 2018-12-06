@@ -95,6 +95,7 @@ Partial Class ColorOptions
         '
         'Button1
         '
+        Me.Button1.Cursor = System.Windows.Forms.Cursors.Default
         Me.Button1.Dock = System.Windows.Forms.DockStyle.Top
         Me.Button1.Location = New System.Drawing.Point(3, 3)
         Me.Button1.Name = "Button1"

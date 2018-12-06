@@ -1935,7 +1935,7 @@ Rz23")
         End With
     End Sub
 
-    Private Sub ColortestToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ColortestToolStripMenuItem.Click
+    Private Sub ColortestToolStripMenuItem_Click(sender As Object, e As EventArgs)
         ColorOptions.ShowDialog()
     End Sub
 

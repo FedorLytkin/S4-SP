@@ -2115,6 +2115,14 @@ ifpozRAVNOTempPoz:
         ColorOptions.ShowDialog()
     End Sub
 
+    Private Sub TreeView1_AfterSelect(sender As Object, e As TreeViewEventArgs) Handles TreeView1.AfterSelect
+        Try
+            Dim t_node As TreeNode = TreeView1.SelectedNode
+            t_node.SelectedImageIndex = t_node.ImageIndex
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
         Application.DoEvents()
         With s4
