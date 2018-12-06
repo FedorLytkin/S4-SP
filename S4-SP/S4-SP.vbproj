@@ -153,6 +153,12 @@
     <Compile Include="Checking_SOSTAV_Form.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ColorOptions.Designer.vb">
+      <DependentUpon>ColorOptions.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ColorOptions.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Compare_BOM.Designer.vb">
       <DependentUpon>Compare_BOM.vb</DependentUpon>
     </Compile>
@@ -233,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Checking_SOSTAV_Form.resx">
       <DependentUpon>Checking_SOSTAV_Form.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorOptions.resx">
+      <DependentUpon>ColorOptions.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Compare_BOM.resx">
       <DependentUpon>Compare_BOM.vb</DependentUpon>

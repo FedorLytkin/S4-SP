@@ -136,7 +136,7 @@ ifpozRAVNOTempPoz:
                 End If
             End With
         Catch ex As Exception
-            MsgBox("Ошибка при проверке на наличие подузлов" & vbNewLine & ex.Message )
+            MsgBox("Ошибка при проверке на наличие подузлов" & vbNewLine & ex.Message)
             checkChaildNode = False
         End Try
     End Function
@@ -593,61 +593,61 @@ ifpozRAVNOTempPoz:
         End If
 
         If artID_Main <= 0 Then Exit Sub
-            Dim chechUtvArch As Boolean = chechUtvArch_func(artID_Main)
-            If Not chechUtvArch Then
-                Exit Sub
+        Dim chechUtvArch As Boolean = chechUtvArch_func(artID_Main)
+        If Not chechUtvArch Then
+            Exit Sub
+        End If
+        Dim check_SP As Boolean = check_SP_Funk(artID_Main)
+        If Not check_SP Then
+            Exit Sub
+        End If
+        TreeView1.Nodes.Clear()
+        Dim Main_ArticleParam_List As Array = Get_Short_Article_Param(artID_Main)
+        Dim root = New TreeNode(Main_ArticleParam_List(0) & Spletter & Main_ArticleParam_List(1))
+        root.Tag = artID_Main
+        ImagesAdd()
+
+        TreeView1.ImageList = myImageList
+        TreeView1.Nodes.Add(root)
+
+        With s4
+            .OpenArticle(artID_Main)
+            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+            .CloseArticle()
+
+            Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
+            If Verartfiltr Then
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
+            Else
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
             End If
-            Dim check_SP As Boolean = check_SP_Funk(artID_Main)
-            If Not check_SP Then
-                Exit Sub
-            End If
-            TreeView1.Nodes.Clear()
-            Dim Main_ArticleParam_List As Array = Get_Short_Article_Param(artID_Main)
-            Dim root = New TreeNode(Main_ArticleParam_List(0) & Spletter & Main_ArticleParam_List(1))
-            root.Tag = artID_Main
-            ImagesAdd()
+            .QueryGoFirst()
+            For i As Integer = 0 To max_poz_mun - 1
+                Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
+                Dim TempPos As String = .QueryFieldByName("positio")
+                Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
+                Dim RAZDEL As Integer = .QueryFieldByName("RAZDEL")
+                Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
+                Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
+                Dim COUNT_PC As Double = .QueryFieldByName("COUNT_PC")
 
-            TreeView1.ImageList = myImageList
-            TreeView1.Nodes.Add(root)
+                'Dim ge_Article_Param_List As Array = Get_Article_Param(Part_AID)
+                If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
+                    Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
 
-            With s4
-                .OpenArticle(artID_Main)
-                Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
-                .CloseArticle()
-
-                Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
-                If Verartfiltr Then
-                    .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
-                Else
-                    .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
-                End If
-                .QueryGoFirst()
-                For i As Integer = 0 To max_poz_mun - 1
-                    Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
-                    Dim TempPos As String = .QueryFieldByName("positio")
-                    Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
-                    Dim RAZDEL As Integer = .QueryFieldByName("RAZDEL")
-                    Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
-                    Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
-                    Dim COUNT_PC As Double = .QueryFieldByName("COUNT_PC")
-
-                    'Dim ge_Article_Param_List As Array = Get_Article_Param(Part_AID)
-                    If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
-                        Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
-
-                        If exist_BOM_ChildNodesExist(Part_AID) Then
-                            NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
-                            Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
-                        Else
-                            Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
-                        End If
+                    If exist_BOM_ChildNodesExist(Part_AID) Then
+                        NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
+                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     Else
                         Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     End If
-                Next
+                Else
+                    Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                End If
+            Next
 
-                .CloseQuery()
-            End With
+            .CloseQuery()
+        End With
     End Sub
     Sub Perehov_Na_NUGHUY_strocu(ArtID As Integer, rownum As Integer, PROJ_VER_ID As String)
         Application.DoEvents()
@@ -753,21 +753,21 @@ ifpozRAVNOTempPoz:
     '        Case 8 'комплекты
     '            temp_color = Color.LightPink
 
-    Dim AssemblyColor_Sostav As Color = Color.Yellow
-    Dim DocumColor_Sostav As Color = Color.Aqua
-    Dim PartColor_Sostav As Color = Color.FromArgb(216, 228, 188)
-    Dim StandartColor_Sostav As Color = Color.IndianRed
-    Dim Pro4eeColor_Sostav As Color = Color.LightBlue
-    Dim MaterialColor_Sostav As Color = Color.Khaki
-    Dim KomplekTColor_Sostav As Color = Color.LightPink
-    Dim TechContex_Sostav As Color = Color.Gray ' Color.LightPink
+    Public AssemblyColor_Sostav As Color = Color.Yellow
+    Public DocumColor_Sostav As Color = Color.Aqua
+    Public PartColor_Sostav As Color = Color.FromArgb(216, 228, 188)
+    Public StandartColor_Sostav As Color = Color.IndianRed
+    Public Pro4eeColor_Sostav As Color = Color.LightBlue
+    Public MaterialColor_Sostav As Color = Color.Khaki
+    Public KomplekTColor_Sostav As Color = Color.LightPink
+    Public TechContex_Sostav As Color = Color.Gray ' Color.LightPink
 
-    Dim StandartColor_Purchated As Color = Color.LightGreen
-    Dim Pro4eeColor_Purchated As Color = Color.LightGreen
-    Dim VspomMaterialColor_Purchated As Color = Color.DarkSalmon
-    Dim SortamentColor_Purchated As Color = Color.Tan
-    Dim SortamentColorKonstructor_Purchated As Color = Color.LightSteelBlue
-    Dim MaterialColor_Purchated As Color = Color.LightSkyBlue
+    Public StandartColor_Purchated As Color = Color.LightGreen
+    Public Pro4eeColor_Purchated As Color = Color.LightGreen
+    Public VspomMaterialColor_Purchated As Color = Color.DarkSalmon
+    Public SortamentColor_Purchated As Color = Color.Tan
+    Public SortamentColorKonstructor_Purchated As Color = Color.LightSteelBlue
+    Public MaterialColor_Purchated As Color = Color.LightSkyBlue
 
 
     Public OPT_FirstShow As String = "ExcelReportFirstShow"
@@ -1822,7 +1822,7 @@ ifpozRAVNOTempPoz:
             End With
         Catch ex As Exception
 
-            Return Array
+            Return array
         End Try
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
@@ -1908,7 +1908,7 @@ ifpozRAVNOTempPoz:
             End With
         Catch ex As Exception
 
-            Return Array
+            Return array
         End Try
     End Function
 
@@ -2103,13 +2103,16 @@ ifpozRAVNOTempPoz:
         Get_TP_ParmArray(16358, -1)
     End Sub
 
-    Private Sub ToolStripButton4_Click_4(sender As Object, e As EventArgs) 
+    Private Sub ToolStripButton4_Click_4(sender As Object, e As EventArgs)
         TP_VspMat_Array_func(16353)
     End Sub
 
-    Private Sub ПоказыватьПояснениеПоЗаливкеToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Click
-        ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = Not (ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked)
-        NO_ColorNote = ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked
+    Private Sub ПоказыватьПояснениеПоЗаливкеToolStripMenuItem_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub НастройкиЗаливкиToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles НастройкиЗаливкиToolStripMenuItem.Click
+        ColorOptions.ShowDialog()
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)

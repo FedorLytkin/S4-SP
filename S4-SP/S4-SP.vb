@@ -1653,13 +1653,13 @@ ifDocID_is_null:
         Return rownum
     End Function
 
-    Private Sub CreateBoltS4ToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+    Private Sub CreateBoltS4ToolStripMenuItem_Click(sender As Object, e As EventArgs)
         'ITS4App.OpenArticle(11650)
         'ITS4App.GetFieldImbaseKey_Articles("Наименование")
         'add_materialInBOM_S4(1, 7)
     End Sub
 
-    Private Sub ЫфвыцуаToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+    Private Sub ЫфвыцуаToolStripMenuItem_Click(sender As Object, e As EventArgs)
         B4_Note_Parser("s8+1,5
 Rz23")
     End Sub
@@ -1690,7 +1690,7 @@ Rz23")
         End With
     End Sub
 
-    Private Sub DownloadToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+    Private Sub DownloadToolStripMenuItem_Click(sender As Object, e As EventArgs)
         Dim Copy_directory As String
         If FolderBrowserDialog1.ShowDialog = DialogResult.OK Then
             Copy_directory = FolderBrowserDialog1.SelectedPath
@@ -1888,7 +1888,7 @@ Rz23")
         End Try
     End Sub
 
-    Private Sub НомерОТДToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+    Private Sub НомерОТДToolStripMenuItem_Click(sender As Object, e As EventArgs)
         With ITS4App
             Dim ArtId, DocID, VerDocID As Integer
             Dim OTDREGNUM As String
@@ -1910,7 +1910,7 @@ Rz23")
         MsgBox("ghbdtn")
     End Sub
 
-    Private Sub ВерсияToolStripMenuItem_Click(sender As Object, e As EventArgs) 
+    Private Sub ВерсияToolStripMenuItem_Click(sender As Object, e As EventArgs)
         With ITS4App
             .OpenArticle(14284)
             Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
@@ -1933,6 +1933,10 @@ Rz23")
             .OpenArticle(15026)
             Dim IMKey As String = .GetArticleImbaseKey()
         End With
+    End Sub
+
+    Private Sub ColortestToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ColortestToolStripMenuItem.Click
+        ColorOptions.ShowDialog()
     End Sub
 
     Public Sub CompareMaterialInVSNRMWithMaterialTable()
