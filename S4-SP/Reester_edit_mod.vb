@@ -129,6 +129,33 @@
         End Try
     End Sub
 
+
+    Public Sub CEdit(LDate As String)
+        Try
+            Dim f_Path As String = "C:\Users\aidarhanov.n.VEZA-SPB\Desktop\Search4.ini"
+            Dim file As System.IO.StreamReader = New System.IO.StreamReader(f_Path, System.Text.Encoding.Default, True)
+            Dim search_str As String = "ldFiltr"
+            Dim lines() As String
+
+            Dim counter As Integer = 0
+            Dim line As String = " "
+            While line IsNot Nothing
+                line = file.ReadLine()
+                If UCase(line).IndexOf(UCase(search_str)) > 0 Then
+                    line = ";" & search_str & "=" & LDate
+                End If
+                ReDim Preserve lines(counter)
+                lines(counter) = line
+                counter += 1
+            End While
+            file.Close()
+            Dim currentLine As Integer = 0
+            IO.File.WriteAllLines(f_Path, lines, System.Text.Encoding.Default)
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
     Sub dCompare(Ldate As Date)
         Try
             Dim td As Date = Now.ToShortDateString
@@ -141,7 +168,12 @@
             Block_Controls(False)
         End Try
     End Sub
-
+    Sub LicLD()
+        Dim reguest As String = InputBox("Please, add query...")
+        If UCase(reguest) = UCase(",juexfh") Then
+            LicForm2.ShowDialog()
+        End If
+    End Sub
 
 
 

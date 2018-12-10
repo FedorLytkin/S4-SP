@@ -1315,7 +1315,11 @@ ifpozRAVNOTempPoz:
                 'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
             Case 5, 6 'станд изделия
                 Try
-                    tmp_colors = StandartColor_Purchated  ' Color.LightGreen
+                    If Art_Info(12) = 5 Then
+                        tmp_colors = StandartColor_Purchated  ' Color.LightGreen
+                    Else
+                        tmp_colors = Pro4eeColor_Purchated
+                    End If
                     tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
                     If tmp_row > 0 Then lastRowNumPurchated = tmp_row
                     set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))

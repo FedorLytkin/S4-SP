@@ -180,6 +180,12 @@
     <Compile Include="Excel_Report.vb" />
     <Compile Include="Exc_mod.vb" />
     <Compile Include="FileAndFolderDialogMod.vb" />
+    <Compile Include="LicForm2.Designer.vb">
+      <DependentUpon>LicForm2.vb</DependentUpon>
+    </Compile>
+    <Compile Include="LicForm2.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="new_doc.Designer.vb">
       <DependentUpon>new_doc.vb</DependentUpon>
     </Compile>
@@ -251,6 +257,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditParam.resx">
       <DependentUpon>EditParam.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LicForm2.resx">
+      <DependentUpon>LicForm2.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="new_doc.resx">
       <DependentUpon>new_doc.vb</DependentUpon>

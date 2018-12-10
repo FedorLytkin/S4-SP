@@ -60,6 +60,7 @@ Partial Class Form1
         Me.СправкаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ОПрограммеToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TestToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LuctestToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -111,7 +112,7 @@ Partial Class Form1
         '
         'ПомощьToolStripMenuItem
         '
-        Me.ПомощьToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.СправкаToolStripMenuItem, Me.ОПрограммеToolStripMenuItem, Me.TestToolStripMenuItem})
+        Me.ПомощьToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.СправкаToolStripMenuItem, Me.ОПрограммеToolStripMenuItem, Me.TestToolStripMenuItem, Me.LuctestToolStripMenuItem})
         Me.ПомощьToolStripMenuItem.Name = "ПомощьToolStripMenuItem"
         Me.ПомощьToolStripMenuItem.Size = New System.Drawing.Size(65, 20)
         Me.ПомощьToolStripMenuItem.Text = "Справка"
@@ -356,6 +357,12 @@ Partial Class Form1
         Me.TestToolStripMenuItem.Text = "What's new"
         Me.TestToolStripMenuItem.ToolTipText = "Новые функции программы"
         '
+        'LuctestToolStripMenuItem
+        '
+        Me.LuctestToolStripMenuItem.Name = "LuctestToolStripMenuItem"
+        Me.LuctestToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
+        Me.LuctestToolStripMenuItem.Text = "luctest"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -417,4 +424,5 @@ Partial Class Form1
     Friend WithEvents ToolStripTextBox1 As ToolStripTextBox
     Friend WithEvents ПравитьОбъектToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ВСНРМ2ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LuctestToolStripMenuItem As ToolStripMenuItem
 End Class

@@ -43,6 +43,7 @@ Partial Class ColorOptions
         Me.Button15 = New System.Windows.Forms.Button()
         Me.Button16 = New System.Windows.Forms.Button()
         Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
+        Me.Button17 = New System.Windows.Forms.Button()
         Me.TabControl1.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         Me.TabPage2.SuspendLayout()
@@ -252,11 +253,21 @@ Partial Class ColorOptions
         Me.Button16.Text = "Сохранить"
         Me.Button16.UseVisualStyleBackColor = True
         '
+        'Button17
+        '
+        Me.Button17.Location = New System.Drawing.Point(7, 222)
+        Me.Button17.Name = "Button17"
+        Me.Button17.Size = New System.Drawing.Size(75, 23)
+        Me.Button17.TabIndex = 3
+        Me.Button17.Text = "Button17"
+        Me.Button17.UseVisualStyleBackColor = True
+        '
         'ColorOptions
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(260, 252)
+        Me.Controls.Add(Me.Button17)
         Me.Controls.Add(Me.Button16)
         Me.Controls.Add(Me.Button15)
         Me.Controls.Add(Me.TabControl1)
@@ -293,4 +304,5 @@ Partial Class ColorOptions
     Friend WithEvents Button15 As Button
     Friend WithEvents Button16 As Button
     Friend WithEvents ColorDialog1 As ColorDialog
+    Friend WithEvents Button17 As Button
 End Class

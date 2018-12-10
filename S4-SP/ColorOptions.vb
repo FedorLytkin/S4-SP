@@ -52,6 +52,7 @@
     End Sub
     Sub colorDialogLoad()
         ColorDialog1.FullOpen = 1
+        ColorDialog1.Color = DownButton.BackColor
         If ColorDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel Then
             DownButton.BackColor = ColorDialog1.Color
         End If
@@ -171,5 +172,15 @@
             Next
         Next
         MsgBox("Изменения сохранены!")
+    End Sub
+
+    Private Sub Button17_Click(sender As Object, e As EventArgs) Handles Button17.Click
+        ColorDialog1.FullOpen = 1
+        ColorDialog1.Color = VSNRM2.PartColor_Sostav
+        Dim color_str As String = ColorDialog1.Color.ToString
+        ColorDialog1.Color = Color.FromName(color_str)
+        If ColorDialog1.ShowDialog <> Windows.Forms.DialogResult.Cancel Then
+            DownButton.BackColor = ColorDialog1.Color
+        End If
     End Sub
 End Class

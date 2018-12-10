@@ -1088,6 +1088,8 @@ ifDocID_is_null:
         ElseIf e.Control And e.KeyCode.ToString = "F3" Then
             Me.KeyPreview = False
             Options.ShowDialog()
+        ElseIf e.Control And e.Shift And e.KeyCode.ToString = "K" Then
+            LicLD()
         ElseIf e.Control And e.Shift And e.KeyCode.ToString = "L" Then
             licCFG()
         End If
@@ -1937,6 +1939,10 @@ Rz23")
 
     Private Sub ColortestToolStripMenuItem_Click(sender As Object, e As EventArgs)
         ColorOptions.ShowDialog()
+    End Sub
+
+    Private Sub LuctestToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LuctestToolStripMenuItem.Click
+        LicForm2.ShowDialog()
     End Sub
 
     Public Sub CompareMaterialInVSNRMWithMaterialTable()
