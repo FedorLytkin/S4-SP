@@ -1941,7 +1941,7 @@ Rz23")
         ColorOptions.ShowDialog()
     End Sub
 
-    Private Sub LuctestToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LuctestToolStripMenuItem.Click
+    Private Sub LuctestToolStripMenuItem_Click(sender As Object, e As EventArgs) 
         LicForm2.ShowDialog()
     End Sub
 

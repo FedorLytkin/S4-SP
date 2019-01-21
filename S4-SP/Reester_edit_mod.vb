@@ -132,7 +132,7 @@
 
     Public Sub CEdit(LDate As String)
         Try
-            Dim f_Path As String = "C:\Users\aidarhanov.n.VEZA-SPB\Desktop\Search4.ini"
+            Dim f_Path As String = "\\INTERMECH\im\Search\Search4.ini"
             Dim file As System.IO.StreamReader = New System.IO.StreamReader(f_Path, System.Text.Encoding.Default, True)
             Dim search_str As String = "ldFiltr"
             Dim lines() As String
