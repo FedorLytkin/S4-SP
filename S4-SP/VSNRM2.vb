@@ -12,7 +12,7 @@
     Public NO_Standart As Boolean = 1
     Public NO_Pro4ee As Boolean = 1
     Public NO_Material As Boolean = 1
-
+    Public Part_SB As Boolean = 0
     'параметр заменяющий "~" на " "
     Public ReplaceTildaOnSpace As Boolean = 1
     'параметр модульный
@@ -694,6 +694,7 @@ ifpozRAVNOTempPoz:
         СРазделомПрочиеИзделияToolStripMenuItem.Checked = NO_Pro4ee
         СРазделомМатериалыToolStripMenuItem.Checked = NO_Material
         ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = NO_ColorNote
+        ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Part_SB
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
@@ -1110,10 +1111,12 @@ ifpozRAVNOTempPoz:
         SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, MaterialColor_Purchated)
         set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал", 0, 1, 0)
     End Sub
+    Private TmpNode As TreeNode
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
         Application.DoEvents()
         Dim myNode As TreeNode
         For Each myNode In myNextNode.Nodes
+            TmpNode = myNode
             Dim param_Array As Array = myNode.Tag.ToString.Split(Spletter)
             'MsgBox(param_Array(0) & Spletter & param_Array(1) & Spletter & param_Array(2))
             Dim ArtID, PRJLINK_ID As Integer
@@ -1448,6 +1451,15 @@ ifpozRAVNOTempPoz:
 
         End Try
     End Sub
+    Private Function ItsLastTreenode() As Boolean
+        '0 если есть вложенности
+        '1 есть нет вложенности
+        If TmpNode.Nodes.Count > 0 Then
+            Return 0
+        Else
+            Return 1
+        End If
+    End Function
     Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double, PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
 
         Application.DoEvents()
@@ -1477,10 +1489,19 @@ ifpozRAVNOTempPoz:
         Catch ex As Exception
         End Try
 
+        If Part_SB Then
+            If Not ItsLastTreenode() Then
+                set_Value_From_Cell(Sheetname, CN_Type_Article, lastRowNum, "Сборочная единица")
+            Else
+                set_Value_From_Cell(Sheetname, CN_Type_Article, lastRowNum, Art_Param(7))
+            End If
+        Else
+            set_Value_From_Cell(Sheetname, CN_Type_Article, lastRowNum, Art_Param(7))
+        End If
+
         set_Value_From_Cell(Sheetname, CN_Kolvo, lastRowNum, PRJLINK_Param(2))
         set_Value_From_Cell(Sheetname, CN_KolvoSbor, lastRowNum, Count_Summ)
         set_Value_From_Cell(Sheetname, CN_EdIzm, lastRowNum, PRJLINK_Param(11))
-        set_Value_From_Cell(Sheetname, CN_Type_Article, lastRowNum, Art_Param(7))
         set_Value_From_Cell(Sheetname, CN_Prim, lastRowNum, PRJLINK_Param(5))
         set_Value_From_Cell(Sheetname, CN_TypeLink, lastRowNum, PRJLINK_Param(10))
         set_Value_From_Cell(Sheetname, CN_ContexrtType, lastRowNum, PRJLINK_Param(9))
@@ -2125,6 +2146,12 @@ ifpozRAVNOTempPoz:
             t_node.SelectedImageIndex = t_node.ImageIndex
         Catch ex As Exception
         End Try
+    End Sub
+
+    Private Sub ДетальСборочнаяЕдиницаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ДетальСборочнаяЕдиницаToolStripMenuItem.Click
+        ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Not (ДетальСборочнаяЕдиницаToolStripMenuItem.Checked)
+        Part_SB = ДетальСборочнаяЕдиницаToolStripMenuItem.Checked
+        'CT_ID_in_Query_Change()
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
