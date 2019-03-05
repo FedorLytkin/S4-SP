@@ -700,7 +700,7 @@ ifpozRAVNOTempPoz:
         ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = NO_ColorNote
         ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Part_SB
         ЗаменятьНаToolStripMenuItem.Checked = ReplaceQuestionOnDrob
-        СПеречнемПокупныхПДРБНToolStripMenuItem.Checked = NO_Purchated_PDRBN 
+        СПеречнемПокупныхПДРБНToolStripMenuItem.Checked = NO_Purchated_PDRBN
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
@@ -1079,7 +1079,7 @@ ifpozRAVNOTempPoz:
         CreateExcelCustomProperty("Версия документа", get_VersIDbyDocID(t_DocID), Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
     End Sub
     Sub ColorNote()
-        Dim row_num As Integer = Get_LastRowInOneColumn(Sheetname, CN_Naim)+1 ' RowN_First
+        Dim row_num As Integer = Get_LastRowInOneColumn(Sheetname, CN_Naim) + 1 ' RowN_First
         Dim col_num As Integer = last_ColNum + 3
 
         'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
@@ -1357,8 +1357,8 @@ ifpozRAVNOTempPoz:
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка сортамент
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ключ ImBase
                         'дописать в новой строчке информацию о новой детали
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Колонка обозначение применяемого обекта
-                        'set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, tmp_row, PRJLINK_Param(0)) 'Колонка PROJ_ID
+                        set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
 
                         set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, tmp_row, PRJLINK_Param(9)) 'тип связи
 
