@@ -15,6 +15,8 @@
     Public Part_SB As Boolean = 0
     'параметр заменяющий "~" на " "
     Public ReplaceTildaOnSpace As Boolean = 1
+    'параметр заменяющий "?" на "/"
+    Public ReplaceQuestionOnDrob As Boolean = 1
     'параметр модульный
     Dim Verartfiltr_str As String = "Verartfiltr" 'parameter name
     Dim Verartfiltr As Boolean = 0
@@ -25,6 +27,8 @@
     Public NO_Parts As Boolean = 1
     'параметр экспортирующий данные о материалах и покупных
     Public NO_Purchated As Boolean = 1
+    'параметр экспортирующий ПОДРОБНЫЕ данные о материалах и покупных
+    Public NO_Purchated_PDRBN As Boolean = 1
 
     'параметр экспортирующий данные о материалах и покупных
     Public NO_ColorNote As Boolean = 1
@@ -695,6 +699,8 @@ ifpozRAVNOTempPoz:
         СРазделомМатериалыToolStripMenuItem.Checked = NO_Material
         ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = NO_ColorNote
         ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Part_SB
+        ЗаменятьНаToolStripMenuItem.Checked = ReplaceQuestionOnDrob
+        СПеречнемПокупныхПДРБНToolStripMenuItem.Checked = NO_Purchated_PDRBN 
         TPServerInitializ()
         firstAppShow()
         OutOptionsLoad()
@@ -799,6 +805,37 @@ ifpozRAVNOTempPoz:
         End Try
         'зафиксировать шапку
         SetTitleFixirovano(ShName_Purchated, CN_Purchated_Naim, RowN_Purchated_First - 1, True)
+    End Sub
+
+    'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
+    Public ShName_pdrbn As String = "ПОДРОБНЫЙ ПЕРЕЧЕНЬ ПОКУПНЫХ"
+    Public RowN_pdrbn_First As Integer = 3
+    Public CN_pdrbn_Naim As Integer = 1
+    Public CN_pdrbn_IBKey As Integer = 2
+    Public CN_pdrbn_Primen9emost As Integer = 3
+    Public CN_pdrbn_Count As Integer = 4
+    Public CN_pdrbn_TotalCount As Integer = 5
+    Public CN_pdrbn_MU As Integer = 6
+    Private Sub addExTitlePDRBN()
+        Add_NewSheet(ShName_pdrbn)
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, RowN_pdrbn_First - 1, "Наименование")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First - 1, "Ключ IMBASE")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, RowN_pdrbn_First - 1, "Применяемость")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, RowN_pdrbn_First - 1, "Кол-во/масса")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, RowN_pdrbn_First - 1, "Общ. кол-во/масса")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, RowN_pdrbn_First - 1, "Ед.изм.")
+
+        Dim CN_pdrbn_last_ColNum As Integer = Get_Last_Column(ShName_pdrbn, RowN_pdrbn_First - 1)
+        SetCellsBorderLineStyle2(ShName_pdrbn, 1, 1, CN_pdrbn_last_ColNum, RowN_pdrbn_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+        Try
+            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
+            If VSpom_Mater_for_Main IsNot Nothing Then
+                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
+            End If
+        Catch ex As Exception
+        End Try
+        'зафиксировать шапку
+        SetTitleFixirovano(ShName_pdrbn, CN_Purchated_Naim, RowN_pdrbn_First - 1, True)
     End Sub
 
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
@@ -1042,7 +1079,7 @@ ifpozRAVNOTempPoz:
         CreateExcelCustomProperty("Версия документа", get_VersIDbyDocID(t_DocID), Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
     End Sub
     Sub ColorNote()
-        Dim row_num As Integer = RowN_First
+        Dim row_num As Integer = Get_LastRowInOneColumn(Sheetname, CN_Naim)+1 ' RowN_First
         Dim col_num As Integer = last_ColNum + 3
 
         'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
@@ -1082,7 +1119,7 @@ ifpozRAVNOTempPoz:
 
 
         'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
-        row_num = RowN_Purchated_First
+        row_num = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1 ' RowN_Purchated_First
         col_num = CN_Purchated_MU + 3
 
         set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
@@ -1150,6 +1187,93 @@ ifpozRAVNOTempPoz:
             End If
         Next
     End Sub
+    Sub excel_write_about_PDRBN_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+        Application.DoEvents()
+        Dim tmp_colors As Color = Color.Khaki
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_pdrbn_Naim) + 1
+        Dim tmp_row As Integer
+        Dim sum As Double
+        Select Case Art_Info(12)
+            Case 4 'детали
+                Try
+                    If TC_Info(4) IsNot Nothing Then
+                        tmp_colors = SortamentColor_Purchated '  Color.Tan
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
+
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    Else
+                        tmp_colors = SortamentColorKonstructor_Purchated ' Color.LightSteelBlue
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(6))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(6))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, Art_Info(9))
+
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))), 3)
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    End If
+                Catch ex As Exception
+
+                End Try
+                'get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(0))1
+            Case 5, 6 'станд изделия
+                Try
+                    If Art_Info(12) = 5 Then
+                        tmp_colors = StandartColor_Purchated  ' Color.LightGreen
+                    Else
+                        tmp_colors = Pro4eeColor_Purchated
+                    End If
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+
+                    sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                    'красим вспомогательный материал в свой цвет
+                    'SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+
+                Catch ex As Exception
+
+                End Try
+                'Case 6 'прочие            Case 7 'материалы
+            Case 7 'материалы
+                Try
+                    tmp_colors = MaterialColor_Purchated ' Color.LightSkyBlue
+                    tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, Art_Info(3))
+                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
+                        tmp_row = get_value_bay_FindText_Strong(ShName_Purchated, CN_Purchated_IBKey, RowN_Purchated_First, TC_Info(4))
+                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
+                    Else
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(1))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, Art_Info(3))
+                        set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                    End If
+                    If CDbl(TC_Info(6)) <> 0 Then
+                        sum = CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                    Else
+                        sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
+                    End If
+                    set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                Catch ex As Exception
+
+                End Try
+        End Select
+        'красим в свой цвет
+        SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
+        SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+
+    End Sub
     Sub excel_write_aboutPart_in_PartList(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
         Application.DoEvents()
         Dim sum, totalsum As Double
@@ -1172,8 +1296,8 @@ ifpozRAVNOTempPoz:
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка сортамент
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ключ ImBase
                         'дописать в новой строчке информацию о новой детали
-                        set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, tmp_row, PRJLINK_Param(0)) 'Колонка PROJ_ID
-                        set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Колонка обозначение применяемого обекта
+                        'set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
 
                         set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, tmp_row, PRJLINK_Param(9)) 'тип связи
 
@@ -2152,6 +2276,10 @@ ifpozRAVNOTempPoz:
         ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Not (ДетальСборочнаяЕдиницаToolStripMenuItem.Checked)
         Part_SB = ДетальСборочнаяЕдиницаToolStripMenuItem.Checked
         'CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub СПеречнемПокупныхПДРБНToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемПокупныхПДРБНToolStripMenuItem.Click
+
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
