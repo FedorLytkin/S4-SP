@@ -3,7 +3,7 @@
     Public tp As TPServer.ITApplication
     'Public ib As ImBase.IImbaseApplication
     Public artID_Main, artId_Sub As Integer
-    Public Spletter As String = "%"
+    Public Spletter As String = "|"
     'параметр не выводящий типы объектов и компоненты с ручной связью
     Public NO_Art_Documentacia As Boolean = 0
     Public NO_Ru4na9_Sv9z As Boolean = 0
@@ -812,14 +812,16 @@ ifpozRAVNOTempPoz:
     Public RowN_pdrbn_First As Integer = 3
     Public CN_pdrbn_Naim As Integer = 1
     Public CN_pdrbn_IBKey As Integer = 2
-    Public CN_pdrbn_Primen9emost As Integer = 3
-    Public CN_pdrbn_Count As Integer = 4
-    Public CN_pdrbn_TotalCount As Integer = 5
+    Public CN_pdrbn_ObjType As Integer = 3
+    Public CN_pdrbn_Primen9emost As Integer = 4
+    Public CN_pdrbn_Count As Integer = 5
     Public CN_pdrbn_MU As Integer = 6
+    Public CN_pdrbn_TotalCount As Integer = 7
     Private Sub addExTitlePDRBN()
         Add_NewSheet(ShName_pdrbn)
         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, RowN_pdrbn_First - 1, "Наименование")
         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First - 1, "Ключ IMBASE")
+        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, RowN_pdrbn_First - 1, "Тип объекта")
         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, RowN_pdrbn_First - 1, "Применяемость")
         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, RowN_pdrbn_First - 1, "Кол-во/масса")
         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, RowN_pdrbn_First - 1, "Общ. кол-во/масса")
@@ -830,7 +832,8 @@ ifpozRAVNOTempPoz:
         Try
             Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
             If VSpom_Mater_for_Main IsNot Nothing Then
-                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
+                'тут создать процедуру для записи вспомогательных материалов
+                excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, TreeView1.Nodes.Item(0).Tag)
             End If
         Catch ex As Exception
         End Try
@@ -850,9 +853,11 @@ ifpozRAVNOTempPoz:
     Public CN_PL_TotalCount As Integer = 7
     'Public CN_PL_MU As Integer = 8
     Public CN_PL_LinkType As Integer = 8
-    Public CN_PL_Sort As Integer = 9
-    Public CN_PL_Sort_IBKey As Integer = 10
-    Public CN_PL_Referenc As Integer = 11
+    Public CN_PL_ZagCount As Integer = 9
+    Public CN_PL_ZagSumCount As Integer = 10
+    Public CN_PL_Sort As Integer = 11
+    Public CN_PL_Sort_IBKey As Integer = 12
+    Public CN_PL_Referenc As Integer = 13
     Private Sub addExTitlePartList()
         Add_NewSheet(ShName_PartList)
         set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, RowN_PL_First - 1, "ArtID")
@@ -864,6 +869,8 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, RowN_PL_First - 1, "Общ.кол-во, шт.")
         'set_Value_From_Cell(ShName_PartList, CN_PL_MU, RowN_PL_First - 1, "ед.изм")
         set_Value_From_Cell(ShName_PartList, CN_PL_LinkType, RowN_PL_First - 1, "Тип связи")
+        set_Value_From_Cell(ShName_PartList, CN_PL_ZagCount, RowN_PL_First - 1, "Кол-во деталей из заготовки")
+        set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, RowN_PL_First - 1, "Кол-во необх.заготовки")
         set_Value_From_Cell(ShName_PartList, CN_PL_Sort, RowN_PL_First - 1, "Сортамент")
         set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, RowN_PL_First - 1, "Ключ IMBASE")
         Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_PartList, RowN_PL_First - 1)
@@ -1019,6 +1026,7 @@ ifpozRAVNOTempPoz:
 
         If NO_Purchated Then addExTitlePurchated() 'создать ВЕДОМОСТЬ ПОКУПНЫХ
         If NO_Parts Then addExTitlePartList() 'создать ВЕДОМОСТЬ ДЕТАЛЕЙ
+        If NO_Purchated_PDRBN Then addExTitlePDRBN() 'создать ПОДРОБНУЮ ВЕДОМОСТЬ ПОКУПНЫХ
 
         read_NEXTLEVELtreeview(TreeView1.Nodes.Item(0))
         last_Rowmun = Get_LastRowInOneColumn(Sheetname, CN_Naim)
@@ -1036,6 +1044,8 @@ ifpozRAVNOTempPoz:
         SetAutoFIT(Sheetname)
         If NO_Purchated Then SetAutoFIT(ShName_Purchated)
         If NO_Parts Then SetAutoFIT(ShName_PartList)
+        If NO_Purchated_PDRBN Then SetAutoFIT(ShName_pdrbn)
+
         If Not NO_ExlProc_Visible Then EX_Doc_VisibleChanche(Not NO_ExlProc_Visible)
         If Not NO_S4_Columns Then ChancheVisibleColumn()
         'создание свойства
@@ -1082,7 +1092,7 @@ ifpozRAVNOTempPoz:
         Dim row_num As Integer = Get_LastRowInOneColumn(Sheetname, CN_Naim) + 1 ' RowN_First
         Dim col_num As Integer = last_ColNum + 3
 
-        'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
+        'пояснение цветовой гаммы для листа СОСТАВ ИЗДЕЛИЯ
         set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
         row_num += 1
 
@@ -1117,36 +1127,37 @@ ifpozRAVNOTempPoz:
         SetCellsColor(Sheetname, col_num, row_num, col_num, row_num, TechContex_Sostav)
         set_Value_From_Cell_with_Proerty(Sheetname, col_num, row_num, "Технологич.связь", 0, 1, 0)
 
-
         'пояснение цветовой гаммы для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
-        row_num = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1 ' RowN_Purchated_First
-        col_num = CN_Purchated_MU + 3
+        If NO_Purchated Then
+            row_num = Get_LastRowInOneColumn(ShName_Purchated, CN_Purchated_Naim) + 1 ' RowN_Purchated_First
+            col_num = CN_Purchated_MU + 3
 
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
-        row_num += 1
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Пояснение к цв.схеме(заливке)", 1, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, VspomMaterialColor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал вспомогательный", 0, 1, 0)
-        row_num += 1
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, VspomMaterialColor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал вспомогательный", 0, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Сортамент изделия", 0, 1, 0)
-        row_num += 1
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Сортамент изделия", 0, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColorKonstructor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал изделия(Констр)", 0, 1, 0)
-        row_num += 1
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, SortamentColorKonstructor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал изделия(Констр)", 0, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, StandartColor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Стандартные изделия", 0, 1, 0)
-        row_num += 1
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, StandartColor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Стандартные изделия", 0, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, Pro4eeColor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Прочие изделия", 0, 1, 0)
-        row_num += 1
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, Pro4eeColor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Прочие изделия", 0, 1, 0)
+            row_num += 1
 
-        SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, MaterialColor_Purchated)
-        set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал", 0, 1, 0)
+            SetCellsColor(ShName_Purchated, col_num, row_num, col_num, row_num, MaterialColor_Purchated)
+            set_Value_From_Cell_with_Proerty(ShName_Purchated, col_num, row_num, "Материал", 0, 1, 0)
+        End If
     End Sub
     Private TmpNode As TreeNode
     Sub read_NEXTLEVELtreeview(myNextNode As TreeNode)
@@ -1173,6 +1184,7 @@ ifpozRAVNOTempPoz:
                 TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
                 Try
                     If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ)
+                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing And NO_Purchated_PDRBN Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, myNextNode.Tag)
                 Catch ex As Exception
                 End Try
             End If
@@ -1184,38 +1196,92 @@ ifpozRAVNOTempPoz:
             Else
                 If NO_Purchated Then excel_write_aboutPart_in_Purchated(ArtID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
                 If NO_Parts Then excel_write_aboutPart_in_PartList(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
+                If NO_Purchated_PDRBN Then excel_write_about_PDRBN_Purchated(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
             End If
         Next
     End Sub
-    Sub excel_write_about_PDRBN_Purchated(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
+    Sub excel_write_about_PDRBN_Purchated(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String) '(ArtID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
         Application.DoEvents()
         Dim tmp_colors As Color = Color.Khaki
-        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_pdrbn_Naim) + 1
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_pdrbn_Count) + 1
         Dim tmp_row As Integer
         Dim sum, totalsum As Double
+
         Select Case Art_Info(12)
             Case 4 'детали
                 Try
                     If TC_Info(4) IsNot Nothing Then
                         tmp_colors = SortamentColor_Purchated '  Color.Tan
-                        tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, TC_Info(4))
-                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                        set_Value_From_Cell(ShName_pdrbn, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TC_Info(4))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TC_Info(10))
+                        tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, TC_Info(4)) + 1
 
-                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                        If tmp_row > 0 Then
+                            'создание новой строки
+                            add_NewRow(ShName_pdrbn, tmp_row)
+                            'объединить ячейки из созданной и предыдущей строки
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_Naim, tmp_row - 1, CN_pdrbn_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_IBKey, tmp_row - 1, CN_pdrbn_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка IBKey
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво 
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row - 1, CN_pdrbn_ObjType, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Тип объекта
+                            'дописать в новой строчке информацию о новой детали
+
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, Art_Info(0)) 'Колонка обозначение применяемого обекта
+                            sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                            'sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
+                            'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, TC_Info(10)) 'Ед.изм. 
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Сортамент изделия") 'тип объекта
+                        Else
+                            set_Value_From_Cell(ShName_pdrbn, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3)) ' наименование
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TC_Info(4))  ' ключ IMBASE
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, Art_Info(0)) 'обозначение применяемого обекта
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, (CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TC_Info(10)) 'ед изм
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, ((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", "."))) 'Общ кол-во/масса 
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Сортамент изделия") 'тип объекта
+                        End If
                     Else
                         tmp_colors = SortamentColorKonstructor_Purchated ' Color.LightSteelBlue
                         tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, Art_Info(6))
-                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(5))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(6))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, Art_Info(9))
+                        'If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+                        'set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(5))
+                        'set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(6))
+                        'set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, Art_Info(9))
 
-                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))), 3)
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+                        'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))), 3)
+                        'set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+
+                        If tmp_row > 0 Then
+                            'создание новой строки
+                            add_NewRow(ShName_pdrbn, tmp_row)
+                            'объединить ячейки из созданной и предыдущей строки
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_Naim, tmp_row - 1, CN_pdrbn_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_IBKey, tmp_row - 1, CN_pdrbn_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка IBKey
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво 
+                            CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row - 1, CN_pdrbn_ObjType, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Тип объекта
+                            'дописать в новой строчке информацию о новой детали
+
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, Art_Info(0)) 'Колонка обозначение применяемого обекта
+                            sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count) * CDbl(Art_Info(2))), 3)
+                            'sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
+                            'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) * CDbl(Art_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, Art_Info(9)) 'Ед.изм. 
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Материал изделия(Констр)") 'тип объекта
+                        Else
+                            set_Value_From_Cell(ShName_pdrbn, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5)) ' наименование
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(6))  ' ключ IMBASE
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, Art_Info(0)) 'обозначение применяемого обекта
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, (CDbl(Total_Count) * CDbl(Art_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, Art_Info(9)) 'ед изм
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))).ToString.Replace(",", ".")) 'Общ кол-во/масса 
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Материал изделия(Констр)") 'тип объекта
+                        End If
+
                     End If
                 Catch ex As Exception
 
@@ -1228,17 +1294,7 @@ ifpozRAVNOTempPoz:
                     Else
                         tmp_colors = Pro4eeColor_Purchated
                     End If
-                    tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_Purchated_First, Art_Info(3))
-                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1))
-                    set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))
-                    set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, PRJLINK_Param(11))
-
-                    sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated)) + CDbl(Total_Count))
-                    set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
-                    'красим вспомогательный материал в свой цвет
-                    'SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
-
+                    tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_Purchated_First, Art_Info(3)) + 1
                     If tmp_row > 0 Then
                         'создание новой строки
                         add_NewRow(ShName_pdrbn, tmp_row)
@@ -1246,59 +1302,25 @@ ifpozRAVNOTempPoz:
                         CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_Naim, tmp_row - 1, CN_pdrbn_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
                         CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_IBKey, tmp_row - 1, CN_pdrbn_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка IBKey
                         CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво 
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row - 1, CN_pdrbn_ObjType, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Тип объекта
                         'дописать в новой строчке информацию о новой детали
+
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Колонка обозначение применяемого обекта
-                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, sum.ToString.Replace(",", ".")) 'Кол-во/масса
-                        'set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Кол-во/масса
-                        'set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Ед.изм.
-
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_LinkType, tmp_row, PRJLINK_Param(9)) 'тип связи
-
-                        If TC_Info(9) IsNot Nothing Then
-                            sum = CDbl(Total_Count) / CDbl(TC_Info(6))
-                            totalsum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_PL_TotalCount, tmp_row - 1)) + CDbl(Total_Count)
-                        Else
-                            sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
-                            totalsum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_PL_TotalCount, tmp_row - 1)) + CDbl(Total_Count)
-                        End If
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_Count, tmp_row, sum) 'колво
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_TotalCount, tmp_row - 1, totalsum) 'Общее колво
-
-                        'If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
-                        '    set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort, tmp_row, TC_Info(3)) 'Сортамент
-                        '    set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort_IBKey, tmp_row, TC_Info(4)) 'ключ имбайз сортамента 
-                        'Else
-                        '    set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort, tmp_row, Art_Info(5)) 'Сортамент
-                        '    set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort_IBKey, tmp_row, Art_Info(6)) 'ключ имбайз сортамента
-                        'End If
+                        sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
+                        'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, CDbl(Total_Count)) 'Кол-во/масса
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, PRJLINK_Param(11)) 'Ед.изм. 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, Art_Info(7)) 'тип объекта
                     Else
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_ArtID, lastRowNumPurchated, ArtID)
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_Oboz, lastRowNumPurchated, Art_Info(0))
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_Naim, lastRowNumPurchated, Art_Info(1))
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_PROJ_ID, lastRowNumPurchated, PRJLINK_Param(0))
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_Primen9emost, lastRowNumPurchated, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1)) ' наименование
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))  ' ключ IMBASE
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, CDbl(Total_Count)) 'Кол-во/масса
 
-                        'set_Value_From_Cell(ShName_pdrbn, CN_PL_MU, lastRowNumInPartlist, PRJLINK_Param(11)) 'ед изм
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_LinkType, lastRowNumPurchated, PRJLINK_Param(9)) 'тип связи
-
-                        If TC_Info(9) IsNot Nothing Then
-                            sum = CDbl(Total_Count) / CDbl(TC_Info(6))
-                            totalsum = CDbl(Total_Count)
-                        Else
-                            sum = CDbl(PRJLINK_Param(2)) '* CDbl(Total_Count)
-                            totalsum = CDbl(Total_Count)
-                        End If
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_Count, lastRowNumPurchated, sum) 'колво
-                        set_Value_From_Cell(ShName_pdrbn, CN_PL_TotalCount, lastRowNumPurchated, totalsum) 'колво общее
-
-                        If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
-                            set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort, lastRowNumPurchated, TC_Info(3)) 'Сортамент
-                            set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort_IBKey, lastRowNumPurchated, TC_Info(4)) 'ключ имбайз сортамента 
-                        Else
-                            set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort, lastRowNumPurchated, Art_Info(5)) 'Сортамент
-                            set_Value_From_Cell(ShName_pdrbn, CN_PL_Sort_IBKey, lastRowNumPurchated, Art_Info(6)) 'ключ имбайз сортамента
-                        End If
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, PRJLINK_Param(11)) 'ед изм
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count)) 'Общ кол-во/масса 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, Art_Info(7)) 'тип объекта
                     End If
                 Catch ex As Exception
 
@@ -1307,32 +1329,52 @@ ifpozRAVNOTempPoz:
             Case 7 'материалы
                 Try
                     tmp_colors = MaterialColor_Purchated ' Color.LightSkyBlue
-                    tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, Art_Info(3))
-                    If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                    If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
-                        tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, TC_Info(4))
-                        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, TC_Info(3))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TC_Info(4))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TC_Info(10))
+                    tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, Art_Info(3)) + 1
+
+                    If tmp_row > 0 Then
+                        'создание новой строки
+                        add_NewRow(ShName_pdrbn, tmp_row)
+                        'объединить ячейки из созданной и предыдущей строки
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_Naim, tmp_row - 1, CN_pdrbn_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_IBKey, tmp_row - 1, CN_pdrbn_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка IBKey
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво 
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row - 1, CN_pdrbn_ObjType, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Тип объекта
+                        'дописать в новой строчке информацию о новой детали
+
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'Колонка обозначение применяемого обекта 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, CDbl(Total_Count)) 'Кол-во/масса
+                        If CDbl(TC_Info(6)) <> 0 Then
+                            sum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                        Else
+                            sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
+                        End If
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, PRJLINK_Param(11)) 'Ед.изм.  
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, Art_Info(7)) 'тип объекта
                     Else
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))
-                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, PRJLINK_Param(11))
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1)) ' наименование
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))  ' ключ IMBASE
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, CDbl(Total_Count)) 'Кол-во/масса 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, PRJLINK_Param(11)) 'ед изм
+
+                        If CDbl(TC_Info(6)) <> 0 Then
+                            sum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                        Else
+                            sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count))
+                        End If
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, CDbl(sum)) 'Общ кол-во/масса 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, Art_Info(7)) 'тип объекта
                     End If
-                    If CDbl(TC_Info(6)) <> 0 Then
-                        sum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
-                    Else
-                        sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated)) + CDbl(Total_Count))
-                    End If
-                    set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+
                 Catch ex As Exception
 
                 End Try
         End Select
+        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
         'красим в свой цвет
-        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_MU, lastRowNumPurchated, tmp_colors)
-        SetCellsBorderLineStyle2(ShName_pdrbn, 1, lastRowNumPurchated, CN_pdrbn_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
+        SetCellsBorderLineStyle2(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
     End Sub
     Sub excel_write_aboutPart_in_PartList(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
@@ -1356,6 +1398,7 @@ ifpozRAVNOTempPoz:
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_TotalCount, tmp_row - 1, CN_PL_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка сортамент
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ключ ImBase
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_ZagSumCount, tmp_row - 1, CN_PL_ZagSumCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Кол-во необх.заготовки
                         'дописать в новой строчке информацию о новой детали
                         set_Value_From_Cell(ShName_PartList, CN_PL_PROJ_ID, tmp_row, PRJLINK_Param(0)) 'Колонка PROJ_ID
                         set_Value_From_Cell(ShName_PartList, CN_PL_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0))) 'обозначение применяемого обекта
@@ -1372,13 +1415,19 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_PartList, CN_PL_Count, tmp_row, sum) 'колво
                         set_Value_From_Cell(ShName_PartList, CN_PL_TotalCount, tmp_row - 1, totalsum) 'Общее колво
 
-                        'If TC_Info(3) IsNot Nothing Or TC_Info(3) <> "" Then
-                        '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort, tmp_row, TC_Info(3)) 'Сортамент
-                        '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, tmp_row, TC_Info(4)) 'ключ имбайз сортамента 
-                        'Else
-                        '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort, tmp_row, Art_Info(5)) 'Сортамент
-                        '    set_Value_From_Cell(ShName_PartList, CN_PL_Sort_IBKey, tmp_row, Art_Info(6)) 'ключ имбайз сортамента
-                        'End If
+
+                        set_Value_From_Cell(ShName_PartList, CN_PL_ZagCount, tmp_row, TC_Info(6))
+                        Try
+                            Dim ZagSumCount As Double
+                            If CDbl(TC_Info(6)) <> 0 Then
+                                ZagSumCount = Total_Count / CDbl(TC_Info(6))
+                                set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, tmp_row, ZagSumCount)
+                            Else
+                                set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, tmp_row, 0)
+                            End If
+                        Catch ex As Exception
+
+                        End Try
                     Else
                         set_Value_From_Cell(ShName_PartList, CN_PL_ArtID, lastRowNumInPartlist, ArtID)
                         set_Value_From_Cell(ShName_PartList, CN_PL_Oboz, lastRowNumInPartlist, Art_Info(0))
@@ -1408,6 +1457,18 @@ ifpozRAVNOTempPoz:
                         End If
                     End If
 
+                    set_Value_From_Cell(ShName_PartList, CN_PL_ZagCount, lastRowNumInPartlist, TC_Info(6))
+                    Try
+                        Dim ZagSumCount As Double
+                        If CDbl(TC_Info(6)) <> 0 Then
+                            ZagSumCount = Total_Count / CDbl(TC_Info(6))
+                            set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, lastRowNumInPartlist, ZagSumCount)
+                        Else
+                            set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, lastRowNumInPartlist, 0)
+                        End If
+                    Catch ex As Exception
+
+                    End Try
                 Catch ex As Exception
 
                 End Try
@@ -1630,6 +1691,61 @@ ifpozRAVNOTempPoz:
                     'красим вспомогательный материал в свой цвет
                     SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
                     SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+                Next
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Sub excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array As Array, Count_Sum As Double, PRJ_ID As Integer)
+        Application.DoEvents()
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_Purchated_Count) + 1
+        Dim tmp_row As Integer
+        Dim sum As Double
+        Dim tmp_colors As Color = VspomMaterialColor_Purchated  'Color.DarkSalmon
+        Try
+            If UBound(TP_Vspom_Mater_Array, 1) >= 0 Then
+                For q As Integer = 0 To UBound(TP_Vspom_Mater_Array, 1)
+                    lastRowNumPurchated = Get_LastRowInOneColumn(ShName_pdrbn, CN_Purchated_Naim) + 1
+                    tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, TP_Vspom_Mater_Array(q, 1)) + 1
+                    'If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+
+                    'set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 0))
+                    'set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 1))
+                    'set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 3))
+
+                    'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))), 3)
+                    'set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
+
+                    If tmp_row > 0 Then
+                        'создание новой строки
+                        add_NewRow(ShName_pdrbn, tmp_row)
+                        'объединить ячейки из созданной и предыдущей строки
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_Naim, tmp_row - 1, CN_pdrbn_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_IBKey, tmp_row - 1, CN_pdrbn_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка IBKey
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво 
+                        CellsMergeWithTextAlignment(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row - 1, CN_pdrbn_ObjType, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Тип объекта
+                        'дописать в новой строчке информацию о новой детали
+
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJ_ID)) 'Колонка обозначение применяемого обекта 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))).ToString.Replace(",", ".")) 'Кол-во/масса 
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))), 3)
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, TP_Vspom_Mater_Array(q, 3)) 'Ед.изм.  
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Вспомогательный материал")
+                    Else
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 0)) ' наименование
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 1))  ' ключ IMBASE
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, get_OBOZ_by_Part_AID(PRJ_ID)) 'обозначение применяемого обекта
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, (Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))).ToString.Replace(",", ".")) 'Кол-во/масса 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 3)) 'ед изм
+
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))).ToString.Replace(",", ".")) 'Общ кол-во/масса 
+                        set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Вспомогательный материал")
+                    End If
+                    'красим вспомогательный материал в свой цвет
+                    SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
+                    SetCellsBorderLineStyle2(ShName_pdrbn, 1, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
                 Next
             End If
         Catch ex As Exception
@@ -1926,6 +2042,9 @@ ifpozRAVNOTempPoz:
                 If ReplaceTildaOnSpace Then
                     Sortament = Replace(Sortament, "~", " ")
                 End If
+                If ReplaceQuestionOnDrob Then
+                    Sortament = Replace(Sortament, "?", "/")
+                End If
             Catch ex As Exception
 
             End Try
@@ -2068,6 +2187,10 @@ ifpozRAVNOTempPoz:
                 If ReplaceTildaOnSpace Then
                     material = Replace(material, "~", " ")
                     naim = Replace(naim, "~", " ")
+                End If
+                If ReplaceQuestionOnDrob Then
+                    material = Replace(material, "?", "/")
+                    naim = Replace(naim, "?", "/")
                 End If
                 materialIMKey = .GetFieldImbaseKey_Articles("Материал")
                 ArtKindName = .GetArtKindName
