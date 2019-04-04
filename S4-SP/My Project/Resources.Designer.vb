@@ -123,6 +123,16 @@ Namespace My.Resources
         '''<summary>
         '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property ASSEMB4() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("ASSEMB4", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property ASSEMBLY1() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("ASSEMBLY1", resourceCulture)
@@ -156,6 +166,26 @@ Namespace My.Resources
         Friend ReadOnly Property clear_icon_9193() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("clear-icon-9193", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property COMPLEX() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("COMPLEX", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property COMPLEX1() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("COMPLEX1", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -334,6 +364,26 @@ Namespace My.Resources
         '''<summary>
         '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property newVT() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("newVT", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property newVT1() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("newVT1", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property newZak() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("newZak", resourceCulture)
@@ -447,6 +497,16 @@ Namespace My.Resources
         Friend ReadOnly Property Открыть_древов_ВСНРМ3() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Открыть_древов_ВСНРМ3", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property подробный_отчет() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("подробный отчет", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

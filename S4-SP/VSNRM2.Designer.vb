@@ -38,17 +38,20 @@ Partial Class VSNRM2
         Me.СРазделомПрочиеИзделияToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СРазделомМатериалыToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ДетальСборочнаяЕдиницаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ТолькоПервыйУровеньToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ЗаменятьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ЗаменятьНаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripComboBox1 = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ССоставомИзделияToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СПеречнемДеталейToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.СПеречнемПокупныхПДРБНToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СПеречнемМатериаловToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ПоказыватьПроцессЭкспортаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ПоказыватьПояснениеПоЗаливкеToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.НастройкиЗаливкиToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.СПеречнемПокупныхПДРБНToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton3 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
@@ -61,7 +64,7 @@ Partial Class VSNRM2
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ЗаменятьНаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip1.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -108,7 +111,7 @@ Partial Class VSNRM2
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ДетальСборочнаяЕдиницаToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ЗаменятьНаToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемПокупныхПДРБНToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem, Me.ПоказыватьПояснениеПоЗаливкеToolStripMenuItem, Me.НастройкиЗаливкиToolStripMenuItem})
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ДетальСборочнаяЕдиницаToolStripMenuItem, Me.ТолькоПервыйУровеньToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ЗаменятьНаToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.ССоставомИзделияToolStripMenuItem, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемПокупныхПДРБНToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem, Me.ПоказыватьПояснениеПоЗаливкеToolStripMenuItem, Me.НастройкиЗаливкиToolStripMenuItem})
         Me.ToolStripDropDownButton1.Image = Global.S4_SP.My.Resources.Resources.wrench_512
         Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
@@ -174,6 +177,13 @@ Partial Class VSNRM2
         Me.ДетальСборочнаяЕдиницаToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
         Me.ДетальСборочнаяЕдиницаToolStripMenuItem.Text = "Деталь-Сборочная единица"
         '
+        'ТолькоПервыйУровеньToolStripMenuItem
+        '
+        Me.ТолькоПервыйУровеньToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.COMPLEX1
+        Me.ТолькоПервыйУровеньToolStripMenuItem.Name = "ТолькоПервыйУровеньToolStripMenuItem"
+        Me.ТолькоПервыйУровеньToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
+        Me.ТолькоПервыйУровеньToolStripMenuItem.Text = "Только первый уровень"
+        '
         'ЗаменятьToolStripMenuItem
         '
         Me.ЗаменятьToolStripMenuItem.Checked = True
@@ -184,6 +194,15 @@ Partial Class VSNRM2
         Me.ЗаменятьToolStripMenuItem.Text = "Заменять '~' на ' '"
         Me.ЗаменятьToolStripMenuItem.ToolTipText = "Символ ""~""(тильда) в материале, в разделах Материал, Стандарные и " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Прочие издели" &
     "я будет заменен на "" ""(пробел)"
+        '
+        'ЗаменятьНаToolStripMenuItem
+        '
+        Me.ЗаменятьНаToolStripMenuItem.Checked = True
+        Me.ЗаменятьНаToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.ЗаменятьНаToolStripMenuItem.Image = CType(resources.GetObject("ЗаменятьНаToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.ЗаменятьНаToolStripMenuItem.Name = "ЗаменятьНаToolStripMenuItem"
+        Me.ЗаменятьНаToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
+        Me.ЗаменятьНаToolStripMenuItem.Text = "Заменять '?' на '/'"
         '
         'ToolStripComboBox1
         '
@@ -197,12 +216,26 @@ Partial Class VSNRM2
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(280, 6)
         '
+        'ССоставомИзделияToolStripMenuItem
+        '
+        Me.ССоставомИзделияToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.newVT1
+        Me.ССоставомИзделияToolStripMenuItem.Name = "ССоставомИзделияToolStripMenuItem"
+        Me.ССоставомИзделияToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
+        Me.ССоставомИзделияToolStripMenuItem.Text = "С Составом изделия"
+        '
         'СПеречнемДеталейToolStripMenuItem
         '
         Me.СПеречнемДеталейToolStripMenuItem.Image = CType(resources.GetObject("СПеречнемДеталейToolStripMenuItem.Image"), System.Drawing.Image)
         Me.СПеречнемДеталейToolStripMenuItem.Name = "СПеречнемДеталейToolStripMenuItem"
         Me.СПеречнемДеталейToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
         Me.СПеречнемДеталейToolStripMenuItem.Text = "С Перечнем деталей"
+        '
+        'СПеречнемПокупныхПДРБНToolStripMenuItem
+        '
+        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.подробный_отчет
+        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Name = "СПеречнемПокупныхПДРБНToolStripMenuItem"
+        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
+        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Text = "С Перечнем покупных(Подробный)"
         '
         'СПеречнемМатериаловToolStripMenuItem
         '
@@ -246,12 +279,6 @@ Partial Class VSNRM2
         Me.НастройкиЗаливкиToolStripMenuItem.Name = "НастройкиЗаливкиToolStripMenuItem"
         Me.НастройкиЗаливкиToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
         Me.НастройкиЗаливкиToolStripMenuItem.Text = "Настройки заливки"
-        '
-        'СПеречнемПокупныхПДРБНToolStripMenuItem
-        '
-        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Name = "СПеречнемПокупныхПДРБНToolStripMenuItem"
-        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
-        Me.СПеречнемПокупныхПДРБНToolStripMenuItem.Text = "С Перечнем покупных(Пдрбн)"
         '
         'ToolStripSeparator3
         '
@@ -307,46 +334,44 @@ Partial Class VSNRM2
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ОткрытьToolStripMenuItem, Me.ToolStripSeparator4, Me.ОчиститьДеревоToolStripMenuItem, Me.УдалитьВетвьToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ОткрытьToolStripMenuItem, Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem, Me.ToolStripSeparator4, Me.ОчиститьДеревоToolStripMenuItem, Me.УдалитьВетвьToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(219, 76)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(254, 120)
         '
         'ОткрытьToolStripMenuItem
         '
         Me.ОткрытьToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.Album
         Me.ОткрытьToolStripMenuItem.Name = "ОткрытьToolStripMenuItem"
         Me.ОткрытьToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4
-        Me.ОткрытьToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.ОткрытьToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
         Me.ОткрытьToolStripMenuItem.Text = "Карточка Объекта"
         '
         'ToolStripSeparator4
         '
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
-        Me.ToolStripSeparator4.Size = New System.Drawing.Size(215, 6)
+        Me.ToolStripSeparator4.Size = New System.Drawing.Size(250, 6)
         '
         'ОчиститьДеревоToolStripMenuItem
         '
         Me.ОчиститьДеревоToolStripMenuItem.Image = CType(resources.GetObject("ОчиститьДеревоToolStripMenuItem.Image"), System.Drawing.Image)
         Me.ОчиститьДеревоToolStripMenuItem.Name = "ОчиститьДеревоToolStripMenuItem"
         Me.ОчиститьДеревоToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.Delete), System.Windows.Forms.Keys)
-        Me.ОчиститьДеревоToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.ОчиститьДеревоToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
         Me.ОчиститьДеревоToolStripMenuItem.Text = "Очистить дерево"
         '
         'УдалитьВетвьToolStripMenuItem
         '
         Me.УдалитьВетвьToolStripMenuItem.Name = "УдалитьВетвьToolStripMenuItem"
         Me.УдалитьВетвьToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete
-        Me.УдалитьВетвьToolStripMenuItem.Size = New System.Drawing.Size(218, 22)
+        Me.УдалитьВетвьToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
         Me.УдалитьВетвьToolStripMenuItem.Text = "Удалить ветвь"
         '
-        'ЗаменятьНаToolStripMenuItem
+        'ВедомостьДляВыбранногоУзлаToolStripMenuItem
         '
-        Me.ЗаменятьНаToolStripMenuItem.Checked = True
-        Me.ЗаменятьНаToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.ЗаменятьНаToolStripMenuItem.Image = CType(resources.GetObject("ЗаменятьНаToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.ЗаменятьНаToolStripMenuItem.Name = "ЗаменятьНаToolStripMenuItem"
-        Me.ЗаменятьНаToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
-        Me.ЗаменятьНаToolStripMenuItem.Text = "Заменять '?' на '/'"
+        Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.excel_icon
+        Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem.Name = "ВедомостьДляВыбранногоУзлаToolStripMenuItem"
+        Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
+        Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem.Text = "Ведомость для выбранного узла"
         '
         'VSNRM2
         '
@@ -405,4 +430,7 @@ Partial Class VSNRM2
     Friend WithEvents ДетальСборочнаяЕдиницаToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents СПеречнемПокупныхПДРБНToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ЗаменятьНаToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ССоставомИзделияToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ТолькоПервыйУровеньToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ВедомостьДляВыбранногоУзлаToolStripMenuItem As ToolStripMenuItem
 End Class

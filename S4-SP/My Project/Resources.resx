@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="About" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\About.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Открыть_древов_ВСНРМ2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Открыть_древов_ВСНРМ2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -130,6 +133,9 @@
   <data name="EXCELL" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\EXCELL.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="-space-bar_90666" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\-space-bar_90666.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ASSEMBLY1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ASSEMBLY1.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -141,6 +147,9 @@
   </data>
   <data name="Help1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Help.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="newVT" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\newVT.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Открыть_древов_ВСНРМ" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Открыть_древов_ВСНРМ.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -169,26 +178,32 @@
   <data name="cabinet1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cabinet1.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="options-icon-30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\options-icon-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="подробный отчет" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\imagelist\подробный отчет.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="About1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\About1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Album" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Album.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="newKTD" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\newKTD.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="options-icon-30" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\options-icon-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ASSEMB4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ASSEMB4.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="COMPLEX" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\COMPLEX.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SP.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Рисунок11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\imagelist\Рисунок1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="kisspng-color-wheel-computer-icons-color-picker-web-colors-colors-icon-5ab0cc7bdc0f66.4872065015215361239014" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\kisspng-color-wheel-computer-icons-color-picker-web-colors-colors-icon-5ab0cc7bdc0f66.4872065015215361239014.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="About" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\About.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="newZak" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\newZak.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -208,8 +223,8 @@
   <data name="9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\9.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="-space-bar_90666" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\-space-bar_90666.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Album" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Album.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DWG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DWG.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -241,7 +256,10 @@
   <data name="DOCUMENT" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DOCUMENT.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Рисунок11" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\bin\Debug\imagelist\Рисунок1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="newVT1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\newVT1.ico;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="COMPLEX1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\COMPLEX1.ICO;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

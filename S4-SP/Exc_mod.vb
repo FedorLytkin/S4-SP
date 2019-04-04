@@ -655,4 +655,56 @@ Module Exc_mod
             obj = Nothing
         End Try
     End Sub
+
+    Public Sub SortSheets_AlfavitUP()
+        'сортировка листо в порядке возростания
+        Dim I As Integer
+        Dim J As Integer
+        For I = 1 To WB.Sheets.Count - 1
+            For J = I + 1 To WB.Sheets.Count
+                Dim ActiveSheet As Worksheet = WB.Sheets.Item(I)
+                Dim sheet As Worksheet = WB.Sheets.Item(J)
+                If UCase(WB.Sheets.Item(I).Name) > UCase(WB.Sheets.Item(J).Name) Then
+                    WB.Sheets.Item(I).Move(WB.Sheets.Item(J))
+                End If
+            Next
+        Next
+    End Sub
+    Public Sub SortSheets_AlfavitDown()
+        'сортировка листо в порядке убываения
+        Dim I As Integer
+        Dim J As Integer
+        For I = 1 To WB.Sheets.Count - 1
+            For J = I + 1 To WB.Sheets.Count
+                If UCase(WB.Sheets.Item(I).Name) < UCase(WB.Sheets.Item(J).Name) Then
+                    WB.Sheets.Item(I).Move(WB.Sheets.Item(J))
+                End If
+            Next
+        Next
+    End Sub
+    Public Sub SortSheets_by_SheetName(SheetName As String, After_Sheetname As String)
+        'сортировка листо в произвольном порядке
+        Try
+            WB.Sheets.Item(SheetName).Move(, WB.Sheets.Item(After_Sheetname))
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub Sheets_Activate_by_SheetName(SheetName As String)
+        'делает указанный лист активным
+        Try
+            WB.Worksheets.Item(SheetName).Activate
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Public Sub Sheet_Delete_by_SheetName(SheetName As String)
+        'удаляет указанный лист
+        Try
+            WB.Worksheets.Item(SheetName).delete
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
 End Module
