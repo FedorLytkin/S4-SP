@@ -624,7 +624,7 @@ ifpozRAVNOTempPoz:
                 If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
                     Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
 
-                    If exist_BOM_ChildNodesExist(Part_AID) And Not OnlyFirstLewvel Then
+                    If exist_BOM_ChildNodesExist(Part_AID) And (Not OnlyFirstLewvel Or RAZDEL = 4) Then
                         NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
                         Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
                     Else
