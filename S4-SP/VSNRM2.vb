@@ -1299,7 +1299,7 @@ ifpozRAVNOTempPoz:
                 TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
                 Try
                     If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ)
-                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing And NO_Purchated_PDRBN Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, myNextNode.Tag)
+                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing And NO_Purchated_PDRBN Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, ArtID) ' myNextNode.Tag)
                 Catch ex As Exception
                 End Try
             End If
@@ -2644,6 +2644,19 @@ ifpozRAVNOTempPoz:
     Private Sub ВедомостьДляВыбранногоУзлаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ВедомостьДляВыбранногоУзлаToolStripMenuItem.Click
         Dim selectNode As TreeNode = TreeView1.SelectedNode
         add_Vedomost(selectNode)
+    End Sub
+
+    Private Sub ContextMenuStrip1_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip1.Opening
+        Try
+            Dim selectNode As TreeNode = TreeView1.SelectedNode
+            If selectNode.GetNodeCount(True) = 0 Then
+                ВедомостьДляВыбранногоУзлаToolStripMenuItem.Enabled = False
+            Else
+                ВедомостьДляВыбранногоУзлаToolStripMenuItem.Enabled = True
+            End If
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
