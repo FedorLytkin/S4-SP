@@ -6,7 +6,7 @@
     Public Spletter As String = "|"
     'параметр не выводящий типы объектов и компоненты с ручной связью
     Public NO_Art_Documentacia As Boolean = 0
-    Public NO_Ru4na9_Sv9z As Boolean = 0
+    Public NO_Ru4na9_Sv9z As Boolean = 1
     Public NO_Sborka As Boolean = 1
     Public NO_PartSecion As Boolean = 1
     Public NO_Standart As Boolean = 1
@@ -23,8 +23,8 @@
     Dim TPsfilter_str As String = "TPsfilter"
     Dim TPsfilter As Boolean = 0
     Dim CT_ID_in_Query As String
-    'параметр экспортирующий данные о СОСТАВ ИЗДЕЛИЯ
-    Public OnlyFirstLewvel As Boolean = 1
+    'параметр экспортирующий данные о первом уровне вложенности
+    Public OnlyFirstLewvel As Boolean = 0
     'параметр экспортирующий данные о СОСТАВ ИЗДЕЛИЯ
     Public NO_Sostav As Boolean = 1
     'параметр экспортирующий данные о применяемости деталей
@@ -38,7 +38,7 @@
     Public NO_ColorNote As Boolean = 1
 
     'параметр экспортирующий данные о материалах и покупных
-    Public NO_ExlProc_Visible As Boolean = 1
+    Public NO_ExlProc_Visible As Boolean = 0
 
     'параметр экспортирующий данные серчовских параметрах
     Public NO_S4_Columns As Boolean = 0
@@ -778,9 +778,9 @@ ifpozRAVNOTempPoz:
     Private Sub addExTitlePurchated(tmp_node As TreeNode)
         Add_NewSheet(ShName_Purchated)
         Sheet_Delete_by_SheetName("Лист1")
+        Dim ArtID, PRJLINK_ID As Integer
         Try
             Dim MainTPInfo, MainArtInfo As Array
-            Dim ArtID, PRJLINK_ID As Integer
             Dim Positio, Count_Summ As String
             If tmp_node.Tag.ToString.IndexOf(Spletter) > 0 Then
                 Dim param_Array As Array = tmp_node.Tag.ToString.Split(Spletter)
@@ -796,9 +796,9 @@ ifpozRAVNOTempPoz:
 
             set_Value_From_Cell(ShName_Purchated, CN_Purchated_Naim, RowN_Purchated_First - 2, MainArtInfo(0) & " " & MainArtInfo(1))
             'выделить первую строку зеленым цветом
-            SetCellsColor(ShName_Purchated, 1, 1, CN_pdrbn_MU, 1, Color.LawnGreen)
+            SetCellsColor(ShName_Purchated, 1, 1, CN_Purchated_MU, 1, Color.LawnGreen)
 
-            CellsTextBold(ShName_Purchated, 1, 1, CN_pdrbn_MU, 1)
+            CellsTextBold(ShName_Purchated, 1, 1, CN_Purchated_MU, 1)
         Catch ex As Exception
 
         End Try
@@ -810,7 +810,7 @@ ifpozRAVNOTempPoz:
         Dim CN_Purchated_last_ColNum As Integer = Get_Last_Column(ShName_Purchated, RowN_Purchated_First - 1)
         SetCellsBorderLineStyle2(ShName_Purchated, 1, 1, CN_Purchated_last_ColNum, RowN_Purchated_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
         Try
-            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
+            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
             If VSpom_Mater_for_Main IsNot Nothing Then
                 excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
             End If
@@ -834,9 +834,9 @@ ifpozRAVNOTempPoz:
     Private Sub addExTitlePDRBN(tmp_node As TreeNode)
         Add_NewSheet(ShName_pdrbn)
         Sheet_Delete_by_SheetName("Лист1")
+        Dim ArtID, PRJLINK_ID As Integer
         Try
             Dim MainTPInfo, MainArtInfo As Array
-            Dim ArtID, PRJLINK_ID As Integer
             Dim Positio, Count_Summ As String
             If tmp_node.Tag.ToString.IndexOf(Spletter) > 0 Then
                 Dim param_Array As Array = tmp_node.Tag.ToString.Split(Spletter)
@@ -853,9 +853,9 @@ ifpozRAVNOTempPoz:
             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, RowN_pdrbn_First - 2, MainArtInfo(0) & " " & MainArtInfo(1))
             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_prjid, RowN_pdrbn_First - 2, ArtID)
             'выделить первую строку зеленым цветом
-            SetCellsColor(ShName_pdrbn, 1, 1, CN_pdrbn_MU, 1, Color.LawnGreen)
+            SetCellsColor(ShName_pdrbn, 1, 1, CN_pdrbn_TotalCount, 1, Color.LawnGreen)
 
-            CellsTextBold(ShName_pdrbn, 1, 1, CN_pdrbn_MU, 1)
+            CellsTextBold(ShName_pdrbn, 1, 1, CN_pdrbn_TotalCount, 1)
         Catch ex As Exception
 
         End Try
@@ -871,10 +871,10 @@ ifpozRAVNOTempPoz:
         Dim CN_pdrbn_last_ColNum As Integer = Get_Last_Column(ShName_pdrbn, RowN_pdrbn_First - 1)
         SetCellsBorderLineStyle2(ShName_pdrbn, 1, 1, CN_pdrbn_last_ColNum, RowN_pdrbn_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
         Try
-            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(TreeView1.Nodes.Item(0).Tag, -1)
-            If VSpom_Mater_for_Main IsNot Nothing Then
+            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
+            If VSpom_Mater_for_Main IsNot Nothing  Then
                 'тут создать процедуру для записи вспомогательных материалов
-                excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, TreeView1.Nodes.Item(0).Tag)
+                excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, ArtID)
             End If
         Catch ex As Exception
         End Try
@@ -1296,14 +1296,16 @@ ifpozRAVNOTempPoz:
             'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
             If TPsfilter Then
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
-                TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
-                Try
-                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ)
-                    If TP_Vspom_Mater_Array(0, 1) IsNot Nothing And NO_Purchated_PDRBN Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, ArtID) ' myNextNode.Tag)
-                Catch ex As Exception
-                End Try
+                If Not OnlyFirstLewvel Then
+                    TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
+                    Try
+                        If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ) 'And (NO_Purchated And Not OnlyFirstLewvel And PRJLINK_Param(4) <> 3 And myNextNode IsNot TreeView1.Nodes.Item(0))
+                        If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, ArtID) ' And (NO_Purchated_PDRBN And Not OnlyFirstLewvel And PRJLINK_Param(4) <> 3 And myNextNode IsNot TreeView1.Nodes.Item(0)) 
+                    Catch ex As Exception
+                    End Try
+                End If
             End If
-            PBarStep()
+                PBarStep()
 
             If myNode.Nodes.Count > 0 Then
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
@@ -1342,11 +1344,11 @@ ifpozRAVNOTempPoz:
 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_prjid, tmp_row, ArtID) 'ArtID применяемого объекта (деталь)
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, Art_Info(0) & " (" & Art_Info(1) & ")") 'Колонка обозначение применяемого обекта
-                            sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                            sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count) * CDbl(TC_Info(2))), 3) 'CDbl(Total_Count) / CDbl(TC_Info(6))
                             'sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
                             'sum = Math.Round((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
-                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, TC_Info(10)) 'Ед.изм. 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Сортамент изделия") 'тип объекта
                         Else
@@ -1354,10 +1356,10 @@ ifpozRAVNOTempPoz:
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TC_Info(4))  ' ключ IMBASE
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_prjid, lastRowNumPurchated, ArtID) 'ArtID применяемого объекта (деталь)
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, lastRowNumPurchated, Art_Info(0) & " (" & Art_Info(1) & ")") 'обозначение применяемого обекта
-                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, (CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, lastRowNumPurchated, (CDbl(Total_Count) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TC_Info(10)) 'ед изм
-                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, ((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))).ToString.Replace(",", "."))) 'Общ кол-во/масса 
+                            set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, ((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(TC_Info(2))).ToString.Replace(",", "."))) 'Общ кол-во/масса  CDbl(Total_Count) / CDbl(TC_Info(6))
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Сортамент изделия") 'тип объекта
                         End If
                     Else
@@ -1467,7 +1469,7 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Primen9emost, tmp_row, get_OBOZ_by_Part_AID(PRJLINK_Param(0)) & " (" & get_Naim_by_Part_AID(PRJLINK_Param(0)) & ")") 'Колонка обозначение применяемого обекта 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, CDbl(Total_Count)) 'Кол-во/масса
                         If CDbl(TC_Info(6)) <> 0 Then
-                            sum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                            sum = CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + (Total_Count) * CDbl(TC_Info(2))
                         Else
                             sum = (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1)) + CDbl(Total_Count))
                         End If
@@ -1507,7 +1509,7 @@ ifpozRAVNOTempPoz:
         Dim tmp_row As Integer
         Select Case Art_Info(12)
             Case 4
-                Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_ArtID) + 1
+                Dim lastRowNumInPartlist As Integer = Get_LastRowInOneColumn(ShName_PartList, CN_PL_LinkType) + 1
                 Try
                     tmp_row = get_value_bay_FindText_Strong(ShName_PartList, CN_PL_ArtID, RowN_PL_First, ArtID) + 1
 
@@ -1519,6 +1521,7 @@ ifpozRAVNOTempPoz:
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Oboz, tmp_row - 1, CN_PL_Oboz, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка обозначение
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Naim, tmp_row - 1, CN_PL_Naim, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка наименование
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_TotalCount, tmp_row - 1, CN_PL_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво
+                        CellsMergeWithTextAlignment(ShName_PartList, CN_PL_ZagCount, tmp_row - 1, CN_PL_ZagCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Общее колво
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort, tmp_row - 1, CN_PL_Sort, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка сортамент
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_Sort_IBKey, tmp_row - 1, CN_PL_Sort_IBKey, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка ключ ImBase
                         CellsMergeWithTextAlignment(ShName_PartList, CN_PL_ZagSumCount, tmp_row - 1, CN_PL_ZagSumCount, tmp_row, Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignTop, Microsoft.Office.Interop.Excel.XlHAlign.xlHAlignLeft) 'Колонка Кол-во необх.заготовки
@@ -1542,7 +1545,7 @@ ifpozRAVNOTempPoz:
                         Try
                             Dim ZagSumCount As Double
                             If CDbl(TC_Info(6)) <> 0 Then
-                                ZagSumCount = CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, tmp_row - 1)) + Total_Count / CDbl(TC_Info(6))
+                                ZagSumCount = Math.Round(CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, tmp_row - 1)) + Total_Count / CDbl(TC_Info(6)), 3)
                                 set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, tmp_row - 1, ZagSumCount)
                                 set_Value_From_Cell(ShName_PartList, CN_PL_ZagCount, tmp_row, TC_Info(6)) 'колво заготовок
                             Else
@@ -1582,7 +1585,7 @@ ifpozRAVNOTempPoz:
                         Try
                             Dim ZagSumCount As Double
                             If CDbl(TC_Info(6)) <> 0 Then
-                                ZagSumCount = CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, lastRowNumInPartlist)) + Total_Count / CDbl(TC_Info(6))
+                                ZagSumCount = Math.Round(CDbl(get_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, lastRowNumInPartlist)) + Total_Count / CDbl(TC_Info(6)), 3)
                                 set_Value_From_Cell(ShName_PartList, CN_PL_ZagCount, lastRowNumInPartlist, TC_Info(6)) 'колво заготовок
                                 set_Value_From_Cell(ShName_PartList, CN_PL_ZagSumCount, lastRowNumInPartlist, ZagSumCount)
                             Else
@@ -1690,7 +1693,7 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_IBKey, lastRowNumPurchated, TC_Info(4))
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, TC_Info(10))
 
-                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) / CDbl(TC_Info(6)) * CDbl(TC_Info(2))), 3)
+                        sum = Math.Round((CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(TC_Info(2))), 3) ' CDbl(Total_Count) / CDbl(TC_Info(6))
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated, sum.ToString.Replace(",", "."))
                     Else
                         tmp_colors = SortamentColorKonstructor_Purchated ' Color.LightSteelBlue
@@ -1746,7 +1749,7 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_Purchated, CN_Purchated_MU, lastRowNumPurchated, PRJLINK_Param(11))
                     End If
                     If CDbl(TC_Info(6)) <> 0 Then
-                        sum = CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + (Total_Count / CDbl(TC_Info(6))) * CDbl(TC_Info(2))
+                        sum = CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + (Total_Count) * CDbl(TC_Info(2)) 'Total_Count / CDbl(TC_Info(6)))
                     Else
                         sum = (CDbl(get_Value_From_Cell(ShName_Purchated, CN_Purchated_Count, lastRowNumPurchated)) + CDbl(Total_Count))
                     End If
