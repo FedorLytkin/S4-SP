@@ -14,9 +14,9 @@
     Public NO_Material As Boolean = 1
     Public Part_SB As Boolean = 0
     'параметр заменяющий "~" на " "
-    Public ReplaceTildaOnSpace As Boolean = 1
+    Public ReplaceTildaOnSpace As Boolean = 0
     'параметр заменяющий "?" на "/"
-    Public ReplaceQuestionOnDrob As Boolean = 1
+    Public ReplaceQuestionOnDrob As Boolean = 0
     'параметр модульный
     Dim Verartfiltr_str As String = "Verartfiltr" 'parameter name
     Dim Verartfiltr As Boolean = 0
@@ -45,6 +45,9 @@
 
     Public myImageList As New ImageList()
     'Public NO_TSE As Boolean = 0
+
+    'массив символов заменителей
+    Dim ReplaceChar() As String
     Private Sub ToolStripButton1_Click(sender As Object, e As EventArgs) Handles ToolStripButton1.Click
         Application.DoEvents()
         generalTree_Bez_Positio(0)
@@ -1105,12 +1108,28 @@ ifpozRAVNOTempPoz:
             ToolStripProgressBar1.Visible = False
         End If
     End Function
+    Sub ReplaceCharArray()
+        'собирает данные о заменяемых символах в специальный массив
+        Dim objStreamReader As System.IO.StreamReader
+        Dim strLine As String
+        objStreamReader = New System.IO.StreamReader(CharOption.Char_opt_path)
+        strLine = objStreamReader.ReadLine
+        Dim w As Integer = 0
+        ReDim Preserve ReplaceChar(w)
+        Do While Not strLine Is Nothing
+            ReDim Preserve ReplaceChar(w)
+            ReplaceChar(w) = strLine
+            strLine = objStreamReader.ReadLine
+            w += 1
+        Loop
+        objStreamReader.Close()
+    End Sub
     Private Sub ToolStripButton2_Click(sender As Object, e As EventArgs) Handles ToolStripButton2.Click
         If TreeView1.Nodes.Count = 0 Then
             MsgBox("Для выгрузки Ведомости, выберите Объект")
             Exit Sub
         End If
-
+        ReplaceCharArray()
         add_Vedomost(TreeView1.Nodes.Item(0))
     End Sub
     Sub add_Vedomost(tmp_node As TreeNode)
@@ -2094,7 +2113,7 @@ ifpozRAVNOTempPoz:
                             '        MaterMU = mat.Value("едНв")
                             '    End If
                             'End If
-                            arVspMat(arSize - 1, 0) = MatNAme
+                            arVspMat(arSize - 1, 0) = get_FindReplace_Par(MatNAme)
                             arVspMat(arSize - 1, 1) = MatIMKey
                             arVspMat(arSize - 1, 2) = NormaG
                             arVspMat(arSize - 1, 3) = MaterMU
@@ -2195,6 +2214,7 @@ ifpozRAVNOTempPoz:
                 If ReplaceQuestionOnDrob Then
                     Sortament = Replace(Sortament, "?", "/")
                 End If
+                Sortament = get_FindReplace_Par(Sortament)
             Catch ex As Exception
 
             End Try
@@ -2215,6 +2235,19 @@ ifpozRAVNOTempPoz:
             Return array
         Catch ex As Exception
             Return array
+        End Try
+    End Function
+    Function get_FindReplace_Par(Input_paramet As String)
+        Try
+            For u As Integer = 0 To UBound(ReplaceChar)
+                Dim tmp_line() As String = ReplaceChar(u).Split("=")
+                Dim Finf_txt As String = tmp_line(0).Trim("=")
+                Dim Replace_txt As String = tmp_line(1).Trim("=")
+                Input_paramet = Input_paramet.Replace(Finf_txt, Replace_txt)
+            Next
+            Return Input_paramet
+        Catch ex As Exception
+
         End Try
     End Function
     Function Get_Link_Param(PRJLINK_ID As Integer) As Array
@@ -2342,6 +2375,7 @@ ifpozRAVNOTempPoz:
                     material = Replace(material, "?", "/")
                     naim = Replace(naim, "?", "/")
                 End If
+                material = get_FindReplace_Par(material)
                 materialIMKey = .GetFieldImbaseKey_Articles("Материал")
                 ArtKindName = .GetArtKindName
                 ArtKind = .GetArticleKind
@@ -2660,6 +2694,10 @@ ifpozRAVNOTempPoz:
         Catch ex As Exception
 
         End Try
+    End Sub
+
+    Private Sub НастройкиЗаменыТекстаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles НастройкиЗаменыТекстаToolStripMenuItem.Click
+        CharOption.ShowDialog()
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)

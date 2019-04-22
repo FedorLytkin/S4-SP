@@ -135,6 +135,13 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Add_newReplaceChar.Designer.vb">
+      <DependentUpon>Add_newReplaceChar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Add_newReplaceChar.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationEvents.vb" />
     <Compile Include="App_info.designer.vb">
       <DependentUpon>App_info.vb</DependentUpon>
     </Compile>
@@ -145,6 +152,12 @@
       <DependentUpon>Art_property.vb</DependentUpon>
     </Compile>
     <Compile Include="Art_property.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CharOption.Designer.vb">
+      <DependentUpon>CharOption.vb</DependentUpon>
+    </Compile>
+    <Compile Include="CharOption.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Checking_SOSTAV_Form.Designer.vb">
@@ -237,11 +250,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Add_newReplaceChar.resx">
+      <DependentUpon>Add_newReplaceChar.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="App_info.resx">
       <DependentUpon>App_info.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Art_property.resx">
       <DependentUpon>Art_property.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CharOption.resx">
+      <DependentUpon>CharOption.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Checking_SOSTAV_Form.resx">
       <DependentUpon>Checking_SOSTAV_Form.vb</DependentUpon>
