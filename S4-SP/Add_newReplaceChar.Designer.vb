@@ -22,6 +22,7 @@ Partial Class Add_newReplaceChar
     'Не изменяйте ее в редакторе исходного кода.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Add_newReplaceChar))
         Me.Find_TB = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -93,6 +94,7 @@ Partial Class Add_newReplaceChar
         Me.Controls.Add(Me.Replace_TB)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.Find_TB)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximumSize = New System.Drawing.Size(207, 132)
         Me.MinimumSize = New System.Drawing.Size(207, 132)
         Me.Name = "Add_newReplaceChar"

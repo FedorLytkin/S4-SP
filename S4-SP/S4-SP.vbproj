@@ -375,6 +375,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="207-Chart_file_tree_flow_chart_organize_structure_tree_view_-512.ico" />
+    <None Include="Resources\Без названия.png" />
     <None Include="Resources\COMPLEX1.ICO" />
     <None Include="Resources\ASSEMB4.ICO" />
     <None Include="Resources\newVT1.ico" />

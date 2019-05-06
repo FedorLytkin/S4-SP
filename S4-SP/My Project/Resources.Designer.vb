@@ -283,6 +283,16 @@ Namespace My.Resources
         '''<summary>
         '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
         '''</summary>
+        Friend ReadOnly Property export_Node() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("export_Node", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
         Friend ReadOnly Property FLDOPEN() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("FLDOPEN", resourceCulture)
@@ -467,6 +477,16 @@ Namespace My.Resources
         Friend ReadOnly Property wrench_512() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("wrench-512", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property Без_названия() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Без названия", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

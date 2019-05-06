@@ -23,13 +23,15 @@ Partial Class CharOption
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(CharOption))
         Me.ListBox1 = New System.Windows.Forms.ListBox()
-        Me.Button1 = New System.Windows.Forms.Button()
-        Me.Button2 = New System.Windows.Forms.Button()
         Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ДобавитьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.УдалитьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ИзменитьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -41,6 +43,33 @@ Partial Class CharOption
         Me.ListBox1.Name = "ListBox1"
         Me.ListBox1.Size = New System.Drawing.Size(260, 186)
         Me.ListBox1.TabIndex = 0
+        '
+        'ContextMenuStrip1
+        '
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ДобавитьToolStripMenuItem, Me.ИзменитьToolStripMenuItem, Me.ToolStripSeparator1, Me.УдалитьToolStripMenuItem})
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(170, 76)
+        '
+        'ДобавитьToolStripMenuItem
+        '
+        Me.ДобавитьToolStripMenuItem.Name = "ДобавитьToolStripMenuItem"
+        Me.ДобавитьToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
+        Me.ДобавитьToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.ДобавитьToolStripMenuItem.Text = "Добавить"
+        '
+        'УдалитьToolStripMenuItem
+        '
+        Me.УдалитьToolStripMenuItem.Name = "УдалитьToolStripMenuItem"
+        Me.УдалитьToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete
+        Me.УдалитьToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.УдалитьToolStripMenuItem.Text = "Удалить"
+        '
+        'ИзменитьToolStripMenuItem
+        '
+        Me.ИзменитьToolStripMenuItem.Name = "ИзменитьToolStripMenuItem"
+        Me.ИзменитьToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.E), System.Windows.Forms.Keys)
+        Me.ИзменитьToolStripMenuItem.Size = New System.Drawing.Size(169, 22)
+        Me.ИзменитьToolStripMenuItem.Text = "Изменить"
         '
         'Button1
         '
@@ -60,29 +89,10 @@ Partial Class CharOption
         Me.Button2.Text = "Отмена"
         Me.Button2.UseVisualStyleBackColor = True
         '
-        'ContextMenuStrip1
+        'ToolStripSeparator1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ДобавитьToolStripMenuItem, Me.УдалитьToolStripMenuItem, Me.ИзменитьToolStripMenuItem})
-        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(129, 70)
-        '
-        'ДобавитьToolStripMenuItem
-        '
-        Me.ДобавитьToolStripMenuItem.Name = "ДобавитьToolStripMenuItem"
-        Me.ДобавитьToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
-        Me.ДобавитьToolStripMenuItem.Text = "Добавить"
-        '
-        'УдалитьToolStripMenuItem
-        '
-        Me.УдалитьToolStripMenuItem.Name = "УдалитьToolStripMenuItem"
-        Me.УдалитьToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
-        Me.УдалитьToolStripMenuItem.Text = "Удалить"
-        '
-        'ИзменитьToolStripMenuItem
-        '
-        Me.ИзменитьToolStripMenuItem.Name = "ИзменитьToolStripMenuItem"
-        Me.ИзменитьToolStripMenuItem.Size = New System.Drawing.Size(128, 22)
-        Me.ИзменитьToolStripMenuItem.Text = "Изменить"
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(166, 6)
         '
         'CharOption
         '
@@ -92,6 +102,7 @@ Partial Class CharOption
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.ListBox1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MaximumSize = New System.Drawing.Size(278, 257)
         Me.MinimumSize = New System.Drawing.Size(278, 257)
         Me.Name = "CharOption"
@@ -108,4 +119,5 @@ Partial Class CharOption
     Friend WithEvents ДобавитьToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents УдалитьToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ИзменитьToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
 End Class

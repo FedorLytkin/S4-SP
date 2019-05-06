@@ -58,22 +58,29 @@ Public Class CharOption
     End Sub
 
     Private Sub ИзменитьToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ИзменитьToolStripMenuItem.Click
-        With Add_newReplaceChar
-            .Text = "Изменить"
-            .OK_Bt.Text = "Изменить"
-            .Cancel_Bt.Text = "Отмена"
-            Dim arr() As String = ListBox1.SelectedItem.ToString.Split("=")
-            .Find_TB.Text = arr(0).Trim("=")
-            .Replace_TB.Text = arr(1).Trim("=")
-            .ShowDialog()
-            Dim r As DialogResult = Add_newReplaceChar.DialogResult
-            If r = DialogResult.OK Then
-                ListBox1.Items.Item(ListBox1.SelectedIndex) = (.Find_TB.Text & "=" & .Replace_TB.Text)
-            End If
-        End With
+        LineEdit()
+    End Sub
+    Sub LineEdit()
+        Try
+            With Add_newReplaceChar
+                .Text = "Изменить"
+                .OK_Bt.Text = "Изменить"
+                .Cancel_Bt.Text = "Отмена"
+                Dim arr() As String = ListBox1.SelectedItem.ToString.Split("=")
+                .Find_TB.Text = arr(0).Trim("=")
+                .Replace_TB.Text = arr(1).Trim("=")
+                .ShowDialog()
+                Dim r As DialogResult = Add_newReplaceChar.DialogResult
+                If r = DialogResult.OK Then
+                    ListBox1.Items.Item(ListBox1.SelectedIndex) = (.Find_TB.Text & "=" & .Replace_TB.Text)
+                End If
+            End With
+        Catch ex As Exception
+
+        End Try
     End Sub
 
-    Private Sub ListBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ListBox1.SelectedIndexChanged
-
+    Private Sub ListBox1_DoubleClick(sender As Object, e As EventArgs) Handles ListBox1.DoubleClick
+        LineEdit()
     End Sub
 End Class

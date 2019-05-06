@@ -12,7 +12,7 @@
     Public NO_Standart As Boolean = 1
     Public NO_Pro4ee As Boolean = 1
     Public NO_Material As Boolean = 1
-    Public Part_SB As Boolean = 0
+    Private _part_SB As Boolean = 0
     'параметр заменяющий "~" на " "
     Public ReplaceTildaOnSpace As Boolean = 0
     'параметр заменяющий "?" на "/"
@@ -875,7 +875,7 @@ ifpozRAVNOTempPoz:
         SetCellsBorderLineStyle2(ShName_pdrbn, 1, 1, CN_pdrbn_last_ColNum, RowN_pdrbn_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
         Try
             Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
-            If VSpom_Mater_for_Main IsNot Nothing  Then
+            If VSpom_Mater_for_Main IsNot Nothing Then
                 'тут создать процедуру для записи вспомогательных материалов
                 excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, ArtID)
             End If
@@ -1319,12 +1319,15 @@ ifpozRAVNOTempPoz:
                     TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
                     Try
                         If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ) 'And (NO_Purchated And Not OnlyFirstLewvel And PRJLINK_Param(4) <> 3 And myNextNode IsNot TreeView1.Nodes.Item(0))
+                    Catch ex As Exception
+                    End Try
+                    Try
                         If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array, Count_Summ, ArtID) ' And (NO_Purchated_PDRBN And Not OnlyFirstLewvel And PRJLINK_Param(4) <> 3 And myNextNode IsNot TreeView1.Nodes.Item(0)) 
                     Catch ex As Exception
                     End Try
                 End If
             End If
-                PBarStep()
+            PBarStep()
 
             If myNode.Nodes.Count > 0 Then
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
@@ -1866,14 +1869,14 @@ ifpozRAVNOTempPoz:
     End Sub
     Sub excel_write_aboutVSPomMater_in_Purchated_PDRBN(TP_Vspom_Mater_Array As Array, Count_Sum As Double, PRJ_ID As Integer)
         Application.DoEvents()
-        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_Purchated_Count) + 1
+        Dim lastRowNumPurchated As Integer = Get_LastRowInOneColumn(ShName_pdrbn, CN_pdrbn_Primen9emost) + 1
         Dim tmp_row As Integer
         Dim sum As Double
         Dim tmp_colors As Color = VspomMaterialColor_Purchated  'Color.DarkSalmon
         Try
             If UBound(TP_Vspom_Mater_Array, 1) >= 0 Then
                 For q As Integer = 0 To UBound(TP_Vspom_Mater_Array, 1)
-                    lastRowNumPurchated = Get_LastRowInOneColumn(ShName_pdrbn, CN_Purchated_Naim) + 1
+                    lastRowNumPurchated = Get_LastRowInOneColumn(ShName_pdrbn, CN_pdrbn_Primen9emost) + 1
                     tmp_row = get_value_bay_FindText_Strong(ShName_pdrbn, CN_pdrbn_IBKey, RowN_pdrbn_First, TP_Vspom_Mater_Array(q, 1)) + 1
                     'If tmp_row > 0 Then lastRowNumPurchated = tmp_row
 
@@ -2071,6 +2074,16 @@ ifpozRAVNOTempPoz:
     End Function
     Dim arSize As Integer
     Dim arVspMat(0, 0) As String
+
+    Public Property Part_SB As Boolean
+        Get
+            Return _part_SB
+        End Get
+        Set(value As Boolean)
+            _part_SB = value
+        End Set
+    End Property
+
     Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, ReadInArray As Boolean)
         Try
             Dim Group As TPServer.ITGroupMaterial = grpmats.First
@@ -2169,8 +2182,9 @@ ifpozRAVNOTempPoz:
                 Dim Zag As TPServer.ITZag = Zags.First
                 For i As Integer = 0 To zagsCount - 1
                     If Zag.IsMainVar <> 1 Then
-                        Dim RefArts As TPServer.ITArticle = Zag.InArts.First
+                        Dim RefArts As TPServer.ITArticle '= Zag.InArts.First
                         For j As Integer = 0 To Zag.InArts.Count - 1
+                            RefArts = Zag.InArts.Articles(j)
                             'ищем заготовку по применяемости! Если условие не строгое, то нужно дать значение "-1"
                             Try
                                 If (RefArts.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0) Then
@@ -2190,7 +2204,7 @@ ifpozRAVNOTempPoz:
                             Catch ex As Exception
 
                             End Try
-                            RefArts = Zag.InArts.Next
+                            'RefArts = Zag.InArts.Next
                         Next
                     ElseIf Zag.IsMainVar = 1 Then
                         With Zag
@@ -2376,6 +2390,8 @@ ifpozRAVNOTempPoz:
                     naim = Replace(naim, "?", "/")
                 End If
                 material = get_FindReplace_Par(material)
+                naim = get_FindReplace_Par(naim)
+
                 materialIMKey = .GetFieldImbaseKey_Articles("Материал")
                 ArtKindName = .GetArtKindName
                 ArtKind = .GetArticleKind
@@ -2679,6 +2695,7 @@ ifpozRAVNOTempPoz:
     End Sub
 
     Private Sub ВедомостьДляВыбранногоУзлаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ВедомостьДляВыбранногоУзлаToolStripMenuItem.Click
+        ReplaceCharArray()
         Dim selectNode As TreeNode = TreeView1.SelectedNode
         add_Vedomost(selectNode)
     End Sub
