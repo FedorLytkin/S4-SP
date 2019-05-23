@@ -6,11 +6,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8D408AC4-196D-4FFD-A9F2-5FA91C7E6F67}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>S4_SP.My.MyApplication</StartupObject>
+    <StartupObject>S4_SP.Form1</StartupObject>
     <RootNamespace>S4_SP</RootNamespace>
     <AssemblyName>S4-SP</AssemblyName>
     <FileAlignment>512</FileAlignment>
-    <MyType>WindowsForms</MyType>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>false</IsWebBootstrapper>

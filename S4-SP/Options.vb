@@ -17,7 +17,7 @@ Public Class Options
     Public Stop_Process_BOMCreate As String
     Public SeparatorObozna4InVSNRMTitle As String = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
     Public Arch_ID As String = get_reesrt_value("Arch_ID", "7")
-
+    Public ExportFileNameMethod As Integer
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Me.Close()
     End Sub
@@ -39,6 +39,7 @@ Public Class Options
         Stop_Process_BOMCreate = get_reesrt_value("Stop_Process_BOMCreate", False.ToString)
         SeparatorObozna4InVSNRMTitle = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
         Arch_ID = get_reesrt_value("Arch_ID", "7")
+        ExportFileNameMethod = get_reesrt_value("ExportFileNameMethod", ExportFileNameMethod)
 
         CheckBox1.Checked = Convert.ToBoolean(Search_Subdirectories)
         TextBox1.Text = material_table_path
@@ -55,6 +56,13 @@ Public Class Options
         CheckBox6.Checked = Convert.ToBoolean(ChekSubAssemly)
         TextBox11.Text = SeparatorObozna4InVSNRMTitle
         TextBox12.Text = Form1.query_s4("ARCHIVES", "ARCHIVE_ID", "DESCRIPTIO", Arch_ID)
+        If ExportFileNameMethod = 1 Then
+            RadioButton1.Checked = False
+            RadioButton2.Checked = True
+        Else
+            RadioButton1.Checked = True
+            RadioButton2.Checked = False
+        End If
     End Sub
     Sub listbox2AddItems()
         ListBox2.Items.Clear()
@@ -110,6 +118,12 @@ Public Class Options
         set_reesrt_value("Stop_Process_BOMCreate", CheckBox4.Checked.ToString)
         set_reesrt_value("SeparatorObozna4InVSNRMTitle", TextBox11.Text)
         set_reesrt_value("Arch_ID", Arch_ID)
+        If RadioButton1.Checked = True Then
+            ExportFileNameMethod = 0 'Имя выгружаемог файла  равно имени файла в архиве
+        Else
+            ExportFileNameMethod = 1
+        End If
+        set_reesrt_value("ExportFileNameMethod", ExportFileNameMethod)
 
         Default_work_path = get_reesrt_value("Default_work_path", Default_work_path)
 

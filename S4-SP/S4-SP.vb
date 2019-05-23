@@ -1582,7 +1582,44 @@ ifDocID_is_null:
                 If tmp_Doc_ID > 0 Then
                     .OpenDocument(tmp_Doc_ID)
                     .CopyToDir(Copy_directory)
-                    .CloseDocument()
+
+                    Dim DopFileList As String = .GetAdvanFilesList()
+                    'переименование выгруженного файла
+                    If Options.ExportFileNameMethod = 1 Then
+                        Dim MainFileDoc As String = Copy_directory & "\" & .GetFieldValue("Имя файла")
+                        Dim MainOboz As String = .GetFieldValue("Обозначение")
+                        Dim MainFileType As String = Path.GetExtension(MainFileDoc)
+                        Dim new_fN As String
+                        'идем в доп файлы
+                        If DopFileList IsNot Nothing Then
+                            Dim DopFileArray() As String = DopFileList.Split(vbCr)
+                            If UBound(DopFileArray) > 0 Then
+                                For i As Integer = 0 To UBound(DopFileArray) - 1
+                                    Dim str As String = ((DopFileArray(i)).Trim(vbCr)).Trim(vbLf)
+                                    Dim tmp_FN As String = Copy_directory & "\" & str
+                                    If tmp_FN IsNot Nothing And tmp_FN IsNot "" Then
+                                        Dim f_Type As String = Path.GetExtension(tmp_FN)
+                                        new_fN = Copy_directory & "\" & MainOboz & " {" & str.Replace(f_Type, "") & "}" & f_Type
+                                        Try
+                                            If File.Exists(new_fN) Then File.Delete(new_fN) 'если есть такой файл - удаляем
+                                            System.IO.File.Move(tmp_FN, new_fN)
+                                        Catch ex As Exception
+                                            MsgBox("Ошибка!" & vbCr & new_fN & vbCr & ex.Message)
+                                        End Try
+                                    End If
+                                Next
+                            End If
+                        End If
+                        new_fN = Copy_directory & "\" & MainOboz & " {" & .GetFieldValue("Имя файла").Replace(MainFileType, "") & "}" & MainFileType
+
+                        Try
+                            If File.Exists(new_fN) Then File.Delete(new_fN) 'если есть такой файл - удаляем
+                            System.IO.File.Move(MainFileDoc, new_fN)
+                        Catch ex As Exception
+                            MsgBox("Ошибка!" & vbCr & MainFileDoc & vbCr & ex.Message)
+                        End Try
+                        .CloseDocument()
+                    End If
                 End If
             End With
         Catch ex As Exception

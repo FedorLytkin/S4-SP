@@ -1129,7 +1129,7 @@ ifpozRAVNOTempPoz:
             MsgBox("Для выгрузки Ведомости, выберите Объект")
             Exit Sub
         End If
-        ReplaceCharArray()
+        ReplaceCharArray() 'проверяется символы для замены
         add_Vedomost(TreeView1.Nodes.Item(0))
     End Sub
     Sub add_Vedomost(tmp_node As TreeNode)
@@ -1316,7 +1316,7 @@ ifpozRAVNOTempPoz:
             If TPsfilter Then
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
                 If Not OnlyFirstLewvel Then
-                    TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
+                    TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_Param(0))
                     Try
                         If TP_Vspom_Mater_Array(0, 1) IsNot Nothing Then excel_write_aboutVSPomMater_in_Purchated(TP_Vspom_Mater_Array, Count_Summ) 'And (NO_Purchated And Not OnlyFirstLewvel And PRJLINK_Param(4) <> 3 And myNextNode IsNot TreeView1.Nodes.Item(0))
                     Catch ex As Exception
@@ -2103,40 +2103,47 @@ ifpozRAVNOTempPoz:
         Try
             Dim mat As TPServer.ITMaterial = mats.First
             Dim MatNAme, MatIMKey, NormaG, MaterMU As String
+            Dim group_mats As TPServer.ITGroupMaterial = mat.ParentGroupMaterial
             While mats.EOF <> 1
                 If mat.Materials.Count > 0 Then
                     GetVspMatInGrMat(mat.Materials, ReadInArray)
                 Else
-                    arSize += 1
-                    If ReadInArray Then
-                        Try
-                            MatNAme = mat.Value("Овсм")
-                            MatIMKey = mat.Value("%MAT")
-                            NormaG = mat.Norma
-                            MaterMU = mat.Value("едНв")
-                            'If MaterMU Is Nothing Then
-                            '    If mats.EOF = 1 Then
-                            '        mat = mats.Prior
-                            '        mat = mats.Next
-                            '        MaterMU = mat.Value("едНв")
+                    Try
+                        'If group_mats.Status = 0 Then
+                        arSize += 1
+                            If ReadInArray Then
+                                Try
+                                    MatNAme = mat.Value("Овсм")
+                                    MatIMKey = mat.Value("%MAT")
+                                    NormaG = mat.Norma
+                                    MaterMU = mat.Value("едНв")
+                                    'If MaterMU Is Nothing Then
+                                    '    If mats.EOF = 1 Then
+                                    '        mat = mats.Prior
+                                    '        mat = mats.Next
+                                    '        MaterMU = mat.Value("едНв")
 
-                            '    Else
-                            '        mat = mats.Next
-                            '        mat = mats.Prior
-                            '        MaterMU = mat.Value("едНв")
-                            '    End If
-                            'End If
-                            arVspMat(arSize - 1, 0) = get_FindReplace_Par(MatNAme)
-                            arVspMat(arSize - 1, 1) = MatIMKey
-                            arVspMat(arSize - 1, 2) = NormaG
-                            arVspMat(arSize - 1, 3) = MaterMU
-                        Catch ex As Exception
-                        End Try
-                    Else
-                        ReDim arVspMat(arSize - 1, 3)
-                    End If
+                                    '    Else
+                                    '        mat = mats.Next
+                                    '        mat = mats.Prior
+                                    '        MaterMU = mat.Value("едНв")
+                                    '    End If
+                                    'End If
+                                    arVspMat(arSize - 1, 0) = get_FindReplace_Par(MatNAme)
+                                    arVspMat(arSize - 1, 1) = MatIMKey
+                                    arVspMat(arSize - 1, 2) = NormaG
+                                    arVspMat(arSize - 1, 3) = MaterMU
+                                Catch ex As Exception
+                                End Try
+                            Else
+                                ReDim arVspMat(arSize - 1, 3)
+                            End If
+                        'End If
+                    Catch ex As Exception
+
+                    End Try
                 End If
-                mat = mats.Next
+                    mat = mats.Next
             End While
         Catch ex As Exception
         End Try
@@ -2148,11 +2155,17 @@ ifpozRAVNOTempPoz:
         Try
             Dim TArt As TPServer.ITArticle = tp.Articles.ByArchCode(Art_ID)
             Dim GrMat As TPServer.ITGroupMaterials = TArt.GroupMaterials
+
             arSize = 0
             WalkInGroupMats(GrMat, False) 'считаем размер массива arVspMat(кол-во вспомогательных материалов)
             arSize = 0
             WalkInGroupMats(GrMat, True) 'записывает данные в массив
-
+            If GrMat.Count = 0 Then
+                arSize = 0
+                GetVspMatInGrMat(TArt.Materials, 0)
+                arSize = 0
+                GetVspMatInGrMat(TArt.Materials, 1)
+            End If
             Return arVspMat
         Catch ex As Exception
             Return arVspMat
@@ -2621,13 +2634,18 @@ ifpozRAVNOTempPoz:
 
         If e.Control And e.KeyCode.ToString = "O" Then
             Me.KeyPreview = False
-            no_MatProc()
-            no_PartProc()
-            no_Pro4Proc()
-            no_SborkaProc()
-            no_StandProc()
-
-
+            'no_MatProc()
+            'no_PartProc()
+            'no_Pro4Proc()
+            'no_SborkaProc()
+            'no_StandProc()
+            NO_Standart = 0
+            NO_Pro4ee = 0
+            NO_PartSecion = 0
+            NO_ExlProc_Visible = 1
+            NO_Parts = 0
+            NO_Material = 0
+            '
         End If
         Me.KeyPreview = True
     End Sub
