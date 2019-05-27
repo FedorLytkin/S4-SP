@@ -2084,14 +2084,24 @@ ifpozRAVNOTempPoz:
         End Set
     End Property
 
-    Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, ReadInArray As Boolean)
+    Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, Proj_Id As Integer, ItsUpLevel As Boolean, ReadInArray As Boolean)
         Try
             Dim Group As TPServer.ITGroupMaterial = grpmats.First
             While grpmats.EOF <> 1
                 If Group.Status = 0 Then
-                    GetVspMatInGrMat(Group.Materials, ReadInArray)
-
-                    If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, ReadInArray)
+                    If ItsUpLevel Then
+                        Dim ProjArt As TPServer.TArticle = Group.InArts.First
+                        While Group.InArts.EOF <> 1
+                            If (ProjArt.ArchID = Proj_Id Or Proj_Id = -1 Or Proj_Id = 0) Then
+                                GetVspMatInGrMat(Group.Materials, ReadInArray)
+                                If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, Proj_Id, False, ReadInArray)
+                            End If
+                            ProjArt = Group.InArts.Next
+                        End While
+                    Else
+                        GetVspMatInGrMat(Group.Materials, ReadInArray)
+                        If Group.GroupMaterials.Count > 0 Then WalkInGroupMats(Group.GroupMaterials, Proj_Id, False, ReadInArray)
+                    End If
                 End If
                 Group = grpmats.Next()
             End While
@@ -2111,39 +2121,39 @@ ifpozRAVNOTempPoz:
                     Try
                         'If group_mats.Status = 0 Then
                         arSize += 1
-                            If ReadInArray Then
-                                Try
-                                    MatNAme = mat.Value("Овсм")
-                                    MatIMKey = mat.Value("%MAT")
-                                    NormaG = mat.Norma
-                                    MaterMU = mat.Value("едНв")
-                                    'If MaterMU Is Nothing Then
-                                    '    If mats.EOF = 1 Then
-                                    '        mat = mats.Prior
-                                    '        mat = mats.Next
-                                    '        MaterMU = mat.Value("едНв")
+                        If ReadInArray Then
+                            Try
+                                MatNAme = mat.Value("Овсм")
+                                MatIMKey = mat.Value("%MAT")
+                                NormaG = mat.Norma
+                                MaterMU = mat.Value("едНв")
+                                'If MaterMU Is Nothing Then
+                                '    If mats.EOF = 1 Then
+                                '        mat = mats.Prior
+                                '        mat = mats.Next
+                                '        MaterMU = mat.Value("едНв")
 
-                                    '    Else
-                                    '        mat = mats.Next
-                                    '        mat = mats.Prior
-                                    '        MaterMU = mat.Value("едНв")
-                                    '    End If
-                                    'End If
-                                    arVspMat(arSize - 1, 0) = get_FindReplace_Par(MatNAme)
-                                    arVspMat(arSize - 1, 1) = MatIMKey
-                                    arVspMat(arSize - 1, 2) = NormaG
-                                    arVspMat(arSize - 1, 3) = MaterMU
-                                Catch ex As Exception
-                                End Try
-                            Else
-                                ReDim arVspMat(arSize - 1, 3)
-                            End If
+                                '    Else
+                                '        mat = mats.Next
+                                '        mat = mats.Prior
+                                '        MaterMU = mat.Value("едНв")
+                                '    End If
+                                'End If
+                                arVspMat(arSize - 1, 0) = get_FindReplace_Par(MatNAme)
+                                arVspMat(arSize - 1, 1) = MatIMKey
+                                arVspMat(arSize - 1, 2) = NormaG
+                                arVspMat(arSize - 1, 3) = MaterMU
+                            Catch ex As Exception
+                            End Try
+                        Else
+                            ReDim arVspMat(arSize - 1, 3)
+                        End If
                         'End If
                     Catch ex As Exception
 
                     End Try
                 End If
-                    mat = mats.Next
+                mat = mats.Next
             End While
         Catch ex As Exception
         End Try
@@ -2157,9 +2167,9 @@ ifpozRAVNOTempPoz:
             Dim GrMat As TPServer.ITGroupMaterials = TArt.GroupMaterials
 
             arSize = 0
-            WalkInGroupMats(GrMat, False) 'считаем размер массива arVspMat(кол-во вспомогательных материалов)
+            WalkInGroupMats(GrMat, Proj_Id, True, False)    'считаем размер массива arVspMat(кол-во вспомогательных материалов)
             arSize = 0
-            WalkInGroupMats(GrMat, True) 'записывает данные в массив
+            WalkInGroupMats(GrMat, Proj_Id, True, True)     'записывает данные в массив
             If GrMat.Count = 0 Then
                 arSize = 0
                 GetVspMatInGrMat(TArt.Materials, 0)
