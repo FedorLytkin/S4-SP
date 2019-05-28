@@ -79,7 +79,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -217,6 +217,7 @@
     <Compile Include="OTDEditor.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Pr_Options.vb" />
     <Compile Include="Reester_edit_mod.vb" />
     <Compile Include="S4-SP.vb">
       <SubType>Form</SubType>

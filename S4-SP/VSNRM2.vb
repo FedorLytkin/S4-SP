@@ -5,14 +5,14 @@
     Public artID_Main, artId_Sub As Integer
     Public Spletter As String = "|"
     'параметр не выводящий типы объектов и компоненты с ручной связью
-    Public NO_Art_Documentacia As Boolean = 0
-    Public NO_Ru4na9_Sv9z As Boolean = 1
-    Public NO_Sborka As Boolean = 1
-    Public NO_PartSecion As Boolean = 1
-    Public NO_Standart As Boolean = 1
-    Public NO_Pro4ee As Boolean = 1
-    Public NO_Material As Boolean = 1
-    Private _part_SB As Boolean = 0
+    'Public NO_Art_Documentacia As Boolean = 0
+    'Public NO_Ru4na9_Sv9z As Boolean = 1
+    'Public NO_Sborka As Boolean = 1
+    'Public NO_PartSecion As Boolean = 1
+    'Public NO_Standart As Boolean = 1
+    'Public NO_Pro4ee As Boolean = 1
+    'Public NO_Material As Boolean = 1
+    'Private part_SB As Boolean = 0
     'параметр заменяющий "~" на " "
     Public ReplaceTildaOnSpace As Boolean = 0
     'параметр заменяющий "?" на "/"
@@ -23,25 +23,25 @@
     Dim TPsfilter_str As String = "TPsfilter"
     Dim TPsfilter As Boolean = 0
     Dim CT_ID_in_Query As String
-    'параметр экспортирующий данные о первом уровне вложенности
-    Public OnlyFirstLewvel As Boolean = 0
-    'параметр экспортирующий данные о СОСТАВ ИЗДЕЛИЯ
-    Public NO_Sostav As Boolean = 1
-    'параметр экспортирующий данные о применяемости деталей
-    Public NO_Parts As Boolean = 1
-    'параметр экспортирующий данные о материалах и покупных
-    Public NO_Purchated As Boolean = 1
-    'параметр экспортирующий ПОДРОБНЫЕ данные о материалах и покупных
-    Public NO_Purchated_PDRBN As Boolean = 1
+    ''параметр экспортирующий данные о первом уровне вложенности
+    'Public OnlyFirstLewvel As Boolean = 0
+    ''параметр экспортирующий данные о СОСТАВ ИЗДЕЛИЯ
+    'Public NO_Sostav As Boolean = 1
+    ''параметр экспортирующий данные о применяемости деталей
+    'Public NO_Parts As Boolean = 1
+    ''параметр экспортирующий данные о материалах и покупных
+    'Public NO_Purchated As Boolean = 1
+    ''параметр экспортирующий ПОДРОБНЫЕ данные о материалах и покупных
+    'Public NO_Purchated_PDRBN As Boolean = 1
 
-    'параметр экспортирующий данные о материалах и покупных
-    Public NO_ColorNote As Boolean = 1
+    ''параметр экспортирующий данные о материалах и покупных
+    'Public NO_ColorNote As Boolean = 1
 
-    'параметр экспортирующий данные о материалах и покупных
-    Public NO_ExlProc_Visible As Boolean = 0
+    ''параметр экспортирующий данные о материалах и покупных
+    'Public NO_ExlProc_Visible As Boolean = 0
 
-    'параметр экспортирующий данные серчовских параметрах
-    Public NO_S4_Columns As Boolean = 0
+    ''параметр экспортирующий данные серчовских параметрах
+    'Public NO_S4_Columns As Boolean = 0
 
     Public myImageList As New ImageList()
     'Public NO_TSE As Boolean = 0
@@ -674,6 +674,7 @@ ifpozRAVNOTempPoz:
     End Sub
     Private Sub VSNRM2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Application.DoEvents()
+        ReadOptionsAll() 'считываем параметры с блокнота с опциями
         БезРазделаДокументацияToolStripMenuItem.Checked = NO_Art_Documentacia
         БезТехнолическихСвязейToolStripMenuItem.Checked = NO_Ru4na9_Sv9z
         СПеречнемДеталейToolStripMenuItem.Checked = NO_Parts
@@ -2075,14 +2076,14 @@ ifpozRAVNOTempPoz:
     Dim arSize As Integer
     Dim arVspMat(0, 0) As String
 
-    Public Property Part_SB As Boolean
-        Get
-            Return _part_SB
-        End Get
-        Set(value As Boolean)
-            _part_SB = value
-        End Set
-    End Property
+    'Public Property Part_SB As Boolean
+    '    Get
+    '        Return _part_SB
+    '    End Get
+    '    Set(value As Boolean)
+    '        _part_SB = value
+    '    End Set
+    'End Property
 
     Function WalkInGroupMats(grpmats As TPServer.ITGroupMaterials, ReadInArray As Boolean)
         Try
@@ -2448,12 +2449,14 @@ ifpozRAVNOTempPoz:
     Private Sub БезРазделаДокументацияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles БезРазделаДокументацияToolStripMenuItem.Click
         БезРазделаДокументацияToolStripMenuItem.Checked = Not (БезРазделаДокументацияToolStripMenuItem.Checked)
         NO_Art_Documentacia = БезРазделаДокументацияToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Art_Documentacia_OpName, NO_Art_Documentacia)
         CT_ID_in_Query_Change()
     End Sub
 
     Private Sub БезТехнолическихСвязейToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles БезТехнолическихСвязейToolStripMenuItem.Click
         БезТехнолическихСвязейToolStripMenuItem.Checked = Not (БезТехнолическихСвязейToolStripMenuItem.Checked)
         NO_Ru4na9_Sv9z = БезТехнолическихСвязейToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Ru4na9_Sv9z_OpName, NO_Ru4na9_Sv9z)
         CT_ID_in_Query_Change()
     End Sub
 
@@ -2540,11 +2543,13 @@ ifpozRAVNOTempPoz:
     Private Sub СПеречнемДеталейToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемДеталейToolStripMenuItem.Click
         СПеречнемДеталейToolStripMenuItem.Checked = Not (СПеречнемДеталейToolStripMenuItem.Checked)
         NO_Parts = СПеречнемДеталейToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Parts_OpName, NO_Parts)
     End Sub
 
     Private Sub СПеречнемМатериаловToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемМатериаловToolStripMenuItem.Click
         СПеречнемМатериаловToolStripMenuItem.Checked = Not (СПеречнемМатериаловToolStripMenuItem.Checked)
         NO_Purchated = СПеречнемМатериаловToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Purchated_OpName, NO_Purchated)
     End Sub
 
 
@@ -2560,6 +2565,7 @@ ifpozRAVNOTempPoz:
     Private Sub ПоказыватьПроцессЭкспортаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьПроцессЭкспортаToolStripMenuItem.Click
         ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked = Not (ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked)
         NO_ExlProc_Visible = ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_ExlProc_Visible_OpName, NO_ExlProc_Visible)
     End Sub
 
     Private Sub ToolStripButton3_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton3.Click
@@ -2569,6 +2575,7 @@ ifpozRAVNOTempPoz:
     Private Sub ПоказыватьСистемнуюИнформациюToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ПоказыватьСистемнуюИнформациюToolStripMenuItem.Click
         ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked = Not (ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked)
         NO_S4_Columns = ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_S4_Columns_OpName, NO_S4_Columns)
     End Sub
 
     Private Sub СРазделомСборочныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСборочныеЕдиницыToolStripMenuItem.Click
@@ -2577,6 +2584,7 @@ ifpozRAVNOTempPoz:
     Sub no_SborkaProc()
         СРазделомСборочныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСборочныеЕдиницыToolStripMenuItem.Checked)
         NO_Sborka = СРазделомСборочныеЕдиницыToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Sborka_OpName, NO_Sborka)
         CT_ID_in_Query_Change()
     End Sub
     Private Sub СРазделомДеталиToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомДеталиToolStripMenuItem.Click
@@ -2585,6 +2593,7 @@ ifpozRAVNOTempPoz:
     Sub no_PartProc()
         СРазделомДеталиToolStripMenuItem.Checked = Not (СРазделомДеталиToolStripMenuItem.Checked)
         NO_PartSecion = СРазделомДеталиToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_PartSecion_OpName, NO_PartSecion)
         CT_ID_in_Query_Change()
     End Sub
     Private Sub СРазделомСтандартныеЕдиницыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомСтандартныеЕдиницыToolStripMenuItem.Click
@@ -2595,6 +2604,7 @@ ifpozRAVNOTempPoz:
     Sub no_StandProc()
         СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked = Not (СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked)
         NO_Standart = СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Standart_OpName, NO_Standart)
         CT_ID_in_Query_Change()
     End Sub
     Private Sub СРазделомПрочиеИзделияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомПрочиеИзделияToolStripMenuItem.Click
@@ -2603,6 +2613,7 @@ ifpozRAVNOTempPoz:
     Sub no_Pro4Proc()
         СРазделомПрочиеИзделияToolStripMenuItem.Checked = Not (СРазделомПрочиеИзделияToolStripMenuItem.Checked)
         NO_Pro4ee = СРазделомПрочиеИзделияToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Pro4ee_OpName, NO_Pro4ee)
         CT_ID_in_Query_Change()
     End Sub
     Private Sub СРазделомМатериалыToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СРазделомМатериалыToolStripMenuItem.Click
@@ -2611,6 +2622,7 @@ ifpozRAVNOTempPoz:
     Sub no_MatProc()
         СРазделомМатериалыToolStripMenuItem.Checked = Not (СРазделомМатериалыToolStripMenuItem.Checked)
         NO_Material = СРазделомМатериалыToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Material_OpName, NO_Material)
         CT_ID_in_Query_Change()
     End Sub
     Private Sub ToolStripButton4_Click_2(sender As Object, e As EventArgs)
@@ -2659,12 +2671,14 @@ ifpozRAVNOTempPoz:
     Private Sub ДетальСборочнаяЕдиницаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ДетальСборочнаяЕдиницаToolStripMenuItem.Click
         ДетальСборочнаяЕдиницаToolStripMenuItem.Checked = Not (ДетальСборочнаяЕдиницаToolStripMenuItem.Checked)
         Part_SB = ДетальСборочнаяЕдиницаToolStripMenuItem.Checked
+        chekced_ParamChancge(Part_SB_OpName, part_SB)
         'CT_ID_in_Query_Change()
     End Sub
 
     Private Sub СПеречнемПокупныхПДРБНToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СПеречнемПокупныхПДРБНToolStripMenuItem.Click
         СПеречнемПокупныхПДРБНToolStripMenuItem.Checked = Not (СПеречнемПокупныхПДРБНToolStripMenuItem.Checked)
         If СПеречнемПокупныхПДРБНToolStripMenuItem.Checked Then NO_Purchated_PDRBN = 1 Else NO_Purchated_PDRBN = 0
+        chekced_ParamChancge(NO_Purchated_PDRBN_OpName, NO_Purchated_PDRBN)
     End Sub
 
     Private Sub ЗаменятьНаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ЗаменятьНаToolStripMenuItem.Click
@@ -2686,11 +2700,13 @@ ifpozRAVNOTempPoz:
     Private Sub ССоставомИзделияToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ССоставомИзделияToolStripMenuItem.Click
         ССоставомИзделияToolStripMenuItem.Checked = Not (ССоставомИзделияToolStripMenuItem.Checked)
         NO_Sostav = ССоставомИзделияToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_Sostav_OpName, NO_Sostav)
     End Sub
 
     Private Sub ТолькоПервыйУровеньToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ТолькоПервыйУровеньToolStripMenuItem.Click
         ТолькоПервыйУровеньToolStripMenuItem.Checked = Not (ТолькоПервыйУровеньToolStripMenuItem.Checked)
         OnlyFirstLewvel = ТолькоПервыйУровеньToolStripMenuItem.Checked
+        chekced_ParamChancge(OnlyFirstLewvel_OpName, OnlyFirstLewvel)
         CT_ID_in_Query_Change()
     End Sub
 
@@ -2715,6 +2731,12 @@ ifpozRAVNOTempPoz:
 
     Private Sub НастройкиЗаменыТекстаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles НастройкиЗаменыТекстаToolStripMenuItem.Click
         CharOption.ShowDialog()
+    End Sub
+
+    Private Sub ПоказыватьПояснениеПоЗаливкеToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Click
+        ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked = Not (ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked)
+        NO_ColorNote = ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_ColorNote_OpName, NO_ColorNote)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
