@@ -17,6 +17,7 @@ Public Class Options
     Public Stop_Process_BOMCreate As String
     Public SeparatorObozna4InVSNRMTitle As String = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
     Public Arch_ID As String = get_reesrt_value("Arch_ID", "7")
+    Public CopyDir_Method As Boolean = get_reesrt_value("CopyDir_Nethod", True.ToString) '1 - FilenameOrigin; 0 - FilenameEdit
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         Me.Close()
@@ -39,6 +40,7 @@ Public Class Options
         Stop_Process_BOMCreate = get_reesrt_value("Stop_Process_BOMCreate", False.ToString)
         SeparatorObozna4InVSNRMTitle = get_reesrt_value("SeparatorObozna4InVSNRMTitle", "  ")
         Arch_ID = get_reesrt_value("Arch_ID", "7")
+        CopyDir_Method = get_reesrt_value("CopyDir_Method", True.ToString)
 
         CheckBox1.Checked = Convert.ToBoolean(Search_Subdirectories)
         TextBox1.Text = material_table_path
@@ -55,6 +57,14 @@ Public Class Options
         CheckBox6.Checked = Convert.ToBoolean(ChekSubAssemly)
         TextBox11.Text = SeparatorObozna4InVSNRMTitle
         TextBox12.Text = Form1.query_s4("ARCHIVES", "ARCHIVE_ID", "DESCRIPTIO", Arch_ID)
+        '1 - FilenameOrigin; 0 - FilenameEdit
+        If CopyDir_Method Then
+            RadioButton1.Checked = True
+            RadioButton2.Checked = False
+        Else
+            RadioButton1.Checked = False
+            RadioButton2.Checked = True
+        End If
     End Sub
     Sub listbox2AddItems()
         ListBox2.Items.Clear()
@@ -110,6 +120,7 @@ Public Class Options
         set_reesrt_value("Stop_Process_BOMCreate", CheckBox4.Checked.ToString)
         set_reesrt_value("SeparatorObozna4InVSNRMTitle", TextBox11.Text)
         set_reesrt_value("Arch_ID", Arch_ID)
+        set_reesrt_value("CopyDir_Method", RadioButton1.Checked)
 
         Default_work_path = get_reesrt_value("Default_work_path", Default_work_path)
 

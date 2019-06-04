@@ -193,6 +193,12 @@
     <Compile Include="Excel_Report.vb" />
     <Compile Include="Exc_mod.vb" />
     <Compile Include="FileAndFolderDialogMod.vb" />
+    <Compile Include="IMBASE_Article_Update.Designer.vb">
+      <DependentUpon>IMBASE_Article_Update.vb</DependentUpon>
+    </Compile>
+    <Compile Include="IMBASE_Article_Update.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LicForm2.Designer.vb">
       <DependentUpon>LicForm2.vb</DependentUpon>
     </Compile>
@@ -278,6 +284,9 @@
     <EmbeddedResource Include="EditParam.resx">
       <DependentUpon>EditParam.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="IMBASE_Article_Update.resx">
+      <DependentUpon>IMBASE_Article_Update.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LicForm2.resx">
       <DependentUpon>LicForm2.vb</DependentUpon>
     </EmbeddedResource>
@@ -328,6 +337,15 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+    <COMReference Include="Inventor">
+      <Guid>{D98A091D-3A0F-4C3E-B36E-61F62068D488}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="Microsoft.Office.Core">
       <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
       <VersionMajor>2</VersionMajor>
@@ -352,6 +370,15 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>

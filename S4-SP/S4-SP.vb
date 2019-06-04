@@ -1579,11 +1579,37 @@ ifDocID_is_null:
         Try
             With ITS4App
                 Dim tmp_Doc_ID As Integer = .GetDocID_ByArtID(tmp_artID)
+                Dim FFN, Oboz As String
+                Dim DopFileArray(), DopFileStr As String
                 If tmp_Doc_ID > 0 Then
                     .OpenDocument(tmp_Doc_ID)
+                    FFN = .GetFieldValue("Имя файла") ' .GetDocFilename(tmp_Doc_ID)
+                    Oboz = .GetFieldValue("Обозначение")
+                    Dim Fformat_Main As String = Path.GetExtension(FFN)                                                     'расширение
+                    Dim FileNameWExt As String = Path.GetFileNameWithoutExtension(FFN)                                      'имя файла без расширения
+                    Dim newFFN_Main As String = Copy_directory & "\" & Oboz & " {" & FileNameWExt & "}" & Fformat_Main           'новое(переименованное) имя файла
+                    DopFileStr = .GetAdvanFilesList()
                     .CopyToDir(Copy_directory)
                     .CloseDocument()
-                End If
+                    If Options.CopyDir_Method Then
+                        If DopFileStr IsNot Nothing Then
+                            DopFileArray = DopFileStr.Split(vbCrLf)
+                            For j As Integer = 0 To UBound(DopFileArray) - 1
+                                Dim tmpDFN As String = DopFileArray(j).Trim(vbLf)
+                                Dim newFN As String = Copy_directory & "\" & Oboz & " {" & Path.GetFileNameWithoutExtension(Copy_directory & "\" & tmpDFN) & "}" & Path.GetExtension(tmpDFN)
+                                'процедура которая переименоваывает файл на новое значение
+                                If File.Exists(newFN) Then
+                                    File.Delete(newFN)
+                                End If
+                                System.IO.File.Move(Copy_directory & "\" & tmpDFN, newFN)
+                            Next
+                        End If
+                        If File.Exists(newFFN_Main) Then
+                            File.Delete(newFFN_Main)
+                        End If
+                        System.IO.File.Move(Copy_directory & "\" & FFN, newFFN_Main)
+                        End If
+                    End If
             End With
         Catch ex As Exception
             MsgBox(ex.Message)

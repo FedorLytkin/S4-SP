@@ -83,6 +83,9 @@ Partial Class Options
         Me.GroupBox8 = New System.Windows.Forms.GroupBox()
         Me.GroupBox7 = New System.Windows.Forms.GroupBox()
         Me.TabPage5 = New System.Windows.Forms.TabPage()
+        Me.GroupBox9 = New System.Windows.Forms.GroupBox()
+        Me.RadioButton1 = New System.Windows.Forms.RadioButton()
+        Me.RadioButton2 = New System.Windows.Forms.RadioButton()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.ContextMenuStrip3.SuspendLayout()
@@ -100,6 +103,7 @@ Partial Class Options
         Me.GroupBox8.SuspendLayout()
         Me.GroupBox7.SuspendLayout()
         Me.TabPage5.SuspendLayout()
+        Me.GroupBox9.SuspendLayout()
         Me.SuspendLayout()
         '
         'Button1
@@ -718,6 +722,7 @@ Partial Class Options
         '
         'TabPage5
         '
+        Me.TabPage5.Controls.Add(Me.GroupBox9)
         Me.TabPage5.Controls.Add(Me.GroupBox5)
         Me.TabPage5.Location = New System.Drawing.Point(4, 22)
         Me.TabPage5.Name = "TabPage5"
@@ -726,6 +731,39 @@ Partial Class Options
         Me.TabPage5.TabIndex = 4
         Me.TabPage5.Text = "Прочее"
         Me.TabPage5.UseVisualStyleBackColor = True
+        '
+        'GroupBox9
+        '
+        Me.GroupBox9.Controls.Add(Me.RadioButton2)
+        Me.GroupBox9.Controls.Add(Me.RadioButton1)
+        Me.GroupBox9.Location = New System.Drawing.Point(5, 76)
+        Me.GroupBox9.Name = "GroupBox9"
+        Me.GroupBox9.Size = New System.Drawing.Size(427, 64)
+        Me.GroupBox9.TabIndex = 19
+        Me.GroupBox9.TabStop = False
+        Me.GroupBox9.Text = "Настройка Экспорта КД"
+        '
+        'RadioButton1
+        '
+        Me.RadioButton1.AutoSize = True
+        Me.RadioButton1.Location = New System.Drawing.Point(9, 19)
+        Me.RadioButton1.Name = "RadioButton1"
+        Me.RadioButton1.Size = New System.Drawing.Size(310, 17)
+        Me.RadioButton1.TabIndex = 20
+        Me.RadioButton1.TabStop = True
+        Me.RadioButton1.Text = "Имя выгружаемого файла равно имени файла в архиве"
+        Me.RadioButton1.UseVisualStyleBackColor = True
+        '
+        'RadioButton2
+        '
+        Me.RadioButton2.AutoSize = True
+        Me.RadioButton2.Location = New System.Drawing.Point(9, 42)
+        Me.RadioButton2.Name = "RadioButton2"
+        Me.RadioButton2.Size = New System.Drawing.Size(175, 17)
+        Me.RadioButton2.TabIndex = 21
+        Me.RadioButton2.TabStop = True
+        Me.RadioButton2.Text = "Преобразованное имя файла"
+        Me.RadioButton2.UseVisualStyleBackColor = True
         '
         'Options
         '
@@ -770,6 +808,8 @@ Partial Class Options
         Me.GroupBox7.ResumeLayout(False)
         Me.GroupBox7.PerformLayout()
         Me.TabPage5.ResumeLayout(False)
+        Me.GroupBox9.ResumeLayout(False)
+        Me.GroupBox9.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -832,4 +872,7 @@ Partial Class Options
     Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
     Friend WithEvents GroupBox8 As GroupBox
     Friend WithEvents CheckBox6 As CheckBox
+    Friend WithEvents GroupBox9 As GroupBox
+    Friend WithEvents RadioButton2 As RadioButton
+    Friend WithEvents RadioButton1 As RadioButton
 End Class

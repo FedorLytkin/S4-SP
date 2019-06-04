@@ -60,6 +60,7 @@ Partial Class Form1
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
+        Me.СверитьОбъектыIMBASEToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -177,7 +178,7 @@ Partial Class Form1
         '
         'СервисToolStripMenuItem
         '
-        Me.СервисToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.НастройкиToolStripMenuItem, Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem})
+        Me.СервисToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.НастройкиToolStripMenuItem, Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem, Me.СверитьОбъектыIMBASEToolStripMenuItem})
         Me.СервисToolStripMenuItem.Name = "СервисToolStripMenuItem"
         Me.СервисToolStripMenuItem.Size = New System.Drawing.Size(59, 20)
         Me.СервисToolStripMenuItem.Text = "Сервис"
@@ -187,7 +188,7 @@ Partial Class Form1
         Me.НастройкиToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.options_icon_30
         Me.НастройкиToolStripMenuItem.Name = "НастройкиToolStripMenuItem"
         Me.НастройкиToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F2), System.Windows.Forms.Keys)
-        Me.НастройкиToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.НастройкиToolStripMenuItem.Size = New System.Drawing.Size(215, 22)
         Me.НастройкиToolStripMenuItem.Text = "Настройки"
         Me.НастройкиToolStripMenuItem.ToolTipText = "Настройки приложения"
         '
@@ -195,7 +196,7 @@ Partial Class Form1
         '
         Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.Image = Global.S4_SP.My.Resources.Resources.IMBASE1
         Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.Name = "СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem"
-        Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.Size = New System.Drawing.Size(215, 22)
         Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.Text = "Сверить ВСНРМ ..."
         Me.СверитьВСНРМСТаблицейСоответсвияToolStripMenuItem.ToolTipText = "Сверить ВСНРМ с таблицей соответсвия"
         '
@@ -356,6 +357,12 @@ Partial Class Form1
         '
         Me.OpenFileDialog1.FileName = "OpenFileDialog1"
         '
+        'СверитьОбъектыIMBASEToolStripMenuItem
+        '
+        Me.СверитьОбъектыIMBASEToolStripMenuItem.Name = "СверитьОбъектыIMBASEToolStripMenuItem"
+        Me.СверитьОбъектыIMBASEToolStripMenuItem.Size = New System.Drawing.Size(215, 22)
+        Me.СверитьОбъектыIMBASEToolStripMenuItem.Text = "Сверить Объекты IMBASE"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -417,4 +424,5 @@ Partial Class Form1
     Friend WithEvents ToolStripTextBox1 As ToolStripTextBox
     Friend WithEvents ПравитьОбъектToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ВСНРМ2ToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents СверитьОбъектыIMBASEToolStripMenuItem As ToolStripMenuItem
 End Class
