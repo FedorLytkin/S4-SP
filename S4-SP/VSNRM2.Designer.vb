@@ -66,13 +66,14 @@ Partial Class VSNRM2
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
         Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripButton4 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStrip1.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStrip1
         '
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton1, Me.ToolStripSeparator1, Me.ToolStripButton2, Me.ToolStripSeparator2, Me.ToolStripDropDownButton1, Me.ToolStripSeparator3, Me.ToolStripButton3, Me.ToolStripSeparator7, Me.Справка, Me.ToolStripLabel1, Me.ToolStripProgressBar1})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton1, Me.ToolStripButton4, Me.ToolStripSeparator1, Me.ToolStripButton2, Me.ToolStripSeparator2, Me.ToolStripDropDownButton1, Me.ToolStripSeparator3, Me.ToolStripButton3, Me.ToolStripSeparator7, Me.Справка, Me.ToolStripLabel1, Me.ToolStripProgressBar1})
         Me.ToolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow
         Me.ToolStrip1.Location = New System.Drawing.Point(0, 0)
         Me.ToolStrip1.Name = "ToolStrip1"
@@ -385,6 +386,15 @@ Partial Class VSNRM2
         Me.УдалитьВетвьToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
         Me.УдалитьВетвьToolStripMenuItem.Text = "Удалить ветвь"
         '
+        'ToolStripButton4
+        '
+        Me.ToolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton4.Image = CType(resources.GetObject("ToolStripButton4.Image"), System.Drawing.Image)
+        Me.ToolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton4.Name = "ToolStripButton4"
+        Me.ToolStripButton4.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton4.Text = "Обновить дерево"
+        '
         'VSNRM2
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -446,4 +456,5 @@ Partial Class VSNRM2
     Friend WithEvents ТолькоПервыйУровеньToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ВедомостьДляВыбранногоУзлаToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents НастройкиЗаменыТекстаToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripButton4 As ToolStripButton
 End Class

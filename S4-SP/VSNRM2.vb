@@ -2739,6 +2739,10 @@ ifpozRAVNOTempPoz:
         chekced_ParamChancge(NO_ColorNote_OpName, NO_ColorNote)
     End Sub
 
+    Private Sub ToolStripButton4_Click_5(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+        CT_ID_in_Query_Change()
+    End Sub
+
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
         Application.DoEvents()
         With s4
