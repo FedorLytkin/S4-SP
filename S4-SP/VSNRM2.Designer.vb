@@ -67,6 +67,8 @@ Partial Class VSNRM2
         Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripButton4 = New System.Windows.Forms.ToolStripButton()
+        Me.ОбновитьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStrip1.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -347,9 +349,9 @@ Partial Class VSNRM2
         '
         'ContextMenuStrip1
         '
-        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ОткрытьToolStripMenuItem, Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem, Me.ToolStripSeparator4, Me.ОчиститьДеревоToolStripMenuItem, Me.УдалитьВетвьToolStripMenuItem})
+        Me.ContextMenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ОткрытьToolStripMenuItem, Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem, Me.ToolStripSeparator4, Me.ОбновитьДеревоToolStripMenuItem, Me.ToolStripSeparator8, Me.ОчиститьДеревоToolStripMenuItem, Me.УдалитьВетвьToolStripMenuItem})
         Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(254, 98)
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(254, 126)
         '
         'ОткрытьToolStripMenuItem
         '
@@ -394,6 +396,19 @@ Partial Class VSNRM2
         Me.ToolStripButton4.Name = "ToolStripButton4"
         Me.ToolStripButton4.Size = New System.Drawing.Size(23, 22)
         Me.ToolStripButton4.Text = "Обновить дерево"
+        '
+        'ОбновитьДеревоToolStripMenuItem
+        '
+        Me.ОбновитьДеревоToolStripMenuItem.Image = CType(resources.GetObject("ОбновитьДеревоToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.ОбновитьДеревоToolStripMenuItem.Name = "ОбновитьДеревоToolStripMenuItem"
+        Me.ОбновитьДеревоToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
+        Me.ОбновитьДеревоToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
+        Me.ОбновитьДеревоToolStripMenuItem.Text = "Обновить дерево"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(250, 6)
         '
         'VSNRM2
         '
@@ -457,4 +472,6 @@ Partial Class VSNRM2
     Friend WithEvents ВедомостьДляВыбранногоУзлаToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents НастройкиЗаменыТекстаToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripButton4 As ToolStripButton
+    Friend WithEvents ОбновитьДеревоToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
 End Class

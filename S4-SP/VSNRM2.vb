@@ -1097,11 +1097,14 @@ ifpozRAVNOTempPoz:
     End Function
 
     Function PBarLoad(tmp_node As TreeNode)
-        ToolStripProgressBar1.Value = 0
-        ToolStripProgressBar1.Visible = True
-        ToolStripProgressBar1.Maximum = tmp_node.GetNodeCount(True) - 1
-        ToolStripProgressBar1.Step = 1
-
+        Try
+            ToolStripProgressBar1.Value = 0
+            ToolStripProgressBar1.Visible = True
+            ToolStripProgressBar1.Step = 1
+            ToolStripProgressBar1.Maximum = tmp_node.GetNodeCount(True) - 1
+        Catch ex As Exception
+            ToolStripProgressBar1.Maximum = tmp_node.GetNodeCount(True)
+        End Try
     End Function
     Function PBarStep()
         ToolStripProgressBar1.PerformStep()
@@ -2740,6 +2743,10 @@ ifpozRAVNOTempPoz:
     End Sub
 
     Private Sub ToolStripButton4_Click_5(sender As Object, e As EventArgs) Handles ToolStripButton4.Click
+        CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub ОбновитьДеревоToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ОбновитьДеревоToolStripMenuItem.Click
         CT_ID_in_Query_Change()
     End Sub
 
