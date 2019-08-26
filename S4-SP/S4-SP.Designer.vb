@@ -44,6 +44,7 @@ Partial Class Form1
         Me.СправкаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ОПрограммеToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TestToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BTToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripTextBox1 = New System.Windows.Forms.ToolStripTextBox()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.TreeView1 = New System.Windows.Forms.TreeView()
@@ -60,7 +61,6 @@ Partial Class Form1
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.BTToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -235,6 +235,12 @@ Partial Class Form1
         Me.TestToolStripMenuItem.Text = "What's new"
         Me.TestToolStripMenuItem.ToolTipText = "Новые функции программы"
         '
+        'BTToolStripMenuItem
+        '
+        Me.BTToolStripMenuItem.Name = "BTToolStripMenuItem"
+        Me.BTToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
+        Me.BTToolStripMenuItem.Text = "BT"
+        '
         'ToolStripTextBox1
         '
         Me.ToolStripTextBox1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
@@ -356,12 +362,6 @@ Partial Class Form1
         'OpenFileDialog1
         '
         Me.OpenFileDialog1.FileName = "OpenFileDialog1"
-        '
-        'BTToolStripMenuItem
-        '
-        Me.BTToolStripMenuItem.Name = "BTToolStripMenuItem"
-        Me.BTToolStripMenuItem.Size = New System.Drawing.Size(168, 22)
-        Me.BTToolStripMenuItem.Text = "BT"
         '
         'Form1
         '

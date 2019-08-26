@@ -1931,6 +1931,17 @@ Rz23")
         End With
     End Sub
 
+    Private Sub BTToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BTToolStripMenuItem.Click
+        Dim TableRecord, CatalogRecord, KeysList As String
+        TableRecord = ""
+        CatalogRecord = ""
+        KeysList = ""
+        Dim iDB As ImBase.ImDataBase
+        iDB = CreateObject("ImBase.ImDataBase") 'ImbaseApplication")
+        Dim Request = iDB.ShowTables(0, "класс,наименование,гост", TableRecord, CatalogRecord, KeysList)
+
+    End Sub
+
     Public Sub CompareMaterialInVSNRMWithMaterialTable()
         Try
             If VSNRM_path Is Nothing Then select_Excelfile_VSNRM()

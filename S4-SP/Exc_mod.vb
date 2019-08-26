@@ -169,7 +169,7 @@ Module Exc_mod
         End Try
     End Sub
     Public Sub SetAutoFIT(SheetName As String)
-        'Выравнивает текст в ячейках по горизонтали
+        'Выравнивает текст в ячейках по горизонтали двай несид ее
         Dim ActiveSheet As Worksheet = WB.Sheets.Item(SheetName)
         Try
             With ActiveSheet
