@@ -1524,7 +1524,7 @@ ifpozRAVNOTempPoz:
 
                 End Try
         End Select
-        If tmp_row > 0 Then lastRowNumPurchated = tmp_row Else Exit Sub
+        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
         'красим в свой цвет
         SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
         SetCellsBorderLineStyle2(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
@@ -1844,7 +1844,7 @@ ifpozRAVNOTempPoz:
 
                 'End Try
         End Select
-        If tmp_row > 0 Then lastRowNumPurchated = tmp_row Else Exit Sub
+        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
         'красим в свой цвет
         SetCellsColor(ShName_Purchated, CN_Purchated_Naim, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, tmp_colors)
         SetCellsBorderLineStyle2(ShName_Purchated, 1, lastRowNumPurchated, CN_Purchated_MU, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
