@@ -1378,6 +1378,9 @@ ifpozRAVNOTempPoz:
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) * CDbl(TC_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, TC_Info(10)) 'Ед.изм. 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Сортамент изделия") 'тип объекта
+
+                            'красим в свой цвет
+                            SetColorAndBorderLineStyle_ShNamePDRBM(tmp_row, tmp_colors)
                         Else
                             set_Value_From_Cell(ShName_pdrbn, CN_Purchated_Naim, lastRowNumPurchated, TC_Info(3)) ' наименование
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TC_Info(4))  ' ключ IMBASE
@@ -1388,6 +1391,9 @@ ifpozRAVNOTempPoz:
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, TC_Info(10)) 'ед изм
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, ((CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(TC_Info(2))).ToString.Replace(",", "."))) 'Общ кол-во/масса  CDbl(Total_Count) / CDbl(TC_Info(6))
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Сортамент изделия") 'тип объекта
+
+                            'красим в свой цвет
+                            SetColorAndBorderLineStyle_ShNamePDRBM(lastRowNumPurchated, tmp_colors)
                         End If
                     Else
                         tmp_colors = SortamentColorKonstructor_Purchated ' Color.LightSteelBlue
@@ -1419,6 +1425,9 @@ ifpozRAVNOTempPoz:
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, (CDbl(Total_Count) * CDbl(Art_Info(2))).ToString.Replace(",", ".")) 'Кол-во/масса
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, Art_Info(9)) 'Ед.изм. 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Материал изделия(Констр)") 'тип объекта
+
+                            'красим в свой цвет
+                            SetColorAndBorderLineStyle_ShNamePDRBM(tmp_row, tmp_colors)
                         Else
                             set_Value_From_Cell(ShName_pdrbn, CN_Purchated_Naim, lastRowNumPurchated, Art_Info(5)) ' наименование
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(6))  ' ключ IMBASE
@@ -1429,6 +1438,9 @@ ifpozRAVNOTempPoz:
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, Art_Info(9)) 'ед изм
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count) * CDbl(Art_Info(2))).ToString.Replace(",", ".")) 'Общ кол-во/масса 
                             set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Материал изделия(Констр)") 'тип объекта
+
+                            'красим в свой цвет
+                            SetColorAndBorderLineStyle_ShNamePDRBM(lastRowNumPurchated, tmp_colors)
                         End If
 
                     End If
@@ -1462,6 +1474,9 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Count, tmp_row, CDbl(Total_Count)) 'Кол-во/масса
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, PRJLINK_Param(11)) 'Ед.изм. 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, Art_Info(7)) 'тип объекта
+
+                        'красим в свой цвет
+                        SetColorAndBorderLineStyle_ShNamePDRBM(tmp_row, tmp_colors)
                     Else
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1)) ' наименование
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))  ' ключ IMBASE
@@ -1472,6 +1487,9 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, lastRowNumPurchated, PRJLINK_Param(11)) 'ед изм
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + CDbl(Total_Count)) 'Общ кол-во/масса 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, Art_Info(7)) 'тип объекта
+
+                        'красим в свой цвет
+                        SetColorAndBorderLineStyle_ShNamePDRBM(lastRowNumPurchated, tmp_colors)
                     End If
                 Catch ex As Exception
 
@@ -1503,6 +1521,9 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, PRJLINK_Param(11)) 'Ед.изм.  
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, Art_Info(7)) 'тип объекта
+
+                        'красим в свой цвет
+                        SetColorAndBorderLineStyle_ShNamePDRBM(tmp_row, tmp_colors)
                     Else
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, Art_Info(1)) ' наименование
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, Art_Info(3))  ' ключ IMBASE
@@ -1518,17 +1539,24 @@ ifpozRAVNOTempPoz:
                         End If
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, CDbl(sum)) 'Общ кол-во/масса 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, Art_Info(7)) 'тип объекта
+
+                        'красим в свой цвет
+                        SetColorAndBorderLineStyle_ShNamePDRBM(lastRowNumPurchated, tmp_colors)
                     End If
 
                 Catch ex As Exception
 
                 End Try
         End Select
-        If tmp_row > 0 Then lastRowNumPurchated = tmp_row
-        'красим в свой цвет
-        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
-        SetCellsBorderLineStyle2(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+        'If tmp_row > 0 Then lastRowNumPurchated = tmp_row
+        ''красим в свой цвет
+        'SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
+        'SetCellsBorderLineStyle2(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
+    End Sub
+    Sub SetColorAndBorderLineStyle_ShNamePDRBM(RowIndex As Integer, tmp_colors As Color)
+        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, RowIndex, CN_pdrbn_TotalCount, RowIndex, tmp_colors)
+        SetCellsBorderLineStyle2(ShName_pdrbn, CN_pdrbn_Naim, RowIndex, CN_pdrbn_TotalCount, RowIndex, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
     End Sub
     Sub excel_write_aboutPart_in_PartList(ArtID As Integer, PRJLINK_ID As Integer, Art_Info As Array, TC_Info As Array, PRJLINK_Param As Array, Total_Count As String)
         Application.DoEvents()
@@ -1915,6 +1943,10 @@ ifpozRAVNOTempPoz:
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, tmp_row - 1, sum.ToString.Replace(",", ".")) 'Общ кол-во/масса
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_MU, tmp_row, TP_Vspom_Mater_Array(q, 3)) 'Ед.изм.  
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, tmp_row, "Вспомогательный материал")
+
+                        'красим вспомогательный материал в свой цвет
+                        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, tmp_row, CN_pdrbn_TotalCount, tmp_row, tmp_colors)
+                        SetCellsBorderLineStyle2(ShName_pdrbn, 1, tmp_row, CN_pdrbn_TotalCount, tmp_row, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
                     Else
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 0)) ' наименование
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_IBKey, lastRowNumPurchated, TP_Vspom_Mater_Array(q, 1))  ' ключ IMBASE
@@ -1925,10 +1957,11 @@ ifpozRAVNOTempPoz:
 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated, (CDbl(get_Value_From_Cell(ShName_pdrbn, CN_pdrbn_TotalCount, lastRowNumPurchated)) + Count_Sum * CDbl(TP_Vspom_Mater_Array(q, 2))).ToString.Replace(",", ".")) 'Общ кол-во/масса 
                         set_Value_From_Cell(ShName_pdrbn, CN_pdrbn_ObjType, lastRowNumPurchated, "Вспомогательный материал")
+
+                        'красим вспомогательный материал в свой цвет
+                        SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
+                        SetCellsBorderLineStyle2(ShName_pdrbn, 1, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
                     End If
-                    'красим вспомогательный материал в свой цвет
-                    SetCellsColor(ShName_pdrbn, CN_pdrbn_Naim, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, tmp_colors)
-                    SetCellsBorderLineStyle2(ShName_pdrbn, 1, lastRowNumPurchated, CN_pdrbn_TotalCount, lastRowNumPurchated, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
                 Next
             End If
         Catch ex As Exception
