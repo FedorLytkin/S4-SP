@@ -44,6 +44,9 @@ Module Pr_Options
     'параметр экспортирующий ПОДРОБНЫЕ данные о материалах и покупных
     Public NO_Purchated_PDRBN As Boolean = 1
     Public NO_Purchated_PDRBN_OpName As String = "NO_Purchated_PDRBN"
+    'брать параметры только из серча
+    Public NO_TechCard As Boolean = 1
+    Public NO_TechCard_OpName As String = "NO_TechCard"
 
     'параметр экспортирующий данные о материалах и покупных
     Public NO_ColorNote As Boolean = 1
@@ -96,6 +99,7 @@ Module Pr_Options
             sw.WriteLine(NO_ColorNote_OpName & Opt_Del_Char & NO_ColorNote)
             sw.WriteLine(NO_ExlProc_Visible_OpName & Opt_Del_Char & NO_ExlProc_Visible)
             sw.WriteLine(NO_S4_Columns_OpName & Opt_Del_Char & NO_S4_Columns)
+            sw.WriteLine(NO_TechCard_OpName & Opt_Del_Char & NO_TechCard)
         End Using
     End Sub
     Sub chekced_ParamChancge(Parname As String, par_val As Boolean)
@@ -132,6 +136,8 @@ Module Pr_Options
                 NO_ExlProc_Visible = CInt(par_val)
             Case NO_S4_Columns_OpName
                 NO_S4_Columns = CInt(par_val)
+            Case NO_TechCard_OpName
+                NO_TechCard = CInt(par_val)
         End Select
         Save_Parameters()
     End Sub
@@ -177,6 +183,8 @@ Module Pr_Options
                                 NO_ExlProc_Visible = line_arr(1)
                             Case NO_S4_Columns_OpName
                                 NO_S4_Columns = line_arr(1)
+                            Case NO_TechCard_OpName
+                                NO_TechCard = line_arr(1)
                         End Select
                     End If
                     line = r.ReadLine

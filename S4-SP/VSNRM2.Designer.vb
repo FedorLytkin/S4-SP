@@ -26,6 +26,7 @@ Partial Class VSNRM2
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(VSNRM2))
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.ToolStripButton1 = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton4 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton2 = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
@@ -43,6 +44,7 @@ Partial Class VSNRM2
         Me.ЗаменятьНаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripComboBox1 = New System.Windows.Forms.ToolStripComboBox()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ДанныеТолькоИзS4ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ССоставомИзделияToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СПеречнемДеталейToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.СПеречнемПокупныхПДРБНToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -64,11 +66,10 @@ Partial Class VSNRM2
         Me.ОткрытьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ВедомостьДляВыбранногоУзлаToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripButton4 = New System.Windows.Forms.ToolStripButton()
         Me.ОбновитьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator8 = New System.Windows.Forms.ToolStripSeparator()
+        Me.ОчиститьДеревоToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.УдалитьВетвьToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip1.SuspendLayout()
         Me.ContextMenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -93,6 +94,15 @@ Partial Class VSNRM2
         Me.ToolStripButton1.Text = "ToolStripButton1"
         Me.ToolStripButton1.ToolTipText = "Выбрать объект"
         '
+        'ToolStripButton4
+        '
+        Me.ToolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton4.Image = CType(resources.GetObject("ToolStripButton4.Image"), System.Drawing.Image)
+        Me.ToolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton4.Name = "ToolStripButton4"
+        Me.ToolStripButton4.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton4.Text = "Обновить дерево"
+        '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
@@ -116,7 +126,7 @@ Partial Class VSNRM2
         'ToolStripDropDownButton1
         '
         Me.ToolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ДетальСборочнаяЕдиницаToolStripMenuItem, Me.ТолькоПервыйУровеньToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ЗаменятьНаToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.ССоставомИзделияToolStripMenuItem, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемПокупныхПДРБНToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem, Me.ПоказыватьПояснениеПоЗаливкеToolStripMenuItem, Me.НастройкиЗаливкиToolStripMenuItem, Me.НастройкиЗаменыТекстаToolStripMenuItem})
+        Me.ToolStripDropDownButton1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.БезРазделаДокументацияToolStripMenuItem, Me.БезТехнолическихСвязейToolStripMenuItem, Me.СРазделомСборочныеЕдиницыToolStripMenuItem, Me.СРазделомДеталиToolStripMenuItem, Me.СРазделомСтандартныеЕдиницыToolStripMenuItem, Me.СРазделомПрочиеИзделияToolStripMenuItem, Me.СРазделомМатериалыToolStripMenuItem, Me.ДетальСборочнаяЕдиницаToolStripMenuItem, Me.ТолькоПервыйУровеньToolStripMenuItem, Me.ЗаменятьToolStripMenuItem, Me.ЗаменятьНаToolStripMenuItem, Me.ToolStripComboBox1, Me.ToolStripSeparator5, Me.ДанныеТолькоИзS4ToolStripMenuItem, Me.ССоставомИзделияToolStripMenuItem, Me.СПеречнемДеталейToolStripMenuItem, Me.СПеречнемПокупныхПДРБНToolStripMenuItem, Me.СПеречнемМатериаловToolStripMenuItem, Me.ToolStripSeparator6, Me.ПоказыватьПроцессЭкспортаToolStripMenuItem, Me.ПоказыватьСистемнуюИнформациюToolStripMenuItem, Me.ПоказыватьПояснениеПоЗаливкеToolStripMenuItem, Me.НастройкиЗаливкиToolStripMenuItem, Me.НастройкиЗаменыТекстаToolStripMenuItem})
         Me.ToolStripDropDownButton1.Image = Global.S4_SP.My.Resources.Resources.wrench_512
         Me.ToolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.ToolStripDropDownButton1.Name = "ToolStripDropDownButton1"
@@ -222,6 +232,12 @@ Partial Class VSNRM2
         '
         Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
         Me.ToolStripSeparator5.Size = New System.Drawing.Size(280, 6)
+        '
+        'ДанныеТолькоИзS4ToolStripMenuItem
+        '
+        Me.ДанныеТолькоИзS4ToolStripMenuItem.Name = "ДанныеТолькоИзS4ToolStripMenuItem"
+        Me.ДанныеТолькоИзS4ToolStripMenuItem.Size = New System.Drawing.Size(283, 22)
+        Me.ДанныеТолькоИзS4ToolStripMenuItem.Text = "Данные только из S4"
         '
         'ССоставомИзделияToolStripMenuItem
         '
@@ -373,6 +389,19 @@ Partial Class VSNRM2
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
         Me.ToolStripSeparator4.Size = New System.Drawing.Size(250, 6)
         '
+        'ОбновитьДеревоToolStripMenuItem
+        '
+        Me.ОбновитьДеревоToolStripMenuItem.Image = CType(resources.GetObject("ОбновитьДеревоToolStripMenuItem.Image"), System.Drawing.Image)
+        Me.ОбновитьДеревоToolStripMenuItem.Name = "ОбновитьДеревоToolStripMenuItem"
+        Me.ОбновитьДеревоToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
+        Me.ОбновитьДеревоToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
+        Me.ОбновитьДеревоToolStripMenuItem.Text = "Обновить дерево"
+        '
+        'ToolStripSeparator8
+        '
+        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(250, 6)
+        '
         'ОчиститьДеревоToolStripMenuItem
         '
         Me.ОчиститьДеревоToolStripMenuItem.Image = CType(resources.GetObject("ОчиститьДеревоToolStripMenuItem.Image"), System.Drawing.Image)
@@ -387,28 +416,6 @@ Partial Class VSNRM2
         Me.УдалитьВетвьToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete
         Me.УдалитьВетвьToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
         Me.УдалитьВетвьToolStripMenuItem.Text = "Удалить ветвь"
-        '
-        'ToolStripButton4
-        '
-        Me.ToolStripButton4.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton4.Image = CType(resources.GetObject("ToolStripButton4.Image"), System.Drawing.Image)
-        Me.ToolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton4.Name = "ToolStripButton4"
-        Me.ToolStripButton4.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton4.Text = "Обновить дерево"
-        '
-        'ОбновитьДеревоToolStripMenuItem
-        '
-        Me.ОбновитьДеревоToolStripMenuItem.Image = CType(resources.GetObject("ОбновитьДеревоToolStripMenuItem.Image"), System.Drawing.Image)
-        Me.ОбновитьДеревоToolStripMenuItem.Name = "ОбновитьДеревоToolStripMenuItem"
-        Me.ОбновитьДеревоToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.F5), System.Windows.Forms.Keys)
-        Me.ОбновитьДеревоToolStripMenuItem.Size = New System.Drawing.Size(253, 22)
-        Me.ОбновитьДеревоToolStripMenuItem.Text = "Обновить дерево"
-        '
-        'ToolStripSeparator8
-        '
-        Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(250, 6)
         '
         'VSNRM2
         '
@@ -474,4 +481,5 @@ Partial Class VSNRM2
     Friend WithEvents ToolStripButton4 As ToolStripButton
     Friend WithEvents ОбновитьДеревоToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents ДанныеТолькоИзS4ToolStripMenuItem As ToolStripMenuItem
 End Class

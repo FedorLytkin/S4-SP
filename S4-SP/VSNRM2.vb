@@ -693,12 +693,15 @@ ifpozRAVNOTempPoz:
         СПеречнемПокупныхПДРБНToolStripMenuItem.Checked = NO_Purchated_PDRBN
         ТолькоПервыйУровеньToolStripMenuItem.Checked = OnlyFirstLewvel
         ССоставомИзделияToolStripMenuItem.Checked = NO_Sostav
-        TPServerInitializ()
+        ДанныеТолькоИзS4ToolStripMenuItem.Checked = NO_TechCard
+        If NO_TechCard Then
+            TPServerInitializ()
+        End If
         firstAppShow()
         OutOptionsLoad()
 
         If ToolStripComboBox1.SelectedItem Is Nothing Or ToolStripComboBox1.SelectedItem = "" Then '
-            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(0)
+            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(1)
             'CT_ID_in_Query_Change()
         End If
     End Sub
@@ -961,34 +964,35 @@ ifpozRAVNOTempPoz:
     Public CN_NumPP As Integer = 1
     Public CN_ArtID As Integer = 2
     Public CN_ArchName As Integer = 3
-    Public CN_Oboz As Integer = 4
-    Public CN_Naim As Integer = 5
-    Public CN_Kolvo As Integer = 6
-    Public CN_KolvoSbor As Integer = 7
-    Public CN_EdIzm As Integer = 8
-    Public CN_Mater As Integer = 9
-    Public CN_MaterIBKey As Integer = 10
-    Public CN_Mass As Integer = 11
-    Public CN_Mass_MUIDStr As Integer = 12
-    Public CN_Prim As Integer = 13
-    Public CN_Type_Article As Integer = 14
-    Public CN_Purchated As Integer = 15
-    Public CN_IBKey_purchated As Integer = 16
-    Public CN_TypeLink As Integer = 17
-    Public CN_ContexrtType As Integer = 18
-    Public CN_TPArtKey As Integer = 19
-    Public CN_Raszehovka As Integer = 20
-    Public CN_MatZagotovki As Integer = 21
-    Public CN_MatZagotovki_IBKey As Integer = 22
-    Public CN_RazmerZag As Integer = 23
-    Public CN_ZagCount As Integer = 24
-    Public CN_ZagSumCount As Integer = 25
-    Public CN_NormaRashoda As Integer = 26
-    Public CN_NormaRashoda_Sum As Integer = 27
-    Public CN_NormaRashoda_MU As Integer = 28
+    Public CN_ArtFormat As Integer = 4
+    Public CN_Oboz As Integer = 5
+    Public CN_Naim As Integer = 6
+    Public CN_Kolvo As Integer = 7
+    Public CN_KolvoSbor As Integer = 8
+    Public CN_EdIzm As Integer = 9
+    Public CN_Mater As Integer = 10
+    Public CN_MaterIBKey As Integer = 11
+    Public CN_Mass As Integer = 12
+    Public CN_Mass_MUIDStr As Integer = 13
+    Public CN_Prim As Integer = 14
+    Public CN_Type_Article As Integer = 15
+    Public CN_Purchated As Integer = 16
+    Public CN_IBKey_purchated As Integer = 17
+    Public CN_TypeLink As Integer = 18
+    Public CN_ContexrtType As Integer = 19
+    Public CN_TPArtKey As Integer = 20
+    Public CN_Raszehovka As Integer = 21
+    Public CN_MatZagotovki As Integer = 22
+    Public CN_MatZagotovki_IBKey As Integer = 23
+    Public CN_RazmerZag As Integer = 24
+    Public CN_ZagCount As Integer = 25
+    Public CN_ZagSumCount As Integer = 26
+    Public CN_NormaRashoda As Integer = 27
+    Public CN_NormaRashoda_Sum As Integer = 28
+    Public CN_NormaRashoda_MU As Integer = 29
     'Public CN_KIM As Integer = 25
-    Public CN_VspomMat As Integer = 28
-    Public CN_VspomMat_IBKey As Integer = 8
+    'Public CN_VspomMat As Integer = 28
+    'Public CN_VspomMat_IBKey As Integer = 8
 
     Sub WriteEXCellTitle(tmp_node As TreeNode)
         Application.DoEvents()
@@ -1010,7 +1014,7 @@ ifpozRAVNOTempPoz:
             End If
             MainArtInfo = Get_Short_Article_Param(ArtID)
 
-            If TPsfilter Then
+            If TPsfilter And NO_TechCard Then
                 MainTPInfo = Get_TP_ParmArray(artID_Main, -1)
             End If
             set_Value_From_Cell(Sheetname, CN_ArtID, 1, artID_Main)
@@ -1024,7 +1028,12 @@ ifpozRAVNOTempPoz:
 
         End Try
         Try
-            set_Value_From_Cell(Sheetname, CN_Raszehovka, 1, MainTPInfo(0))
+            If TPsfilter And NO_TechCard Then
+                set_Value_From_Cell(Sheetname, CN_Raszehovka, 1, MainArtInfo(5))
+            Else
+                set_Value_From_Cell(Sheetname, CN_Raszehovka, 1, MainTPInfo(0))
+            End If
+
             'set_Value_From_Cell(Sheetname, CN_VspomMat, 1, MainTPInfo(9))
         Catch ex As Exception
 
@@ -1033,6 +1042,7 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_NumPP, RowN_First - 1, "№" & vbNewLine & "п/п")
         set_Value_From_Cell(Sheetname, CN_ArtID, RowN_First - 1, "ArtID")
         set_Value_From_Cell(Sheetname, CN_ArchName, RowN_First - 1, "Архив")
+        set_Value_From_Cell(Sheetname, CN_ArtFormat, RowN_First - 1, "Формат")
         set_Value_From_Cell(Sheetname, CN_Oboz, RowN_First - 1, "Обозначение ДСЕ")
         set_Value_From_Cell(Sheetname, CN_Naim, RowN_First - 1, "Наименование ДСЕ")
         set_Value_From_Cell(Sheetname, CN_Kolvo, RowN_First - 1, "Кол." & vbNewLine & "на" & vbNewLine & "ед.")
@@ -1196,6 +1206,7 @@ ifpozRAVNOTempPoz:
         SetColumnVisible(Sheetname, CN_ContexrtType, True)
         SetColumnVisible(Sheetname, CN_PL_Sort_IBKey, True)
         SetColumnVisible(Sheetname, CN_Purchated, True)
+        SetColumnVisible(Sheetname, CN_Raszehovka, False)
 
         'настройки видимости колонок для листа ПЕРЕЧЕНЬ ПОКУПНЫХ
         SetColumnVisible(ShName_Purchated, CN_Purchated_IBKey, True)
@@ -1223,6 +1234,27 @@ ifpozRAVNOTempPoz:
 
         CreateExcelCustomProperty("DocID", t_DocID, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
         CreateExcelCustomProperty("Версия документа", get_VersIDbyDocID(t_DocID), Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)
+
+        CreateExcelCustomProperty("Контекст состава", ToolStripComboBox1.Text, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeString, 0)                                                                     'контекст состава
+        CreateExcelCustomProperty(БезРазделаДокументацияToolStripMenuItem.Text, БезРазделаДокументацияToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                  'документация
+        CreateExcelCustomProperty(БезТехнолическихСвязейToolStripMenuItem.Text, БезТехнолическихСвязейToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                  'ручная связь
+        CreateExcelCustomProperty(СРазделомСборочныеЕдиницыToolStripMenuItem.Text, СРазделомСборочныеЕдиницыToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)            'Сборочные единицы
+        CreateExcelCustomProperty(СРазделомДеталиToolStripMenuItem.Text, СРазделомДеталиToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                                'детали
+        CreateExcelCustomProperty(СРазделомСтандартныеЕдиницыToolStripMenuItem.Text, СРазделомСтандартныеЕдиницыToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)        'стандартные изделия
+        CreateExcelCustomProperty(СРазделомПрочиеИзделияToolStripMenuItem.Text, СРазделомПрочиеИзделияToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                  'прочие изделия
+        CreateExcelCustomProperty(СРазделомМатериалыToolStripMenuItem.Text, СРазделомМатериалыToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                          'материалы
+        CreateExcelCustomProperty(ДетальСборочнаяЕдиницаToolStripMenuItem.Text, ДетальСборочнаяЕдиницаToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                  'деталь-сборочная единица
+        CreateExcelCustomProperty(ТолькоПервыйУровеньToolStripMenuItem.Text, ТолькоПервыйУровеньToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                        'Только перваый уровень
+        CreateExcelCustomProperty(ЗаменятьToolStripMenuItem.Text, ЗаменятьToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                                              'заменять ~ на ``
+        CreateExcelCustomProperty(ЗаменятьНаToolStripMenuItem.Text, ЗаменятьНаToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                                          'заменять ? на ``
+        CreateExcelCustomProperty(ДанныеТолькоИзS4ToolStripMenuItem.Text, ДанныеТолькоИзS4ToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                              'данные только из s4
+        CreateExcelCustomProperty(ССоставомИзделияToolStripMenuItem.Text, ССоставомИзделияToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                              'с составом изделия
+        CreateExcelCustomProperty(СПеречнемДеталейToolStripMenuItem.Text, СПеречнемДеталейToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                              'с перечне деталей
+        CreateExcelCustomProperty(СПеречнемПокупныхПДРБНToolStripMenuItem.Text, СПеречнемПокупныхПДРБНToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                  'с перечнем покупных(подробный)
+        CreateExcelCustomProperty(СПеречнемМатериаловToolStripMenuItem.Text, СПеречнемМатериаловToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)                        'с перечнем материалов 
+        CreateExcelCustomProperty(ПоказыватьПроцессЭкспортаToolStripMenuItem.Text, ПоказыватьПроцессЭкспортаToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)            'показывать процесс экспорта
+        CreateExcelCustomProperty(ПоказыватьСистемнуюИнформациюToolStripMenuItem.Text, ПоказыватьСистемнуюИнформациюToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)    'показывать системную информацию
+        CreateExcelCustomProperty(ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Text, ПоказыватьПояснениеПоЗаливкеToolStripMenuItem.Checked, Microsoft.Office.Core.MsoDocProperties.msoPropertyTypeBoolean, 0)      'показывать пояснение по зиливке
     End Sub
     Sub ColorNote()
         Dim row_num As Integer
@@ -1318,7 +1350,7 @@ ifpozRAVNOTempPoz:
             PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
             Art_Param = Get_Article_Param(ArtID)
             'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
-            If TPsfilter Then
+            If TPsfilter And NO_TechCard Then
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
                 If Not OnlyFirstLewvel Then
                     TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
@@ -2023,10 +2055,16 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(Sheetname, CN_TypeLink, lastRowNum, PRJLINK_Param(10))
         set_Value_From_Cell(Sheetname, CN_ContexrtType, lastRowNum, PRJLINK_Param(9))
         set_Value_From_Cell(Sheetname, CN_ArtID, lastRowNum, ArtID)
+        set_Value_From_Cell(Sheetname, CN_ArtFormat, lastRowNum, PRJLINK_Param(12))
         'set_Value_From_Cell(Sheetname, CN_VspomMat, lastRowNum, TP_Array(9))
 
         Try
-            set_Value_From_Cell(Sheetname, CN_Raszehovka, lastRowNum, TP_Array(0))
+            If NO_TechCard Then
+                set_Value_From_Cell(Sheetname, CN_Raszehovka, lastRowNum, Art_Param(14))
+            Else
+                set_Value_From_Cell(Sheetname, CN_Raszehovka, lastRowNum, TP_Array(0))
+            End If
+
             set_Value_From_Cell(Sheetname, CN_MatZagotovki, lastRowNum, TP_Array(3))
             set_Value_From_Cell(Sheetname, CN_MatZagotovki_IBKey, lastRowNum, TP_Array(4))
             set_Value_From_Cell(Sheetname, CN_TPArtKey, lastRowNum, TP_Array(5))
@@ -2338,6 +2376,7 @@ ifpozRAVNOTempPoz:
                 Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
                 Dim FORMAT As String = .QueryFieldByName("FORMAT")
                 Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
+                Dim PosicFormat As String = .QueryFieldByName("FORMAT")
                 Dim CTX_IDStr As String
                 Dim LINK_TYPE_str As String
                 Dim MU_ID_str As String
@@ -2352,7 +2391,7 @@ ifpozRAVNOTempPoz:
                 .OpenQuery("select * from MU where MU_ID = '" & MU_ID & "'")
                 MU_ID_str = .QueryFieldByName("MU_SHORT_NAME")
                 .CloseQuery()
-                Dim array(11) As String
+                Dim array(12) As String
                 array(0) = PROJ_AID
                 array(1) = Part_AID
                 array(2) = COUNT_PC
@@ -2365,6 +2404,7 @@ ifpozRAVNOTempPoz:
                 array(9) = CTX_IDStr
                 array(10) = LINK_TYPE_str
                 array(11) = MU_ID_str
+                array(12) = PosicFormat
                 Return array
             End With
         Catch ex As Exception
@@ -2373,15 +2413,16 @@ ifpozRAVNOTempPoz:
     End Function
     Function Get_Short_Article_Param(Art_ID As Integer) As Array
         Application.DoEvents()
-        Dim array(4) As String
+        Dim array(5) As String
         Try
             With s4
                 .OpenArticle(Art_ID)
                 '.ReturnFieldValueWithImbaseKey = 1
-                Dim oboz, naim, mass, ArchID, ArchName As String
+                Dim oboz, naim, mass, ArchID, ArchName, MainArtRasceh As String
                 oboz = .GetFieldValue_Articles("Обозначение")
                 naim = .GetFieldValue_Articles("Наименование")
                 mass = .GetArticleMassa
+                MainArtRasceh = .GetFieldValue_Articles("Расцеховка")
                 Try
                     Dim docID As Integer = .GetArticleDocID
                     If docID > 0 Then
@@ -2402,6 +2443,7 @@ ifpozRAVNOTempPoz:
                 array(2) = mass
                 array(3) = ArchID
                 array(4) = ArchName
+                array(5) = MainArtRasceh
 
                 Return array
             End With
@@ -2412,18 +2454,18 @@ ifpozRAVNOTempPoz:
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
         Application.DoEvents()
-        Dim array(13) As String
+        Dim array(14) As String
         Try
             With s4
                 .OpenArticle(Art_ID)
                 .ReturnFieldValueWithImbaseKey = 0
-                Dim oboz, naim, mass, Imbase_key, purchased, purchased_str, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName, ArtKind As String
+                Dim oboz, naim, mass, Imbase_key, purchased, purchased_str, material, materialIMKey, ArtKindName, mass_MU_ID, mass_MU_ID_Str, ArchID, ArchName, ArtKind, Art_rascehovka As String
                 oboz = .GetFieldValue_Articles("Обозначение")
                 naim = .GetFieldValue_Articles("Наименование")
                 mass = .GetArticleMassa
                 Imbase_key = .GetFieldValue_Articles("Ключ Imbase")
                 purchased = .GetArticlePurchased
-
+                Art_rascehovka = .GetFieldValue_Articles("Расцеховка")
                 Select Case purchased
                     Case "+"
                         purchased_str = "Покупное"
@@ -2496,6 +2538,7 @@ ifpozRAVNOTempPoz:
                 array(11) = ArchName
                 array(12) = ArtKind
                 array(13) = purchased_str
+                array(14) = Art_rascehovka
                 Return array
             End With
         Catch ex As Exception
@@ -2803,6 +2846,12 @@ ifpozRAVNOTempPoz:
 
     Private Sub ОбновитьДеревоToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ОбновитьДеревоToolStripMenuItem.Click
         CT_ID_in_Query_Change()
+    End Sub
+
+    Private Sub ДанныеТолькоИзS4ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ДанныеТолькоИзS4ToolStripMenuItem.Click
+        ДанныеТолькоИзS4ToolStripMenuItem.Checked = Not (ДанныеТолькоИзS4ToolStripMenuItem.Checked)
+        NO_TechCard = ДанныеТолькоИзS4ToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_TechCard_OpName, NO_TechCard)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
