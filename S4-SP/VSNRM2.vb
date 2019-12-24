@@ -701,7 +701,7 @@ ifpozRAVNOTempPoz:
         OutOptionsLoad()
 
         If ToolStripComboBox1.SelectedItem Is Nothing Or ToolStripComboBox1.SelectedItem = "" Then '
-            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(1)
+            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(0)
             'CT_ID_in_Query_Change()
         End If
     End Sub

@@ -147,6 +147,7 @@ Public Class Form1
         Me.Height = MainFormHeght()
         Me.Width = MainFormWidht()
         tempform = Me
+        Me.Text = "S4-SP v." & System.Windows.Forms.Application.ProductVersion
         'VersCange()
         Search_Subdirectories = Convert.ToBoolean(get_reesrt_value("Search_Subdirectories", True.ToString))
         material_table_path = get_reesrt_value("material_table_path", System.Windows.Forms.Application.StartupPath & "\material_with_ImBaseKey.xlsx")
