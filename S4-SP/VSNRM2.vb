@@ -890,6 +890,33 @@ ifpozRAVNOTempPoz:
     End Sub
 
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
+    Public ShName_AVA As String = "AVA"
+    Public RowN_AVA_First As Integer = 2
+    Public CN_AVA_PROJ_ID As Integer = 1
+    Public CN_AVA_PROJ_Oboz As Integer = 2
+    Public CN_AVA_PART_ID As Integer = 3
+    Public CN_AVA_PART_Oboz As Integer = 4
+    Public CN_AVA_Count As Integer = 5
+    Public CN_AVA_MU As Integer = 6
+    Private Sub addExTitleAVA(tmp_node As TreeNode)
+        Add_NewSheet(ShName_AVA)
+        Sheet_Delete_by_SheetName("Лист1")
+
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, RowN_AVA_First - 1, "parent_ID")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, RowN_AVA_First - 1, "parent_Name (не обязательное поле)")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, RowN_AVA_First - 1, "child_ID")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, RowN_AVA_First - 1, "child_name (не обязательное поле)")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Count, RowN_AVA_First - 1, "qnt")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_MU, RowN_AVA_First - 1, "MU_ShortName")
+
+        Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_AVA, RowN_AVA_First - 1)
+        SetCellsBorderLineStyle2(ShName_AVA, 1, 1, CN_PL_last_ColNum, RowN_AVA_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
+
+        'зафиксировать шапку
+        SetTitleFixirovano(ShName_AVA, CN_AVA_PROJ_ID, RowN_AVA_First - 1, True)
+    End Sub
+
+    'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
     Public ShName_PartList As String = "ПЕРЕЧЕНЬ ДЕТАЛЕЙ"
     Public RowN_PL_First As Integer = 3
     Public CN_PL_ArtID As Integer = 1
@@ -1155,6 +1182,7 @@ ifpozRAVNOTempPoz:
         If NO_Purchated_PDRBN Then addExTitlePDRBN(tmp_node) 'создать ПОДРОБНУЮ ВЕДОМОСТЬ ПОКУПНЫХ
         If NO_Purchated Then addExTitlePurchated(tmp_node) 'создать ВЕДОМОСТЬ ПОКУПНЫХ
         If NO_Sostav Then WriteEXCellTitle(tmp_node) 'создать СОСТАВ ИЗДЕЛИЯ
+        If NO_AVA Then addExTitleAVA(tmp_node) 'создать ДАННЫЕ ДЛЯ АВА
 
         read_NEXTLEVELtreeview(tmp_node)
         If NO_Sostav Then
@@ -1172,6 +1200,7 @@ ifpozRAVNOTempPoz:
         If NO_Purchated Then SetAutoFIT(ShName_Purchated)
         If NO_Parts Then SetAutoFIT(ShName_PartList)
         If NO_Purchated_PDRBN Then SetAutoFIT(ShName_pdrbn)
+        If NO_AVA Then SetAutoFIT(ShName_AVA)
 
         If Not NO_ExlProc_Visible Then EX_Doc_VisibleChanche(Not NO_ExlProc_Visible)
         If Not NO_S4_Columns Then ChancheVisibleColumn()
@@ -1368,12 +1397,14 @@ ifpozRAVNOTempPoz:
 
             If myNode.Nodes.Count > 0 Then
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
+                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Art_Param, TP_Array)
                 read_NEXTLEVELtreeview(myNode)
             Else
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
                 If NO_Purchated Then excel_write_aboutPart_in_Purchated(ArtID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
                 If NO_Parts Then excel_write_aboutPart_in_PartList(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
                 If NO_Purchated_PDRBN Then excel_write_about_PDRBN_Purchated(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
+                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Art_Param, TP_Array)
             End If
         Next
     End Sub
@@ -2009,6 +2040,44 @@ ifpozRAVNOTempPoz:
             Return 1
         End If
     End Function
+    Sub excel_write_AVA(PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
+
+        Application.DoEvents()
+        Dim temp_color As Color
+        Dim lastRowNum As Integer = Get_LastRowInOneColumn(ShName_AVA, CN_AVA_PROJ_ID) + 1
+        Select Case Art_Param(12)
+            Case 1, 2, 3
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+            Case 5, 6, 7
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, Art_Param(3))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(1)) 'наименование записать для покупного
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+            Case 4
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+                If Not HaveChildArticles(PRJLINK_Param(1)) Then
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum + 1, PRJLINK_Param(1))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum + 1, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(1), "Обозначение"))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum + 1, Art_Param(6))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum + 1, Art_Param(5)) 'материал записать
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum + 1, Art_Param(2))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum + 1, Art_Param(9))
+
+                End If
+        End Select
+    End Sub
     Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double, PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
 
         Application.DoEvents()
@@ -2361,6 +2430,21 @@ ifpozRAVNOTempPoz:
 
         End Try
     End Function
+    Function HaveChildArticles(Proj_ID As Long)
+        Application.DoEvents()
+        Dim result As Boolean = False
+        Try
+            With s4
+
+                .OpenQuery("select * from PC where PROJ_AID = " & Proj_ID)
+                If .QueryRecordCount() > 0 Then result = True
+                .CloseQuery()
+            End With
+        Catch ex As Exception
+
+        End Try
+        Return result
+    End Function
     Function Get_Link_Param(PRJLINK_ID As Integer) As Array
         Application.DoEvents()
         Try
@@ -2451,6 +2535,15 @@ ifpozRAVNOTempPoz:
 
             Return array
         End Try
+    End Function
+    Function GetFieldValue_Articles_S4_VSNRM(ArtID As Long, ParamName As String)
+        Dim result As String = ""
+        With s4
+            .OpenArticle(ArtID)
+            result = .GetFieldValue_Articles(ParamName)
+            .CloseArticle()
+        End With
+        Return result
     End Function
     Function Get_Article_Param(Art_ID As Integer) As Array
         Application.DoEvents()
@@ -2852,6 +2945,12 @@ ifpozRAVNOTempPoz:
         ДанныеТолькоИзS4ToolStripMenuItem.Checked = Not (ДанныеТолькоИзS4ToolStripMenuItem.Checked)
         NO_TechCard = ДанныеТолькоИзS4ToolStripMenuItem.Checked
         chekced_ParamChancge(NO_TechCard_OpName, NO_TechCard)
+    End Sub
+
+    Private Sub СДаннымиДляToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles СДаннымиДляToolStripMenuItem.Click
+        СДаннымиДляToolStripMenuItem.Checked = Not (СДаннымиДляToolStripMenuItem.Checked)
+        NO_AVA = СДаннымиДляToolStripMenuItem.Checked
+        chekced_ParamChancge(NO_AVA_OpName, NO_AVA)
     End Sub
 
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)

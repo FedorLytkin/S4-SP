@@ -48,6 +48,10 @@ Module Pr_Options
     Public NO_TechCard As Boolean = 1
     Public NO_TechCard_OpName As String = "NO_TechCard"
 
+    'передавать параметры для АВА
+    Public NO_AVA As Boolean = 1
+    Public NO_AVA_OpName As String = "NO_AVA"
+
     'параметр экспортирующий данные о материалах и покупных
     Public NO_ColorNote As Boolean = 1
     Public NO_ColorNote_OpName As String = "NO_ColorNote"
@@ -100,6 +104,7 @@ Module Pr_Options
             sw.WriteLine(NO_ExlProc_Visible_OpName & Opt_Del_Char & NO_ExlProc_Visible)
             sw.WriteLine(NO_S4_Columns_OpName & Opt_Del_Char & NO_S4_Columns)
             sw.WriteLine(NO_TechCard_OpName & Opt_Del_Char & NO_TechCard)
+            sw.WriteLine(NO_AVA_OpName & Opt_Del_Char & NO_AVA)
         End Using
     End Sub
     Sub chekced_ParamChancge(Parname As String, par_val As Boolean)
@@ -138,6 +143,8 @@ Module Pr_Options
                 NO_S4_Columns = CInt(par_val)
             Case NO_TechCard_OpName
                 NO_TechCard = CInt(par_val)
+            Case NO_AVA_OpName
+                NO_AVA = CInt(par_val)
         End Select
         Save_Parameters()
     End Sub
@@ -185,6 +192,8 @@ Module Pr_Options
                                 NO_S4_Columns = line_arr(1)
                             Case NO_TechCard_OpName
                                 NO_TechCard = line_arr(1)
+                            Case NO_AVA_OpName
+                                NO_AVA = line_arr(1)
                         End Select
                     End If
                     line = r.ReadLine

@@ -22,7 +22,7 @@ Namespace My.Resources
     '''<summary>
     '''  Класс ресурса со строгой типизацией для поиска локализованных строк и т.д.
     '''</summary>
-    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0"),  _
+    <Global.System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0"),  _
      Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
      Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
      Global.Microsoft.VisualBasic.HideModuleNameAttribute()>  _
@@ -226,6 +226,16 @@ Namespace My.Resources
         Friend ReadOnly Property DWG() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("DWG", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        '''</summary>
+        Friend ReadOnly Property ERP_SHARE() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("ERP_SHARE", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
