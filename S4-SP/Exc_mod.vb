@@ -67,6 +67,9 @@ Module Exc_mod
     Sub exc_WB1_save()
         WB.Save()
     End Sub
+    Sub exc_WB1_saveAs(ExFileName As String)
+        WB.SaveAs(ExFileName)
+    End Sub
     Public Sub exc_close()
         Try
             xlApp.Quit()

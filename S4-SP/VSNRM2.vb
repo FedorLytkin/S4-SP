@@ -1,8 +1,10 @@
 ﻿Public Class VSNRM2
+    Public TurnList As List(Of Long)
     Public s4 As S4.TS4App = Form1.ITS4App
     Public tp As TPServer.ITApplication
     'Public ib As ImBase.IImbaseApplication
     Public artID_Main, artId_Sub As Integer
+    Dim OutFolderDirectory As String
     Public Spletter As String = "|"
     'параметр не выводящий типы объектов и компоненты с ручной связью
     'Public NO_Art_Documentacia As Boolean = 0
@@ -606,6 +608,74 @@ ifpozRAVNOTempPoz:
             .CloseArticle()
 
             Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
+            If max_poz_mun = 0 Then Exit Sub
+            PBarLoadSQL(max_poz_mun)
+
+            If Verartfiltr Then
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & " and (PROJ_VER_ID = NULL OR PROJ_VER_ID = " & VERS & ")" & CT_ID_in_Query)
+            Else
+                .OpenQuery("select * from PC where proj_aid = " & artID_Main & CT_ID_in_Query) ' & " and PROJ_VER_ID = " & VERS)
+            End If
+            .QueryGoFirst()
+            For i As Integer = 0 To max_poz_mun - 1
+                Dim PRJLINK_ID As Integer = .QueryFieldByName("PRJLINK_ID")
+                Dim TempPos As String = .QueryFieldByName("positio")
+                Dim Part_AID As Integer = .QueryFieldByName("Part_AID")
+                Dim RAZDEL As Integer = .QueryFieldByName("RAZDEL")
+                Dim LINK_TYPE As String = .QueryFieldByName("LINK_TYPE")
+                Dim CTX_ID As Integer = .QueryFieldByName("CTX_ID")
+                Dim COUNT_PC As Double = .QueryFieldByName("COUNT_PC")
+
+                'Dim ge_Article_Param_List As Array = Get_Article_Param(Part_AID)
+                If check_OnOffOptionsforBOMComponents(RAZDEL, LINK_TYPE, CTX_ID) Then
+                    Dim subNode As TreeNode = TreeNodeAdd2(root, Part_AID, PRJLINK_ID, TempPos, COUNT_PC)
+
+                    If exist_BOM_ChildNodesExist(Part_AID) And (Not OnlyFirstLewvel Or RAZDEL = 4) Then
+                        NextLevelInTreeView_Bez_Positio(subNode, Part_AID, TempPos)
+                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                    Else
+                        Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                    End If
+                Else
+                    Perehov_Na_NUGHUY_strocu(artID_Main, i, VERS)
+                End If
+                PBarStep()
+            Next
+
+            .CloseQuery()
+        End With
+    End Sub
+    Sub generalTree_Bez_Positio(TreeUpdate As Boolean, Proj_ID As Long)
+        Application.DoEvents()
+        If Not TreeUpdate Then
+            artID_Main = Proj_ID
+        End If
+
+        If artID_Main <= 0 Then Exit Sub
+        Dim chechUtvArch As Boolean = chechUtvArch_func(artID_Main)
+        If Not chechUtvArch Then
+            Exit Sub
+        End If
+        Dim check_SP As Boolean = check_SP_Funk(artID_Main)
+        If Not check_SP Then
+            Exit Sub
+        End If
+        TreeView1.Nodes.Clear()
+        Dim Main_ArticleParam_List As Array = Get_Short_Article_Param(artID_Main)
+        Dim root = New TreeNode(Main_ArticleParam_List(0) & Spletter & Main_ArticleParam_List(1))
+        root.Tag = artID_Main
+        ImagesAdd()
+
+        TreeView1.ImageList = myImageList
+        TreeView1.Nodes.Add(root)
+
+        With s4
+            .OpenArticle(artID_Main)
+            Dim VERS As String = .GetFieldValue_Articles("Art_Ver_ID")
+            .CloseArticle()
+
+            Dim max_poz_mun As Integer = GetMaxRowInBOM(artID_Main, VERS)
+            If max_poz_mun = 0 Then Exit Sub
             PBarLoadSQL(max_poz_mun)
 
             If Verartfiltr Then
@@ -694,6 +764,7 @@ ifpozRAVNOTempPoz:
         ТолькоПервыйУровеньToolStripMenuItem.Checked = OnlyFirstLewvel
         ССоставомИзделияToolStripMenuItem.Checked = NO_Sostav
         ДанныеТолькоИзS4ToolStripMenuItem.Checked = NO_TechCard
+        СДаннымиДляToolStripMenuItem.Checked = NO_AVA
         If NO_TechCard Then
             TPServerInitializ()
         End If
@@ -701,7 +772,7 @@ ifpozRAVNOTempPoz:
         OutOptionsLoad()
 
         If ToolStripComboBox1.SelectedItem Is Nothing Or ToolStripComboBox1.SelectedItem = "" Then '
-            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(0)
+            ToolStripComboBox1.SelectedItem = ToolStripComboBox1.Items(1)
             'CT_ID_in_Query_Change()
         End If
     End Sub
@@ -892,22 +963,32 @@ ifpozRAVNOTempPoz:
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
     Public ShName_AVA As String = "AVA"
     Public RowN_AVA_First As Integer = 2
-    Public CN_AVA_PROJ_ID As Integer = 1
-    Public CN_AVA_PROJ_Oboz As Integer = 2
+    Public CN_AVA_PROJ_Designatio As Integer = 1
+    Public CN_AVA_PROJ_ID As Integer = 2
     Public CN_AVA_PART_ID As Integer = 3
-    Public CN_AVA_PART_Oboz As Integer = 4
+    Public CN_AVA_PART_Designatio As Integer = 4
     Public CN_AVA_Count As Integer = 5
-    Public CN_AVA_MU As Integer = 6
+    Public CN_AVA_PART_Oboz As Integer = 13
+    Public CN_AVA_Archive_Name_Parent As Integer = 14
+    Public CN_AVA_Archive_Name_Child As Integer = 19
+    Public CN_AVA_MU As Integer = 12
+    Public CN_AVA_Rascehovka_Parent As Integer = 17
+    Public CN_AVA_Rascehovka_Child As Integer = 18
     Private Sub addExTitleAVA(tmp_node As TreeNode)
         Add_NewSheet(ShName_AVA)
         Sheet_Delete_by_SheetName("Лист1")
 
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, RowN_AVA_First - 1, "//parent_designation parent_name")
         set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, RowN_AVA_First - 1, "parent_ID")
-        set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, RowN_AVA_First - 1, "parent_Name (не обязательное поле)")
         set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, RowN_AVA_First - 1, "child_ID")
-        set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, RowN_AVA_First - 1, "child_name (не обязательное поле)")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, RowN_AVA_First - 1, "child_designation child_name")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Count, RowN_AVA_First - 1, "qnt")
         set_Value_From_Cell(ShName_AVA, CN_AVA_MU, RowN_AVA_First - 1, "MU_ShortName")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, RowN_AVA_First - 1, "child_designation")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, RowN_AVA_First - 1, "Archive_Name_For_Parent_Component")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, RowN_AVA_First - 1, "Route_For_Child_Component")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, RowN_AVA_First - 1, "Archive_Name_For_Child_Component")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, RowN_AVA_First - 1, "Route_For_Parent_Component")
 
         Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_AVA, RowN_AVA_First - 1)
         SetCellsBorderLineStyle2(ShName_AVA, 1, 1, CN_PL_last_ColNum, RowN_AVA_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
@@ -1171,9 +1252,9 @@ ifpozRAVNOTempPoz:
             Exit Sub
         End If
         ReplaceCharArray()
-        add_Vedomost(TreeView1.Nodes.Item(0))
+        add_Vedomost(TreeView1.Nodes.Item(0), False)
     End Sub
-    Sub add_Vedomost(tmp_node As TreeNode)
+    Sub add_Vedomost(tmp_node As TreeNode, SaveVedomost As Boolean)
         Application.DoEvents()
         PBarLoad(tmp_node)
 
@@ -1211,6 +1292,10 @@ ifpozRAVNOTempPoz:
         'SetCellsCdbl(Sheetname, CN_Mass, RowN_First, CN_Mass, last_Rowmun) 'преобразовал в число столбцы с массой 
         PBarStep()
         Beep()
+        If SaveVedomost Then
+            exc_WB1_saveAs($"{OutFolderDirectory}\{tmp_node.Text.Replace("|", " ")}.xlsx")
+            exc_close()
+        End If
     End Sub
     Sub sheet_sort()
         Try
@@ -1374,10 +1459,11 @@ ifpozRAVNOTempPoz:
             PRJLINK_ID = param_Array(2)
             Count_Summ = param_Array(3)
 
-            Dim PRJLINK_Param, Art_Param, TP_Array, TP_Vspom_Mater_Array As Array
+            Dim PRJLINK_Param, Parent_Art_Param, Art_Param, TP_Array, TP_Vspom_Mater_Array As Array
             'Dim TP_VspMat_Array As Array
             PRJLINK_Param = Get_Link_Param(PRJLINK_ID)
             Art_Param = Get_Article_Param(ArtID)
+            Parent_Art_Param = Get_Article_Param(PRJLINK_Param(0))
             'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
             If TPsfilter And NO_TechCard Then
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
@@ -1397,14 +1483,14 @@ ifpozRAVNOTempPoz:
 
             If myNode.Nodes.Count > 0 Then
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
-                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Art_Param, TP_Array)
+                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Parent_Art_Param, Art_Param, TP_Array)
                 read_NEXTLEVELtreeview(myNode)
             Else
                 If NO_Sostav Then excel_write_about_TreeNode(Positio, ArtID, PRJLINK_ID, Count_Summ, PRJLINK_Param, Art_Param, TP_Array)
                 If NO_Purchated Then excel_write_aboutPart_in_Purchated(ArtID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
                 If NO_Parts Then excel_write_aboutPart_in_PartList(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
                 If NO_Purchated_PDRBN Then excel_write_about_PDRBN_Purchated(ArtID, PRJLINK_ID, Art_Param, TP_Array, PRJLINK_Param, Count_Summ)
-                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Art_Param, TP_Array)
+                If NO_AVA Then excel_write_AVA(PRJLINK_Param, Parent_Art_Param, Art_Param, TP_Array)
             End If
         Next
     End Sub
@@ -2040,40 +2126,68 @@ ifpozRAVNOTempPoz:
             Return 1
         End If
     End Function
-    Sub excel_write_AVA(PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
+    Sub excel_write_AVA(PRJLINK_Param As Array, Parent_Art_Param As Array, Art_Param As Array, TP_Array As Array)
 
         Application.DoEvents()
         Dim temp_color As Color
         Dim lastRowNum As Integer = Get_LastRowInOneColumn(ShName_AVA, CN_AVA_PROJ_ID) + 1
+        Dim PRJ_Link_Oboz As String = Parent_Art_Param(0)
+        Dim PRJ_Link_Name As String = Parent_Art_Param(1)
+        Dim ArchName As String = Parent_Art_Param(11)
         Select Case Art_Param(12)
             Case 1, 2, 3
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(0)} {Art_Param(1)}")
             Case 5, 6, 7
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, Art_Param(3))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(1)) 'наименование записать для покупного
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(1)}")
             Case 4
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(0), "Обозначение"))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
+                set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(0)} {Art_Param(1)}")
                 If Not HaveChildArticles(PRJLINK_Param(1)) Then
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum + 1, ArchName)
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum + 1, PRJLINK_Param(1))
-                    set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Oboz, lastRowNum + 1, GetFieldValue_Articles_S4_VSNRM(PRJLINK_Param(1), "Обозначение"))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum + 1, Art_Param(6))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum + 1, Art_Param(5)) 'материал записать
                     set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum + 1, Art_Param(2))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum + 1, Art_Param(9))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum + 1, Art_Param(14))
+
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum + 1, $"{Art_Param(0)} {Art_Param(1)}")
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum + 1, $"{Art_Param(5)}")
 
                 End If
         End Select
@@ -2436,7 +2550,7 @@ ifpozRAVNOTempPoz:
         Try
             With s4
 
-                .OpenQuery("select * from PC where PROJ_AID = " & Proj_ID)
+                .OpenQuery("select * from PC where PROJ_AID = " & Proj_ID & CT_ID_in_Query)
                 If .QueryRecordCount() > 0 Then result = True
                 .CloseQuery()
             End With
@@ -2542,6 +2656,18 @@ ifpozRAVNOTempPoz:
             .OpenArticle(ArtID)
             result = .GetFieldValue_Articles(ParamName)
             .CloseArticle()
+        End With
+        Return result
+    End Function
+    Function GetFieldValue_S4_VSNRM(ArtID As Long, ParamName As String)
+        Dim result As String = ""
+        With s4
+            Dim DocID As Long = .GetDocID_ByArtID(ArtID)
+            If DocID < 0 Then Return result
+
+            .OpenDocument(DocID)
+            result = .GetFieldValue(ParamName)
+            .CloseDocument()
         End With
         Return result
     End Function
@@ -2907,7 +3033,7 @@ ifpozRAVNOTempPoz:
     Private Sub ВедомостьДляВыбранногоУзлаToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ВедомостьДляВыбранногоУзлаToolStripMenuItem.Click
         ReplaceCharArray()
         Dim selectNode As TreeNode = TreeView1.SelectedNode
-        add_Vedomost(selectNode)
+        add_Vedomost(selectNode, False)
     End Sub
 
     Private Sub ContextMenuStrip1_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles ContextMenuStrip1.Opening
@@ -2953,6 +3079,63 @@ ifpozRAVNOTempPoz:
         chekced_ParamChancge(NO_AVA_OpName, NO_AVA)
     End Sub
 
+    Private Sub ToolStripButton5_Click_1(sender As Object, e As EventArgs) Handles ToolStripButton5.Click
+        Application.DoEvents()
+        AddTurnListCollection()
+        If TurnList.Count = 0 Then Exit Sub
+        ReplaceCharArray()
+        OutFolderDirectory = GetFolderDirectory()
+        If String.IsNullOrWhiteSpace(OutFolderDirectory) Then Exit Sub
+
+        For Each Id As Long In TurnList
+            generalTree_Bez_Positio(False, Id)
+            add_Vedomost(TreeView1.Nodes.Item(0), True)
+        Next
+    End Sub
+    Public Function GetFolderDirectory() As String
+        Dim FBD As FolderBrowserDialog = New FolderBrowserDialog
+        If FBD.ShowDialog = DialogResult.OK Then
+            Return FBD.SelectedPath
+        Else
+            Return Nothing
+        End If
+    End Function
+    Sub AddTurnListCollection()
+        TurnList = New List(Of Long)
+        Dim TurnFileName As String = GetFileName() 'Application.StartupPath & "\Turn_List.txt"
+        If String.IsNullOrWhiteSpace(TurnFileName) Then Exit Sub
+        Try
+            Dim file As System.IO.StreamReader = New System.IO.StreamReader(TurnFileName)
+            Dim counter As Integer = 0
+            Dim line As String = " "
+            While line IsNot Nothing
+                line = file.ReadLine()
+                If Not String.IsNullOrWhiteSpace(line) Then
+                    TurnList.Add(line)
+                End If
+            End While
+            file.Close()
+            TurnList.Distinct().ToList
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Function GetFileName() As String
+        Try
+            Dim OFD As OpenFileDialog = New OpenFileDialog
+            OFD.Multiselect = False
+            OFD.Title = "Выберите файл со списком объектов из S4"
+            OFD.Filter = "txt файлы (*.txt)|*.txt"
+            OFD.RestoreDirectory = True
+            If OFD.ShowDialog = DialogResult.OK Then
+                Return OFD.FileName
+            Else
+                Return Nothing
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Function
     Sub NextLevelInTreeView_Bez_Positio(node As TreeNode, Proj_Aid As Integer, SubPositio As String)
         Application.DoEvents()
         With s4
