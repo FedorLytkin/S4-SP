@@ -970,6 +970,7 @@ ifpozRAVNOTempPoz:
     Public CN_AVA_Count As Integer = 5
     Public CN_AVA_PART_Oboz As Integer = 13
     Public CN_AVA_Archive_Name_Parent As Integer = 14
+    Public CN_AVA_SECTION_NAME_Child As Integer = 15
     Public CN_AVA_Archive_Name_Child As Integer = 19
     Public CN_AVA_MU As Integer = 12
     Public CN_AVA_Rascehovka_Parent As Integer = 17
@@ -986,6 +987,7 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(ShName_AVA, CN_AVA_MU, RowN_AVA_First - 1, "MU_ShortName")
         set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, RowN_AVA_First - 1, "child_designation")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, RowN_AVA_First - 1, "Archive_Name_For_Parent_Component")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, RowN_AVA_First - 1, "SECTION_NAME_For_Child_Component")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, RowN_AVA_First - 1, "Route_For_Child_Component")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, RowN_AVA_First - 1, "Archive_Name_For_Child_Component")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, RowN_AVA_First - 1, "Route_For_Parent_Component")
@@ -2139,6 +2141,7 @@ ifpozRAVNOTempPoz:
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
                 If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
@@ -2153,6 +2156,7 @@ ifpozRAVNOTempPoz:
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
                 If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, Art_Param(3))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(1)) 'наименование записать для покупного
@@ -2167,6 +2171,7 @@ ifpozRAVNOTempPoz:
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
+                set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
                 If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
@@ -2179,6 +2184,7 @@ ifpozRAVNOTempPoz:
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(0)} {Art_Param(1)}")
                 If Not HaveChildArticles(PRJLINK_Param(1)) Then
                     set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum + 1, ArchName)
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum + 1, "Материал")
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum + 1, PRJLINK_Param(1))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum + 1, Art_Param(6))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum + 1, Art_Param(5)) 'материал записать
