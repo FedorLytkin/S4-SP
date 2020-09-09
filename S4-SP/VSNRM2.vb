@@ -765,7 +765,7 @@ ifpozRAVNOTempPoz:
         ССоставомИзделияToolStripMenuItem.Checked = NO_Sostav
         ДанныеТолькоИзS4ToolStripMenuItem.Checked = NO_TechCard
         СДаннымиДляToolStripMenuItem.Checked = NO_AVA
-        If NO_TechCard Then
+        If Not NO_TechCard Then
             TPServerInitializ()
         End If
         firstAppShow()
@@ -887,13 +887,15 @@ ifpozRAVNOTempPoz:
 
         Dim CN_Purchated_last_ColNum As Integer = Get_Last_Column(ShName_Purchated, RowN_Purchated_First - 1)
         SetCellsBorderLineStyle2(ShName_Purchated, 1, 1, CN_Purchated_last_ColNum, RowN_Purchated_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
-        Try
-            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
-            If VSpom_Mater_for_Main IsNot Nothing Then
-                excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
-            End If
-        Catch ex As Exception
-        End Try
+        If Not NO_TechCard Then
+            Try
+                Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
+                If VSpom_Mater_for_Main IsNot Nothing Then
+                    excel_write_aboutVSPomMater_in_Purchated(VSpom_Mater_for_Main, 1)
+                End If
+            Catch ex As Exception
+            End Try
+        End If
         'зафиксировать шапку
         SetTitleFixirovano(ShName_Purchated, CN_Purchated_Naim, RowN_Purchated_First - 1, True)
     End Sub
@@ -948,14 +950,16 @@ ifpozRAVNOTempPoz:
 
         Dim CN_pdrbn_last_ColNum As Integer = Get_Last_Column(ShName_pdrbn, RowN_pdrbn_First - 1)
         SetCellsBorderLineStyle2(ShName_pdrbn, 1, 1, CN_pdrbn_last_ColNum, RowN_pdrbn_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
-        Try
-            Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
-            If VSpom_Mater_for_Main IsNot Nothing Then
-                'тут создать процедуру для записи вспомогательных материалов
-                excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, ArtID)
-            End If
-        Catch ex As Exception
-        End Try
+        If Not NO_TechCard Then
+            Try
+                Dim VSpom_Mater_for_Main As Array = Get_Vspom_Mater_Array(ArtID, -1)
+                If VSpom_Mater_for_Main IsNot Nothing Then
+                    'тут создать процедуру для записи вспомогательных материалов
+                    excel_write_aboutVSPomMater_in_Purchated_PDRBN(VSpom_Mater_for_Main, 1, ArtID)
+                End If
+            Catch ex As Exception
+            End Try
+        End If
         'зафиксировать шапку
         SetTitleFixirovano(ShName_pdrbn, CN_Purchated_Naim, RowN_pdrbn_First - 1, True)
     End Sub
@@ -971,10 +975,11 @@ ifpozRAVNOTempPoz:
     Public CN_AVA_PART_Oboz As Integer = 13
     Public CN_AVA_Archive_Name_Parent As Integer = 14
     Public CN_AVA_SECTION_NAME_Child As Integer = 15
-    Public CN_AVA_Archive_Name_Child As Integer = 19
+    'Public CN_AVA_Archive_Name_Child As Integer = 19
     Public CN_AVA_MU As Integer = 12
-    Public CN_AVA_Rascehovka_Parent As Integer = 17
-    Public CN_AVA_Rascehovka_Child As Integer = 18
+    Public CN_AVA_Rascehovka_Parent As Integer = 18
+    'Public CN_AVA_Rascehovka_Child As Integer = 18
+    Public CN_AVA_Rascehovka_Kooper As Integer = 23
     Private Sub addExTitleAVA(tmp_node As TreeNode)
         Add_NewSheet(ShName_AVA)
         Sheet_Delete_by_SheetName("Лист1")
@@ -988,15 +993,16 @@ ifpozRAVNOTempPoz:
         set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, RowN_AVA_First - 1, "child_designation")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, RowN_AVA_First - 1, "Archive_Name_For_Parent_Component")
         set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, RowN_AVA_First - 1, "SECTION_NAME_For_Child_Component")
-        set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, RowN_AVA_First - 1, "Route_For_Child_Component")
-        set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, RowN_AVA_First - 1, "Archive_Name_For_Child_Component")
+        'set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, RowN_AVA_First - 1, "Route_For_Child_Component")
+        'set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, RowN_AVA_First - 1, "Archive_Name_For_Child_Component")
         set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, RowN_AVA_First - 1, "Route_For_Parent_Component")
+        set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Kooper, RowN_AVA_First - 1, "Внешняя кооперация")
 
         Dim CN_PL_last_ColNum As Integer = Get_Last_Column(ShName_AVA, RowN_AVA_First - 1)
         SetCellsBorderLineStyle2(ShName_AVA, 1, 1, CN_PL_last_ColNum, RowN_AVA_First - 1, Microsoft.Office.Interop.Excel.XlLineStyle.xlLineStyleNone)
 
         'зафиксировать шапку
-        SetTitleFixirovano(ShName_AVA, CN_AVA_PROJ_ID, RowN_AVA_First - 1, True)
+        'SetTitleFixirovano(ShName_AVA, CN_AVA_PROJ_ID, RowN_AVA_First - 1, True)
     End Sub
 
     'ExcelSheets column numbers ТРЕТИЙ ЛИСТ(ПЕРЕЧЕНЬ ДЕТАЛЕЙ(например))
@@ -1124,7 +1130,7 @@ ifpozRAVNOTempPoz:
             End If
             MainArtInfo = Get_Short_Article_Param(ArtID)
 
-            If TPsfilter And NO_TechCard Then
+            If TPsfilter And NO_TechCard = False Then
                 MainTPInfo = Get_TP_ParmArray(artID_Main, -1)
             End If
             set_Value_From_Cell(Sheetname, CN_ArtID, 1, artID_Main)
@@ -1467,7 +1473,7 @@ ifpozRAVNOTempPoz:
             Art_Param = Get_Article_Param(ArtID)
             Parent_Art_Param = Get_Article_Param(PRJLINK_Param(0))
             'TP_VspMat_Array = TP_VspMat_Array_func(ArtID)
-            If TPsfilter And NO_TechCard Then
+            If TPsfilter And NO_TechCard = False Then
                 TP_Array = Get_TP_ParmArray(ArtID, PRJLINK_Param(0))
                 If Not OnlyFirstLewvel Then
                     TP_Vspom_Mater_Array = Get_Vspom_Mater_Array(ArtID, PRJLINK_ID)
@@ -2137,18 +2143,19 @@ ifpozRAVNOTempPoz:
         Dim PRJ_Link_Name As String = Parent_Art_Param(1)
         Dim ArchName As String = Parent_Art_Param(11)
         Select Case Art_Param(12)
-            Case 1, 2, 3
+            Case 1, 2, 3, 8
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_ID, lastRowNum, PRJLINK_Param(0))
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
                 set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
-                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                'set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Kooper, lastRowNum, GetCooperationRoute(Parent_Art_Param(14)))
 
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(0)} {Art_Param(1)}")
@@ -2157,13 +2164,14 @@ ifpozRAVNOTempPoz:
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
                 set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
-                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, Art_Param(3))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(1)) 'наименование записать для покупного
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                'set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Kooper, lastRowNum, GetCooperationRoute(Parent_Art_Param(14)))
 
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(1)}")
@@ -2172,13 +2180,14 @@ ifpozRAVNOTempPoz:
                 'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Parent, lastRowNum, ArchName)
                 set_Value_From_Cell(ShName_AVA, CN_AVA_SECTION_NAME_Child, lastRowNum, Art_Param(7))
-                If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
+                'If Convert.ToInt16(Art_Param(10)) > 0 Then set_Value_From_Cell(ShName_AVA, CN_AVA_Archive_Name_Child, lastRowNum, Art_Param(11))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_ID, lastRowNum, PRJLINK_Param(1))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Oboz, lastRowNum, Art_Param(0))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum, PRJLINK_Param(2))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum, PRJLINK_Param(11))
-                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
+                'set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Child, lastRowNum, Art_Param(14))
                 set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum, Parent_Art_Param(14))
+                set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Kooper, lastRowNum, GetCooperationRoute(Parent_Art_Param(14)))
 
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum, $"{PRJ_Link_Oboz} {PRJ_Link_Name}")
                 set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum, $"{Art_Param(0)} {Art_Param(1)}")
@@ -2191,6 +2200,7 @@ ifpozRAVNOTempPoz:
                     set_Value_From_Cell(ShName_AVA, CN_AVA_Count, lastRowNum + 1, Art_Param(2))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_MU, lastRowNum + 1, Art_Param(9))
                     set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Parent, lastRowNum + 1, Art_Param(14))
+                    set_Value_From_Cell(ShName_AVA, CN_AVA_Rascehovka_Kooper, lastRowNum + 1, GetCooperationRoute(Art_Param(14)))
 
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PROJ_Designatio, lastRowNum + 1, $"{Art_Param(0)} {Art_Param(1)}")
                     set_Value_From_Cell(ShName_AVA, CN_AVA_PART_Designatio, lastRowNum + 1, $"{Art_Param(5)}")
@@ -2198,6 +2208,18 @@ ifpozRAVNOTempPoz:
                 End If
         End Select
     End Sub
+    Function GetCooperationRoute(Route As String) As String
+        If String.IsNullOrWhiteSpace(Route) Then Return ""
+        Dim Result As String
+        Dim Route_Arr() As String = Route.Split(";")
+        For Each oRout As String In Route_Arr
+            If oRout.Trim.ToUpper.IndexOf("ВК") = 0 Then
+                Result = Result & ";" & oRout
+            End If
+        Next
+        If String.IsNullOrEmpty(Result) Then Return ""
+        Return Result.Trim(";")
+    End Function
     Sub excel_write_about_TreeNode(Positio As String, ArtID As Integer, PRJLINK_ID As Integer, Count_Summ As Double, PRJLINK_Param As Array, Art_Param As Array, TP_Array As Array)
 
         Application.DoEvents()
@@ -2538,6 +2560,7 @@ ifpozRAVNOTempPoz:
         End Try
     End Function
     Function get_FindReplace_Par(Input_paramet As String)
+        If String.IsNullOrEmpty(Input_paramet) Then Return Input_paramet
         Try
             For u As Integer = 0 To UBound(ReplaceChar)
                 Dim tmp_line() As String = ReplaceChar(u).Split("=")
